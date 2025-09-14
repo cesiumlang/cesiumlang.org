@@ -10,9 +10,9 @@
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
     "paths": {
-      "shiki": ["./docs/quartz_repo/node_modules/shiki"],
-      "rehype-pretty-code": ["./docs/quartz_repo/node_modules/rehype-pretty-code"]
+      "shiki": ["./quartz_repo/node_modules/shiki"],
+      "rehype-pretty-code": ["./quartz_repo/node_modules/rehype-pretty-code"]
     }
   },
-  "include": ["docs/**/*.ts", "docs/**/*.tsx"]
+  "include": ["**/*.ts", "**/*.tsx"]
 }

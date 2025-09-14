@@ -7,7 +7,7 @@ on:
     paths:
       - .github/workflows/deploy.yml
       - docs/**
-      - public_grammars/cesium.tmGrammar.json
+      - grammar/cesium.tmGrammar.json
 
 permissions:
   contents: read
@@ -27,29 +27,35 @@ jobs:
           timezoneLinux: "America/Chicago"
           timezoneMacos: "America/Chicago"
           timezoneWindows: "Central Standard Time"
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Fetch all history for git info
           submodules: true
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
       - name: Copy config files to Quartz
-        working-directory: ./docs/quartz_repo
+        working-directory: ./quartz_repo
         run: |
           cp ../quartz.config.ts .
           cp ../quartz.layout.ts .
           cp ../custom-syntax-highlighting.ts .
+
       - name: Install Dependencies
-        working-directory: ./docs/quartz_repo
+        working-directory: ./quartz_repo
         run: npm ci
+
       - name: Build Quartz
-        working-directory: ./docs/quartz_repo
-        run: npx quartz build -d ../src
+        working-directory: ./quartz_repo
+        run: npx quartz build -d ../content
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/quartz_repo/public
+          path: quartz_repo/public
 
   deploy:
     needs: build
