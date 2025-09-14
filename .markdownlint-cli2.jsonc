@@ -1,8 +1,8 @@
 {
   "ignores": [
-    // "**/docs/private/chatgpt/**/*",
-    // "**/docs/private/claude/**/*",
-    // "**/content/chatgpt/**/*"
-    // "**/content/claude/**/*"
+    "private/chatgpt/**/*",
+    "private/claude/**/*",
+    "content/chatgpt/**/*",
+    "content/claude/**/*"
   ]
 }
