@@ -7,9 +7,9 @@
 	"settings": {
     "files.exclude": {
       "_site/**": true,
-      "docs/quartz_repo/.github/workflows/**": true,
+      "quartz_repo/.github/workflows/**": true,
       // "**/node_modules/**": true,
-      "docs/quartz/**": true
+      "quartz/**": true
     },
 		"editor.wrappingIndent": "indent",
     // "markdown.styles": ["custom-tag-style.css"]
@@ -25,9 +25,9 @@
     "foam.edit.linkReferenceDefinitions": "off",
     "foam.files.ignore": [
       "readme.md",
-      "docs/quartz/**/*",
-      "docs/quartz_repo/**/*",
-      // "docs/private/**/*"
+      "quartz/**/*",
+      "quartz_repo/**/*",
+      // "private/**/*"
     ],
     "foam.files.newNotePath": "currentDir",
     "foam.completion.useAlias": "whenPathDiffersFromTitle",
@@ -49,19 +49,6 @@
       "streetsidesoftware.code-spell-checker-scientific-terms",
 			"streetsidesoftware.code-spell-checker-win32",
       "ltex-plus.vscode-ltex-plus",
-    ]
-  },
-  "launch": {
-    "version": "0.2.0",
-    "configurations": [
-    {
-      "type": "lldb",
-      "request": "launch",
-      "name": "Launch",
-      "program": "${workspaceFolder}/build/bin/cesium.exe",
-      "args": [],
-      "cwd": "${workspaceFolder}"
-    }
     ]
   }
 }
