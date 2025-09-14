@@ -16,7 +16,8 @@
       "_site/**": true,
       "quartz_repo/.github/workflows/**": true,
       // "**/node_modules/**": true,
-      "quartz/**": true
+      "quartz/**": true,
+      "**/.cache/**": true,
     },
 		"editor.wrappingIndent": "indent",
     // "markdown.styles": ["custom-tag-style.css"]
@@ -39,6 +40,7 @@
     "foam.files.newNotePath": "currentDir",
     "foam.completion.useAlias": "whenPathDiffersFromTitle",
     "foam.preview.embedNoteType": "content-inline",
+    "cmake.configureOnOpen": false
   },
   "extensions": {
     // See http://go.microsoft.com/fwlink/?LinkId=827846
