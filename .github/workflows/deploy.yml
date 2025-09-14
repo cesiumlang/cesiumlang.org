@@ -44,6 +44,7 @@ jobs:
         working-directory: ./quartz_repo
         run: |
           rsync -av --exclude="/quartz" ../src/ .
+          cp -r ../src/quartz_overrides/ ./quartz
 
       - name: Install Dependencies
         working-directory: ./quartz_repo
