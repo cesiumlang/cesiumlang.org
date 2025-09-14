@@ -1,5 +1,5 @@
 ---
-title: Welcome to Cesium
+title: Welcome to the Cesium programming language!
 # draft: true
 tags:
 type: note

@@ -18,7 +18,7 @@ const cesiumGrammar = JSON.parse(fs.readFileSync(cesiumGrammarPath, "utf-8"))
  */
 const config: QuartzConfig = {
   configuration: {
-    pageTitle: "Cesium Programming Language",
+    pageTitle: "Cesium",
     pageTitleSuffix: " | Cesium Programming Language",
     enableSPA: true,
     enablePopovers: true,

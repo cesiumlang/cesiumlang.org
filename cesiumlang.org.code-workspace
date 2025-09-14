@@ -5,6 +5,13 @@
 		}
 	],
 	"settings": {
+    "files.watcherExclude": {
+			"cesium-src/buildtools/clang+llvm-*/": true,
+			"cesium-src/buildtools/llvm-*/": true,
+			"cesium-src/buildtools/bin/cmake-*-windows-x86_64/**": true,
+			"cesium-src/buildtools/bin/cmake-*/**": true,
+			"cesium-src/build/CMakeFiles/**": true,
+		},
     "files.exclude": {
       "_site/**": true,
       "quartz_repo/.github/workflows/**": true,
