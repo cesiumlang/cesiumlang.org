@@ -6,10 +6,9 @@ import * as path from "path"
 import { getHighlighter } from "shiki";
 
 // Path to the Cesium TextMate grammar file at workspace root.
-// Don't forget this file in Git is only one level down from the
-// repo root, but this file gets copied to quartz_repo during
+// Don't forget this file gets copied to quartz_repo during
 // the build action, so the path needs an extra ../ here.
-const cesiumGrammarPath = path.resolve("../../public_grammars/cesium.tmGrammar.json")
+const cesiumGrammarPath = path.resolve("../grammar/cesium.tmGrammar.json")
 const cesiumGrammar = JSON.parse(fs.readFileSync(cesiumGrammarPath, "utf-8"))
 
 /**
