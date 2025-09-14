@@ -1,0 +1,43 @@
+@use "./base.scss";
+
+// put your custom CSS here!
+
+// Mobile-specific syntax highlighting fixes
+@media all and (max-width: 768px) {
+  // Ensure syntax highlighting CSS variables are applied on mobile
+  code[data-theme*=" "] {
+    color: var(--shiki-light) !important;
+    background-color: var(--shiki-light-bg) !important;
+  }
+
+  code[data-theme*=" "] span {
+    color: var(--shiki-light) !important;
+  }
+
+  [saved-theme="dark"] code[data-theme*=" "] {
+    color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
+  }
+
+  [saved-theme="dark"] code[data-theme*=" "] span {
+    color: var(--shiki-dark) !important;
+  }
+
+  // Fallback colors if CSS variables fail to load
+  code[data-theme*=" "]:not([style*="--shiki-light"]) {
+    color: #24292e;
+    background-color: #f6f8fa;
+  }
+
+  [saved-theme="dark"] code[data-theme*=" "]:not([style*="--shiki-dark"]) {
+    color: #e1e4e8;
+    background-color: #0d1117;
+  }
+
+  // Ensure pre code blocks have proper styling on mobile
+  pre code {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
+}

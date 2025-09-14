@@ -1,0 +1,1 @@
+- Do not modify files in src/quartz/ or quartz_repo/ because they are "locked" submodule references.  Notify me if something absolutely must be modified in them and cannot be handled by overriding something in files outside those directories

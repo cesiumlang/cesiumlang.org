@@ -43,7 +43,7 @@ jobs:
       - name: Copy config/source files to Quartz
         working-directory: ./quartz_repo
         run: |
-          cp -r ../src/*.ts .
+          rsync -av --exclude="quartz/" ../src/ .
 
       - name: Install Dependencies
         working-directory: ./quartz_repo
