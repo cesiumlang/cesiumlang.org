@@ -7,3 +7,6 @@
 [submodule "src"]
 	path = src
 	url = https://github.com/cesiumlang/cesium.git
+[submodule ".cspell/cesium"]
+	path = .cspell/cesium
+	url = https://github.com/cesiumlang/cspell-cesium.git
