@@ -5,7 +5,7 @@
 	path = grammar
 	url = https://github.com/cesiumlang/grammar.git
 [submodule "src"]
-	path = src
+	path = cesium-src
 	url = https://github.com/cesiumlang/cesium.git
 [submodule ".cspell/cesium"]
 	path = .cspell/cesium
