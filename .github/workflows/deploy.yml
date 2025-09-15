@@ -7,10 +7,10 @@ on:
     paths:
       - .github/workflows/deploy.yml
       - content/**
-      - quartz_repo/**
+      - quartz_repo
       - src/**
-      - cesium-src/**
-      - grammar/cesium.tmGrammar.json
+      - cesium-src
+      - grammar
 
 permissions:
   contents: read
