@@ -11,6 +11,10 @@ import { getHighlighter } from "shiki";
 const cesiumGrammarPath = path.resolve("../grammar/cesium.tmGrammar.json")
 const cesiumGrammar = JSON.parse(fs.readFileSync(cesiumGrammarPath, "utf-8"))
 
+// // Load custom Cesium theme based on your VS Code settings
+// const cesiumThemePath = path.resolve("./cesium-shiki-theme.json")
+// const cesiumTheme = JSON.parse(fs.readFileSync(cesiumThemePath, "utf-8"))
+
 /**
  * Quartz 4 Configuration
  *
@@ -74,8 +78,9 @@ const config: QuartzConfig = {
       // Plugin.SyntaxHighlighting(),
       CustomSyntaxHighlighting({
         theme: {
-          light: "github-light",
-          dark: "github-dark",
+          light: "light-plus",
+          dark: "dark-plus",
+          // dark: cesiumTheme,
         },
         keepBackground: true,
         defaultLang: "cesium",
