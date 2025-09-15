@@ -1,4 +1,5 @@
 // Custom Explorer styles with TOC header support
+@use "../quartz/styles/variables.scss" as *;
 @import "../quartz/components/styles/explorer.scss";
 
 .explorer {
@@ -139,7 +140,7 @@
 }
 
 // Mobile responsive adjustments
-@media all and (max-width: $mobileBreakpoint) {
+@media all and ($mobile) {
   .explorer {
     .file-headers {
       margin-left: 12px;
