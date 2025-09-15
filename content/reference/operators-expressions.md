@@ -23,6 +23,7 @@ result = $negate$x;       // custom unary operator
 
 ```cesium
 transposed = matrix~;     // matrix transpose
+result = value..;         // unary postfix range/spread operator
 ```
 
 ### 4. Unary Prefix Operators
@@ -31,6 +32,7 @@ transposed = matrix~;     // matrix transpose
 addr = #variable;         // address-of
 value = #pointer;         // dereference (auto in most contexts)
 root = ::x;              // square root
+result = ..array;        // unary prefix range/spread operator
 ```
 
 ### 5. Binary Root Operator
