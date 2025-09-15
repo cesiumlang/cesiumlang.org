@@ -21,7 +21,7 @@ Ultimately, the name is a reference to the atomic element cesium (American Chemi
 ## Basic Program Structure
 
 ```cesium
-// hello.cs
+// hello.czm (or hello.cs)
 void = main() {
     printf("Hello, Cesium!\n");
 }
