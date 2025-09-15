@@ -23,14 +23,10 @@ error NetworkTimeout {
     str host;
     i32 timeout_ms;
 }
-```
 
-### Error Union Types
-
-```cesium
 // Error union types
-alias FileError = FileNotFound|AccessDenied;
-alias IOError = FileError|NetworkTimeout;
+union FileError = FileNotFound|AccessDenied;
+union IOError = FileError|NetworkTimeout;
 ```
 
 ## Error Propagation Methods

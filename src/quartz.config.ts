@@ -1,6 +1,8 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
 import { CustomSyntaxHighlighting } from "./custom-syntax-highlighting"
+import { FrontmatterIndex } from "./frontmatter-index"
+import { CustomFolderPage } from "./custom-folder-page"
 import * as fs from "fs"
 import * as path from "path"
 import { getHighlighter } from "shiki";
@@ -105,7 +107,7 @@ const config: QuartzConfig = {
       Plugin.AliasRedirects(),
       Plugin.ComponentResources(),
       Plugin.ContentPage(),
-      Plugin.FolderPage(),
+      CustomFolderPage(),
       Plugin.TagPage(),
       Plugin.ContentIndex({
         enableSiteMap: true,
@@ -117,6 +119,7 @@ const config: QuartzConfig = {
       Plugin.NotFoundPage(),
       // Comment out CustomOgImages to speed up build time
       Plugin.CustomOgImages(),
+      FrontmatterIndex(),
     ],
   },
 }

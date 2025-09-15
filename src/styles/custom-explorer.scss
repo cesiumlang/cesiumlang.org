@@ -1,0 +1,169 @@
+// Custom Explorer styles with TOC header support
+@import "../quartz/components/styles/explorer.scss";
+
+.explorer {
+  // File node styling
+  .file-title {
+    display: inline-block;
+    width: calc(100% - 20px); // Leave space for toggle button
+  }
+
+  // Header toggle button
+  .header-toggle {
+    display: inline-block;
+    background: none;
+    border: none;
+    padding: 2px;
+    margin-left: 4px;
+    cursor: pointer;
+    vertical-align: middle;
+    opacity: 0.6;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &.open {
+      .header-fold {
+        transform: rotate(180deg);
+      }
+    }
+
+    .header-fold {
+      transition: transform 0.2s ease;
+    }
+
+    svg {
+      width: 10px;
+      height: 10px;
+    }
+  }
+
+  // Headers list styling
+  .file-headers {
+    margin: 4px 0 0 16px;
+    padding: 0;
+    list-style: none;
+    border-left: 1px solid var(--lightgray);
+    
+    .header-item {
+      margin: 0;
+      padding: 0;
+      
+      .header-link {
+        display: block;
+        padding: 2px 8px;
+        font-size: 0.85em;
+        color: var(--darkgray);
+        text-decoration: none;
+        border-radius: 3px;
+        transition: background-color 0.2s ease, color 0.2s ease;
+        
+        &:hover {
+          background-color: var(--lightgray);
+          color: var(--dark);
+        }
+      }
+
+      // Indentation for different header depths
+      &.header-depth-0 .header-link {
+        padding-left: 8px;
+        font-weight: 500;
+      }
+
+      &.header-depth-1 .header-link {
+        padding-left: 16px;
+      }
+
+      &.header-depth-2 .header-link {
+        padding-left: 24px;
+      }
+
+      &.header-depth-3 .header-link {
+        padding-left: 32px;
+      }
+
+      &.header-depth-4 .header-link {
+        padding-left: 40px;
+      }
+
+      &.header-depth-5 .header-link {
+        padding-left: 48px;
+      }
+    }
+  }
+
+  // File node container styling to accommodate headers
+  li {
+    position: relative;
+    
+    // Add some spacing when headers are present
+    &:has(.file-headers) {
+      margin-bottom: 4px;
+    }
+  }
+
+  // Active page styling adjustments
+  .active {
+    font-weight: 600;
+    
+    & + .header-toggle {
+      opacity: 1;
+    }
+  }
+}
+
+// Dark mode adjustments
+@media (prefers-color-scheme: dark) {
+  .explorer {
+    .file-headers {
+      border-left-color: var(--gray);
+      
+      .header-link {
+        color: var(--lightgray);
+        
+        &:hover {
+          background-color: var(--darkgray);
+          color: var(--light);
+        }
+      }
+    }
+
+    .header-toggle {
+      svg {
+        stroke: var(--lightgray);
+      }
+    }
+  }
+}
+
+// Mobile responsive adjustments
+@media all and (max-width: $mobileBreakpoint) {
+  .explorer {
+    .file-headers {
+      margin-left: 12px;
+      
+      .header-item {
+        .header-link {
+          font-size: 0.8em;
+          padding: 1px 6px;
+        }
+
+        &.header-depth-0 .header-link { padding-left: 6px; }
+        &.header-depth-1 .header-link { padding-left: 12px; }
+        &.header-depth-2 .header-link { padding-left: 18px; }
+        &.header-depth-3 .header-link { padding-left: 24px; }
+        &.header-depth-4 .header-link { padding-left: 30px; }
+        &.header-depth-5 .header-link { padding-left: 36px; }
+      }
+    }
+
+    .header-toggle {
+      svg {
+        width: 8px;
+        height: 8px;
+      }
+    }
+  }
+}
