@@ -15,13 +15,18 @@
 			"cesium-src/buildtools/bin/cmake-*-windows-x86_64/**": true,
 			"cesium-src/buildtools/bin/cmake-*/**": true,
 			"cesium-src/build/CMakeFiles/**": true,
+      "**/node_modules/**": true,
+      "build/**": true,
+      "src/quartz/**": true,
+      "**/.cache/**": true,
 		},
     "files.exclude": {
       "_site/**": true,
       "quartz_repo/.github/workflows/**": true,
       "**/node_modules/**": true,
-      "quartz/**": true,
+      "src/quartz/**": true,
       "**/.cache/**": true,
+      "build/**": true
     },
 		"editor.wrappingIndent": "indent",
     // "markdown.styles": ["custom-tag-style.css"]

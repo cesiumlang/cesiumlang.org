@@ -1,5 +1,8 @@
 /.claude/
 /private/
+/build/
+node_modules/
+# /src/quartz/
 # /.cache/
 # /cesium-src/build/
 # /cesium-src/buildtools/bin/

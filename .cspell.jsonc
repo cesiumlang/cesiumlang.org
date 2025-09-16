@@ -8,7 +8,10 @@
     ".cspell/**",
     ".git/**",
     "*.code-workspace",
-    ".local-gitignore"
+    ".local-gitignore",
+    "build/**",
+    "quartz_repo/**",
+    "src/quartz/**",
   ],
   "dictionaryDefinitions": [
     {
