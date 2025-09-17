@@ -1,6 +1,7 @@
 ---
 title: "Built-in Functions"
 tags: ["builtin", "functions", "io", "math", "introspection"]
+sortorder: 12
 ---
 
 ## I/O Functions

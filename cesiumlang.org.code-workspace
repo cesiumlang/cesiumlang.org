@@ -49,7 +49,8 @@
     "foam.files.newNotePath": "currentDir",
     "foam.completion.useAlias": "whenPathDiffersFromTitle",
     "foam.preview.embedNoteType": "content-inline",
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "svg.preview.background": "dark-transparent"
   },
   "extensions": {
     // See http://go.microsoft.com/fwlink/?LinkId=827846

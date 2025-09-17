@@ -1,0 +1,65 @@
+<svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Metallic gradient for liquid cesium look -->
+    <radialGradient id="metallic" cx="30%" cy="20%" r="70%">
+      <stop offset="0%" style="stop-color:#faf8e8"/>
+      <stop offset="30%" style="stop-color:#e8d8b8"/>
+      <stop offset="70%" style="stop-color:#b8944a"/>
+      <stop offset="100%" style="stop-color:#8b6914"/>
+    </radialGradient>
+
+    <!-- Highlight gradient -->
+    <radialGradient id="highlight" cx="25%" cy="25%" r="40%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.8"/>
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0"/>
+    </radialGradient>
+  </defs>
+
+  <g transform="scale(7.8) translate(-18, -12)">
+    <!-- Main liquid metal blob shape -->
+    <path d="M22 47 Q17 26 37 21 Q58 16 72 27 Q86 38 81 57 Q76 76 54 81 Q32 86 24 66 Q16 56 22 47 Z"
+          fill="url(#metallic)"
+          stroke="#5c4a0d"
+          stroke-width="1"
+          stroke-linejoin="round"
+          stroke-linecap="round"/>
+
+    <!-- Separate droplets around main blob -->
+    <ellipse cx="86" cy="25" rx="8" ry="6"
+             fill="url(#metallic)"
+             stroke="#5c4a0d"
+             stroke-width="0.7"
+             transform="rotate(25 86 25)"/>
+
+    <!-- Small droplet (moved to bottom left) -->
+    <circle cx="22" cy="72" r="2"
+            fill="url(#metallic)"
+            stroke="#5c4a0d"
+            stroke-width="0.7"/>
+
+    <!-- Medium droplet -->
+    <circle cx="82" cy="70" r="3.5"
+            fill="url(#metallic)"
+            stroke="#5c4a0d"
+            stroke-width="0.7"/>
+
+    <!-- Cs text overlay -->
+    <text x="50" y="60"
+          font-family="system-ui, -apple-system, sans-serif"
+          font-size="32"
+          font-weight="700"
+          text-anchor="middle"
+          fill="#2a1f0a"
+          stroke="#1a1207"
+          stroke-width="0.3">Cs</text>
+
+    <!-- Highlight effects -->
+    <ellipse cx="40" cy="35" rx="12" ry="8"
+             fill="url(#highlight)"/>
+
+    <!-- Small shine spot -->
+    <ellipse cx="35" cy="30" rx="4" ry="3"
+             fill="#ffffff"
+             opacity="0.6"/>
+  </g>
+</svg>

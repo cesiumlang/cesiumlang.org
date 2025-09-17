@@ -1,6 +1,7 @@
 ---
 title: "Error Handling"
 tags: ["errors", "exceptions", "error-types", "catch"]
+sortorder: 10
 ---
 
 ## Error Type Definition

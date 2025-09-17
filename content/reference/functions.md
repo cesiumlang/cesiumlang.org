@@ -1,6 +1,7 @@
 ---
 title: "Functions"
 tags: ["functions", "generics", "overloading", "variadics"]
+sortorder: 7
 ---
 
 ## Function Declaration

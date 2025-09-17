@@ -1,6 +1,7 @@
 ---
 title: "Operators and Expressions"
 tags: ["operators", "expressions", "precedence", "arithmetic"]
+sortorder: 5
 ---
 
 ## Operator Precedence (highest to lowest)

@@ -1,6 +1,7 @@
 ---
 title: "Modules and Imports"
 tags: ["modules", "imports", "namespaces", "extern"]
+sortorder: 11
 ---
 
 ## Module Structure

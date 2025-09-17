@@ -222,11 +222,11 @@ async function runQuartzBuild() {
   
   let nodeCommand
   if (serve && watch) {
-    nodeCommand = ['quartz/bootstrap-cli.mjs', 'build', '--serve', '-d', contentDir]
+    nodeCommand = ['quartz/bootstrap-cli.mjs', 'build', '--serve', '--watch', '-d', contentDir]
   } else if (serve) {
     nodeCommand = ['quartz/bootstrap-cli.mjs', 'build', '--serve', '-d', contentDir]
   } else if (watch) {
-    nodeCommand = ['quartz/bootstrap-cli.mjs', 'build', '-d', contentDir]
+    nodeCommand = ['quartz/bootstrap-cli.mjs', 'build', '--watch', '-d', contentDir]
   } else {
     nodeCommand = ['quartz/bootstrap-cli.mjs', 'build', '-d', contentDir]
   }

@@ -1,6 +1,7 @@
 ---
 title: "Type System"
 tags: ["types", "primitives", "arrays", "pointers", "simd"]
+sortorder: 3
 ---
 
 ## Primitive Types

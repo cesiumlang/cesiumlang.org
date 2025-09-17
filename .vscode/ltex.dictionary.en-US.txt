@@ -12,6 +12,7 @@ Fallthrough
 FETCHCONTENT
 filesystem
 FolderPage
+folderpath
 frontmatter
 gitignore
 Grotesk
@@ -26,6 +27,7 @@ Monomorphization
 MSVC
 Namespacing
 npm
+prenav
 PYRANDYOS
 PYTHONUNBUFFERED
 RRGGBB

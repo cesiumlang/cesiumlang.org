@@ -1,6 +1,7 @@
 ---
 title: "Overview"
 tags: ["overview", "design", "goals"]
+sortorder: 1
 ---
 
 Cesium is a compiled, statically-typed systems programming language designed for mathematical computing and linear algebra applications. It prioritizes performance, explicit memory management, and mathematical expressiveness while maintaining C ABI compatibility.

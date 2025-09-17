@@ -1,6 +1,7 @@
 ---
 title: "Control Flow"
 tags: ["control-flow", "conditionals", "loops", "pattern-matching"]
+sortorder: 6
 ---
 
 ## Conditional Statements

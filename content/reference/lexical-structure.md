@@ -1,6 +1,7 @@
 ---
 title: "Lexical Structure"
 tags: ["lexical", "comments", "keywords", "identifiers", "strings"]
+sortorder: 2
 ---
 
 ## Comments

@@ -4,13 +4,6 @@ import { ContentDetails } from "../quartz/plugins/emitters/contentIndex"
 
 type MaybeHTMLElement = HTMLElement | undefined
 
-// Extended ContentDetails to include frontmatter data
-interface ExtendedContentDetails extends ContentDetails {
-  frontmatter?: {
-    sortorder?: number
-    [key: string]: any
-  }
-}
 
 interface ParsedOptions {
   folderClickBehavior: "collapse" | "link"
@@ -83,74 +76,144 @@ function toggleFolder(evt: MouseEvent) {
   localStorage.setItem("fileTree", stringifiedFileTree)
 }
 
-function createFileNode(currentSlug: FullSlug, node: FileTrieNode): HTMLLIElement {
-  const template = document.getElementById("template-file") as HTMLTemplateElement
-  const clone = template.content.cloneNode(true) as DocumentFragment
-  const li = clone.querySelector("li") as HTMLLIElement
-  const a = li.querySelector("a") as HTMLAnchorElement
-  a.href = resolveRelative(currentSlug, node.slug)
-  a.dataset.for = node.slug
-  a.textContent = node.displayName
-  a.classList.add("file-title")
+// Build hierarchical header tree from flat TOC list
+function buildHeaderTree(toc: any[]): any[] {
+  const stack: any[] = []
+  const result: any[] = []
 
-  if (currentSlug === node.slug) {
-    a.classList.add("active")
+  for (const entry of toc) {
+    const headerNode = {
+      ...entry,
+      children: []
+    }
+
+    // Find the appropriate parent based on depth
+    while (stack.length > 0 && stack[stack.length - 1].depth >= entry.depth) {
+      stack.pop()
+    }
+
+    if (stack.length === 0) {
+      result.push(headerNode)
+    } else {
+      stack[stack.length - 1].children.push(headerNode)
+    }
+
+    stack.push(headerNode)
   }
 
+  return result
+}
+
+// Create header tree structure with folders for parents and links for leaves
+function createHeaderStructure(currentSlug: FullSlug, node: FileTrieNode, headerNode: any): HTMLLIElement {
+  const hasChildren = headerNode.children && headerNode.children.length > 0
+
+  if (hasChildren) {
+    // Create folder structure for headers with children
+    const template = document.getElementById("template-folder") as HTMLTemplateElement
+    const clone = template.content.cloneNode(true) as DocumentFragment
+    const li = clone.querySelector("li") as HTMLLIElement
+    const folderContainer = li.querySelector(".folder-container") as HTMLElement
+    const titleContainer = folderContainer.querySelector("div") as HTMLElement
+    const folderOuter = li.querySelector(".folder-outer") as HTMLElement
+    const ul = folderOuter.querySelector("ul") as HTMLUListElement
+
+    // Replace folder button with header link but keep folder structure
+    const button = titleContainer.querySelector(".folder-button") as HTMLElement
+    const a = document.createElement("a")
+    a.href = resolveRelative(currentSlug, node.slug) + `#${headerNode.slug}`
+    a.textContent = headerNode.text
+    a.classList.add("header-link", `header-depth-${headerNode.depth}`, "header-folder")
+
+    button.replaceWith(a)
+
+    // Add children recursively
+    for (const child of headerNode.children) {
+      const childLi = createHeaderStructure(currentSlug, node, child)
+      ul.appendChild(childLi)
+    }
+
+    // Headers start collapsed by default
+    // folderOuter.classList.add("open") - leave commented for collapsed default
+
+    return li
+  } else {
+    // Create simple link structure for leaf headers
+    const template = document.getElementById("template-file") as HTMLTemplateElement
+    const clone = template.content.cloneNode(true) as DocumentFragment
+    const li = clone.querySelector("li") as HTMLLIElement
+    const a = li.querySelector("a") as HTMLAnchorElement
+
+    a.href = resolveRelative(currentSlug, node.slug) + `#${headerNode.slug}`
+    a.textContent = headerNode.text
+    a.classList.add("header-link", `header-depth-${headerNode.depth}`)
+
+    return li
+  }
+}
+
+function createFileNode(currentSlug: FullSlug, node: FileTrieNode): HTMLLIElement {
   // Check if we have TOC data for this file
   const slug = node.slug
   const frontmatter = frontmatterCache.get(slug)
   const toc = frontmatter?.toc
 
+  // If file has TOC, treat it like a folder for consistent styling
   if (toc && toc.length > 0) {
-    // Create a nested list for headers
-    const headersList = document.createElement("ul")
-    headersList.classList.add("file-headers")
-    
-    // Initially collapsed
-    headersList.style.display = "none"
-    
-    // Create toggle button for headers
-    const toggleButton = document.createElement("button")
-    toggleButton.classList.add("header-toggle")
-    toggleButton.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-fold">
-        <polyline points="6 9 12 15 18 9"></polyline>
-      </svg>
-    `
-    
-    // Add click handler for toggle
-    toggleButton.addEventListener("click", (e) => {
-      e.preventDefault()
-      e.stopPropagation()
-      
-      const isOpen = headersList.style.display !== "none"
-      headersList.style.display = isOpen ? "none" : "block"
-      toggleButton.classList.toggle("open", !isOpen)
-    })
-    
-    // Insert toggle button before the file title (on the left like main tree)
-    a.parentElement?.insertBefore(toggleButton, a)
-    
-    // Create header links
-    toc.forEach((tocEntry: any) => {
-      const headerLi = document.createElement("li")
-      headerLi.classList.add("header-item", `header-depth-${tocEntry.depth}`)
-      
-      const headerLink = document.createElement("a")
-      headerLink.href = resolveRelative(currentSlug, node.slug) + `#${tocEntry.slug}`
-      headerLink.textContent = tocEntry.text
-      headerLink.classList.add("header-link")
-      
-      headerLi.appendChild(headerLink)
-      headersList.appendChild(headerLi)
-    })
-    
-    // Add the headers list after the toggle button
-    toggleButton.parentElement?.insertBefore(headersList, toggleButton.nextSibling)
-  }
+    const template = document.getElementById("template-folder") as HTMLTemplateElement
+    const clone = template.content.cloneNode(true) as DocumentFragment
+    const li = clone.querySelector("li") as HTMLLIElement
+    const folderContainer = li.querySelector(".folder-container") as HTMLElement
+    const titleContainer = folderContainer.querySelector("div") as HTMLElement
+    const folderOuter = li.querySelector(".folder-outer") as HTMLElement
+    const ul = folderOuter.querySelector("ul") as HTMLUListElement
 
-  return li
+    // Replace folder button with file link
+    const button = titleContainer.querySelector(".folder-button") as HTMLElement
+    const a = document.createElement("a")
+    a.href = resolveRelative(currentSlug, node.slug)
+    a.dataset.for = node.slug
+    a.className = "file-title physical-file"
+    a.textContent = node.displayName
+
+    if (currentSlug === node.slug) {
+      a.classList.add("active")
+    }
+
+    button.replaceWith(a)
+
+    // Build hierarchical header tree
+    const headerTree = buildHeaderTree(toc)
+
+    // Create nested header structure
+    for (const headerNode of headerTree) {
+      const headerLi = createHeaderStructure(currentSlug, node, headerNode)
+      ul.appendChild(headerLi)
+    }
+
+    // If this is the current page, expand to show TOC
+    if (currentSlug === node.slug) {
+      folderOuter.classList.add("open")
+    }
+
+    return li
+  } else {
+    // Standard file without TOC - use simple file template
+    const template = document.getElementById("template-file") as HTMLTemplateElement
+    const clone = template.content.cloneNode(true) as DocumentFragment
+    const li = clone.querySelector("li") as HTMLLIElement
+    const a = li.querySelector("a") as HTMLAnchorElement
+    a.href = resolveRelative(currentSlug, node.slug)
+    a.dataset.for = node.slug
+    a.textContent = node.displayName
+    a.classList.add("file-title", "physical-file")
+
+    if (currentSlug === node.slug) {
+      a.classList.add("active")
+    }
+
+    return li
+  }
 }
 
 function createFolderNode(
@@ -174,12 +237,13 @@ function createFolderNode(
     const a = document.createElement("a")
     a.href = resolveRelative(currentSlug, folderPath)
     a.dataset.for = folderPath
-    a.className = "folder-title"
+    a.className = "folder-title physical-folder"
     a.textContent = node.displayName
     button.replaceWith(a)
   } else {
     const span = titleContainer.querySelector(".folder-title") as HTMLElement
     span.textContent = node.displayName
+    span.classList.add("physical-folder")
   }
 
   const isCollapsed =
@@ -209,7 +273,7 @@ function createCustomSortFn() {
   return (a: FileTrieNode, b: FileTrieNode) => {
     const getSortOrder = (node: FileTrieNode) => {
       if (node.isFolder) return null
-      
+
       // Check if we have cached frontmatter data
       const slug = node.slug
       const frontmatter = frontmatterCache.get(slug)
@@ -258,16 +322,16 @@ async function fetchFrontmatterData() {
       console.warn("Could not fetch content index for sortorder data")
       return
     }
-    
-    const contentIndex = await response.json()
-    
+
+    await response.json()
+
     // We need to fetch individual page data to get frontmatter
     // Since Quartz doesn't expose full frontmatter in contentIndex,
     // we'll need to make a request to get the original markdown files
-    
+
     // For now, we'll try to get frontmatter from meta tags if available
     // or implement a custom solution
-    
+
     // Try to get frontmatter from the current page's meta tags as an example
     const currentPageMeta = document.querySelector('meta[name="frontmatter"]')
     if (currentPageMeta) {
@@ -279,7 +343,7 @@ async function fetchFrontmatterData() {
         // Ignore parsing errors
       }
     }
-    
+
     // Alternative: try to fetch frontmatter data from a custom endpoint
     // This would require adding a custom emitter to expose frontmatter data
     try {
@@ -295,7 +359,7 @@ async function fetchFrontmatterData() {
       // Frontmatter index doesn't exist yet, that's ok
       console.log("No frontmatter index found, using fallback sorting")
     }
-    
+
   } catch (error) {
     console.warn("Error fetching frontmatter data:", error)
   }
@@ -304,10 +368,10 @@ async function fetchFrontmatterData() {
 async function setupExplorer(currentSlug: FullSlug) {
   // Fetch frontmatter data first
   await fetchFrontmatterData()
-  
+
   const allExplorers = document.querySelectorAll("div.explorer") as NodeListOf<HTMLElement>
 
-  for (const explorer of allExplorers) {
+  for (const explorer of Array.from(allExplorers)) {
     const dataFns = JSON.parse(explorer.dataset.dataFns || "{}")
     const opts: ParsedOptions = {
       folderClickBehavior: (explorer.dataset.behavior || "collapse") as "collapse" | "link",
@@ -386,7 +450,7 @@ async function setupExplorer(currentSlug: FullSlug) {
     const explorerButtons = explorer.getElementsByClassName(
       "explorer-toggle",
     ) as HTMLCollectionOf<HTMLElement>
-    for (const button of explorerButtons) {
+    for (const button of Array.from(explorerButtons)) {
       button.addEventListener("click", toggleExplorer)
       window.addCleanup(() => button.removeEventListener("click", toggleExplorer))
     }
@@ -396,7 +460,7 @@ async function setupExplorer(currentSlug: FullSlug) {
       const folderButtons = explorer.getElementsByClassName(
         "folder-button",
       ) as HTMLCollectionOf<HTMLElement>
-      for (const button of folderButtons) {
+      for (const button of Array.from(folderButtons)) {
         button.addEventListener("click", toggleFolder)
         window.addCleanup(() => button.removeEventListener("click", toggleFolder))
       }
@@ -405,7 +469,7 @@ async function setupExplorer(currentSlug: FullSlug) {
     const folderIcons = explorer.getElementsByClassName(
       "folder-icon",
     ) as HTMLCollectionOf<HTMLElement>
-    for (const icon of folderIcons) {
+    for (const icon of Array.from(folderIcons)) {
       icon.addEventListener("click", toggleFolder)
       window.addCleanup(() => icon.removeEventListener("click", toggleFolder))
     }
@@ -423,8 +487,11 @@ document.addEventListener("nav", async (e: CustomEventMap["nav"]) => {
   const currentSlug = e.detail.url
   await setupExplorer(currentSlug)
 
+  // Setup TOC highlighting for the new page
+  setupTocHighlighting()
+
   // if mobile hamburger is visible, collapse by default
-  for (const explorer of document.getElementsByClassName("explorer")) {
+  for (const explorer of Array.from(document.getElementsByClassName("explorer"))) {
     const mobileExplorer = explorer.querySelector(".mobile-explorer")
     if (!mobileExplorer) return
 
@@ -446,6 +513,35 @@ window.addEventListener("resize", function () {
     return
   }
 })
+
+// Scroll-based TOC highlighting (matches stock TOC behavior)
+function setupTocHighlighting() {
+  const headerLinks = document.querySelectorAll(".header-link")
+  if (headerLinks.length === 0) return
+
+  // Use same observer logic as stock TOC
+  const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      const slug = entry.target.id
+      const tocEntryElements = document.querySelectorAll(`.header-link[href$="#${slug}"]`)
+      const windowHeight = entry.rootBounds?.height
+      if (windowHeight && tocEntryElements.length > 0) {
+        if (entry.boundingClientRect.y < windowHeight) {
+          tocEntryElements.forEach((tocEntryElement) => tocEntryElement.classList.add("in-view"))
+        } else {
+          tocEntryElements.forEach((tocEntryElement) => tocEntryElement.classList.remove("in-view"))
+        }
+      }
+    }
+  })
+
+  // Observe all headers on the page (same as stock TOC)
+  const headers = document.querySelectorAll("h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]")
+  headers.forEach((header) => observer.observe(header))
+
+  // Clean up observer on page navigation
+  window.addCleanup(() => observer.disconnect())
+}
 
 function setFolderState(folderElement: HTMLElement, collapsed: boolean) {
   return collapsed ? folderElement.classList.remove("open") : folderElement.classList.add("open")

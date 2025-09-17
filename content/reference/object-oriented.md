@@ -1,6 +1,7 @@
 ---
 title: "Object-Oriented Programming"
 tags: ["oop", "structs", "inheritance", "traits", "properties"]
+sortorder: 9
 ---
 
 ## Struct Definition and Usage

@@ -1,6 +1,7 @@
 ---
 title: "Memory Management"
 tags: ["memory", "ownership", "allocation", "defer"]
+sortorder: 8
 ---
 
 ## Basic Memory Operations
