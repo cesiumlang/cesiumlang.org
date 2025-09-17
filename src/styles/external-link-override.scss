@@ -1,0 +1,23 @@
+// Override for external link wrapping
+a.external {
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  
+  .external-icon {
+    display: inline-flex !important;
+    align-items: center !important;
+    margin-left: 0.2em !important;
+    flex-shrink: 0 !important; /* Prevent icon from shrinking */
+  }
+}
+
+/* Additional override for badge-specific links */
+a.external:has(> img) {
+  display: inline-flex !important;
+  align-items: center !important;
+  
+  img {
+    margin: 0 !important; /* Remove default margins that might cause wrapping */
+  }
+}

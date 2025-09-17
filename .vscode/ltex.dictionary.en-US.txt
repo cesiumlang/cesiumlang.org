@@ -27,6 +27,7 @@ Monomorphization
 MSVC
 Namespacing
 npm
+pagetitle
 prenav
 PYRANDYOS
 PYTHONUNBUFFERED

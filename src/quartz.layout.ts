@@ -2,11 +2,12 @@ import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 import { CustomExplorer } from "./custom-explorer"
 import CustomPageTitle from "./custom-pagetitle"
+import { CustomStylesheets } from "./custom-stylesheets"
 
 // components shared across all pages
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
-  header: [],
+  header: [CustomStylesheets({})],
   afterBody: [],
   footer: Component.Footer({
     links: {
