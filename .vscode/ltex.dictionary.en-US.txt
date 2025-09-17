@@ -2,6 +2,7 @@ Backlinks
 bigz
 buildtools
 cesiumlang
+chokidar
 darkgray
 Darkmode
 Deallocation
@@ -12,6 +13,7 @@ FETCHCONTENT
 filesystem
 FolderPage
 frontmatter
+gitignore
 Grotesk
 inlining
 Interop
@@ -27,6 +29,7 @@ npm
 PYRANDYOS
 PYTHONUNBUFFERED
 RRGGBB
+savestate
 Schibsted
 scrutinising
 shadowable

@@ -1,0 +1,24 @@
+{
+  "name": "cesiumlang-org",
+  "version": "1.0.0",
+  "description": "Cesium language documentation site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "install-deps": "cd quartz_repo && npm install",
+    "build": "node build.js",
+    "build:ci": "node build.js --no-build-dir",
+    "serve": "node build.js --serve",
+    "watch": "node build.js --watch",
+    "dev": "node build.js --serve --watch",
+    "sync": "./quartz_repo/quartz/bootstrap-cli.mjs sync"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "ignore": "^5.3.0",
+    "preact": "^10.27.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

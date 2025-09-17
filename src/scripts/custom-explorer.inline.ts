@@ -129,8 +129,8 @@ function createFileNode(currentSlug: FullSlug, node: FileTrieNode): HTMLLIElemen
       toggleButton.classList.toggle("open", !isOpen)
     })
     
-    // Insert toggle button next to the file title
-    a.parentElement?.insertBefore(toggleButton, a.nextSibling)
+    // Insert toggle button before the file title (on the left like main tree)
+    a.parentElement?.insertBefore(toggleButton, a)
     
     // Create header links
     toc.forEach((tocEntry: any) => {

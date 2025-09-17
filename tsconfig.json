@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "target": "es2022",
+    "lib": ["es2022", "dom"],
     "baseUrl": ".",
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -9,6 +11,7 @@
     "resolveJsonModule": true,
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
+    "typeRoots": ["./src/types", "./node_modules/@types", "./quartz_repo/node_modules/@types"],
     "paths": {
       "shiki": ["./quartz_repo/node_modules/shiki"],
       "rehype-pretty-code": ["./quartz_repo/node_modules/rehype-pretty-code"]

@@ -21,7 +21,7 @@
       "**/.cache/**": true,
 		},
     "files.exclude": {
-      "_site/**": true,
+      // "_site/**": true,
       "quartz_repo/.github/workflows/**": true,
       "**/node_modules/**": true,
       "src/quartz/**": true,

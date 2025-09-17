@@ -1,12 +1,14 @@
 /.claude/
 /private/
 /build/
+/src/quartz/
+/.cache/
+
+/cesium-src/build/
+/cesium-src/buildtools/bin/
+/cesium-src/buildtools/downloads/
+/cesium-src/buildtools/llvm-*/
+/cesium-src/buildtools/clang+llvm-*-x86_64-pc-windows-msvc/
+/cesium-src/buildtools/build/
+
 node_modules/
-# /src/quartz/
-# /.cache/
-# /cesium-src/build/
-# /cesium-src/buildtools/bin/
-# /cesium-src/buildtools/downloads/
-# /cesium-src/buildtools/llvm-*/
-# /cesium-src/buildtools/clang+llvm-*-x86_64-pc-windows-msvc/
-# /cesium-src/buildtools/build/

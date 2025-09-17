@@ -23,7 +23,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: szenius/set-timezone@v2.0
         with:
@@ -40,24 +40,18 @@ jobs:
         with:
           node-version: 22
 
-      - name: Copy config/source files to Quartz
-        working-directory: ./quartz_repo
-        run: |
-          rsync -av --exclude="/quartz" ../src/ .
-          [ -d quartz_overrides ] && cp -rv quartz_overrides/ ./quartz
-
       - name: Install Dependencies
-        working-directory: ./quartz_repo
-        run: npm ci
+        run: |
+          npm install
+          npm run install-deps
 
       - name: Build Quartz
-        working-directory: ./quartz_repo
-        run: npx quartz build -d ../content
+        run: npm run build:ci
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: quartz_repo/public
+          path: public
 
   deploy:
     needs: build

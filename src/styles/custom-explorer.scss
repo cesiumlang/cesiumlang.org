@@ -3,26 +3,26 @@
 @import "../quartz/components/styles/explorer.scss";
 
 .explorer {
-  // File node styling
+  // File node styling - align with main tree structure
   .file-title {
     display: inline-block;
-    width: calc(100% - 20px); // Leave space for toggle button
+    margin-left: 4px; // Space after toggle button like main tree
   }
 
-  // Header toggle button
+  // Header toggle button - styled like folder icons
   .header-toggle {
     display: inline-block;
     background: none;
     border: none;
-    padding: 2px;
-    margin-left: 4px;
+    padding: 0;
+    margin-right: 4px;
     cursor: pointer;
     vertical-align: middle;
-    opacity: 0.6;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    color: var(--secondary);
+    transition: color 0.2s ease, transform 0.2s ease;
 
     &:hover {
-      opacity: 1;
+      color: var(--tertiary);
     }
 
     &.open {
@@ -38,13 +38,17 @@
     svg {
       width: 10px;
       height: 10px;
+      stroke: currentColor;
+      fill: none;
     }
   }
 
-  // Headers list styling
+  // Headers list styling - align with main tree folder structure
   .file-headers {
-    margin: 4px 0 0 16px;
+    margin: 0;
+    margin-left: 6px;
     padding: 0;
+    padding-left: 0.8rem;
     list-style: none;
     border-left: 1px solid var(--lightgray);
     
@@ -131,11 +135,6 @@
       }
     }
 
-    .header-toggle {
-      svg {
-        stroke: var(--lightgray);
-      }
-    }
   }
 }
 
