@@ -10,10 +10,5 @@
 @media (max-width: 800px) {
   .page > #quartz-body .sidebar.left:has(.explorer) {
     padding: 0.5rem;
-    
-    // Add extra top margin to explorer specifically to clear hamburger menu
-    .explorer {
-      margin-top: 1.5rem;
-    }
   }
 }

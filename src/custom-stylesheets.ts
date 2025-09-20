@@ -4,8 +4,9 @@
  */
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./quartz/components/types"
 
-// Import the stylesheet directly
+// Import the stylesheets directly
 import extraStyles from "./styles/external-link-override.scss"
+import sidebarStyles from "./styles/sidebar-custom.scss"
 
 // Define an empty options interface to match Quartz's pattern
 interface Options {}
@@ -17,7 +18,7 @@ export const CustomStylesheets: QuartzComponentConstructor<Options> = (opts: Opt
   }
 
   // Apply CSS but no JS
-  Component.css = extraStyles
+  Component.css = extraStyles + "\n" + sidebarStyles
   Component.afterDOMLoaded = undefined
 
   return Component
