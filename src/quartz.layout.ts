@@ -41,7 +41,7 @@ export const defaultContentPageLayout: PageLayout = {
           grow: true,
         },
         { Component: Component.Darkmode() },
-        { Component: Component.ReaderMode() },
+        { Component: Component.DesktopOnly(Component.ReaderMode()) },
       ],
     }),
     CustomExplorer(),
@@ -49,7 +49,7 @@ export const defaultContentPageLayout: PageLayout = {
   right: [
     // Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(),
-    Component.Graph(),
+    Component.DesktopOnly(Component.Graph()),
   ],
 }
 

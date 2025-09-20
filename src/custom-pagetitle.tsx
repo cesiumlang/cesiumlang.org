@@ -32,7 +32,7 @@ CustomPageTitle.css = `
 }
 
 .page-title-logo {
-  height: 4rem;
+  height: 3.5rem;
   width: auto;
 }
 `
