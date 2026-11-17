@@ -30,8 +30,8 @@ result = value..;         // unary postfix range/spread operator
 ### 4. Unary Prefix Operators
 
 ```cesium
-addr = #variable;         // address-of
-value = #pointer;         // dereference (auto in most contexts)
+addr #= #variable;        // address-of (immutable)
+waddr ~= ~variable;       // address-of (mutable)
 root = ::x;              // square root
 result = ..array;        // unary prefix range/spread operator
 ```
@@ -132,9 +132,16 @@ result = a $dot$ b;      // custom binary operator
 ### 19. Assignment
 
 ```cesium
-x = 42;
-owned := create_value();
+x = 42;                             // assign a value (through the pointer, if x is one)
+#i32 reader #= #x;                  // immutable borrow: set the address
+~i32 writer ~= ~y;                  // mutable borrow: set the address
+~Matrix owned := create_matrix();   // take ownership: set the address
 ```
+
+`#=`, `~=` and `:=` are the *address-context* assignment operators. They are only meaningful with a pointer on the left. See [[memory-management|Memory Management]].
+
+> [!question] Open
+> This table is incomplete. Unary `-`, `+` and `!`, a bitwise NOT, `++` / `--`, the compound assignments (`+=` and the rest), the ternary `?:`, the comma operator, elementwise multiplication and the meaning of unary `..` are all used somewhere in the reference or were part of the original design, but have no agreed place in the table. They are being settled in [cesiumlang/cesium#15](https://github.com/cesiumlang/cesium/issues/15); the clash between decorated operators and postfix `~` is [cesiumlang/cesium#28](https://github.com/cesiumlang/cesium/issues/28).
 
 ## Context-Aware Multiplication
 
@@ -182,17 +189,39 @@ u8 decrypted = encrypted >< key;   // decrypt (data == decrypted)
 
 ## Pointer Operations and Contexts
 
+Address space and data space are separate, and the rule is not to mix them.
+
+- **Data context (the default).** A pointer used with ordinary operators is dereferenced automatically. There is no dereference operator. `a + p` with a pointer `p` reads the value `p` points to and yields a number; assigning that number to a pointer-typed variable is a compile error.
+- **Address context.** The address-context assignments (`#=`, `~=`, `:=`) and the *decorated* operators work on the address itself. Ordinary operators never do address arithmetic.
+
 ```cesium
 i32 value = 42;
-#i32 ptr = #value;              // address-of
+#i32 ptr #= #value;             // address-of a plain value
 
-// Default dereference - ptr automatically dereferenced
-i32 copy = ptr;                 // gets value at ptr
-
-// Address context for pointer arithmetic
-#i32 incremented = ptr #+ 1;    // pointer arithmetic
-i32 offset_value = (ptr #+ 2);  // value context within pointer context
-
-// Explicit address context forcing
-result = addrcontext(ptr) + offset;  // force address interpretation
+// Default dereference: ptr is automatically dereferenced
+i32 copy = ptr;                 // gets the value at ptr
+i32 doubled = ptr + ptr;        // ordinary arithmetic on the value: 84
 ```
+
+### Decorated Operators
+
+Address arithmetic uses operators decorated with the pointer's sigil. There are two families: `#`-decorated (such as `#+`) and `~`-decorated (such as `~+`), including in-place forms such as `p#++`. They are only valid in a pointer context; both kinds of borrow are pointer contexts.
+
+```cesium
+i32 samples[8];
+
+#i32 p #= #samples[0];
+#i32 third #= p #+ 2;           // address arithmetic in an immutable borrow
+p#++;                           // step p to the next element in place
+
+~i32 w ~= ~samples[0];
+w ~= w ~+ 1;                    // advancing a mutable borrow borrows the new address
+w = 7;                          // data context: writes samples[1]
+```
+
+- Arrays do not decay to pointers: a pointer is set to an explicit element, and `#q[i]` means `#(q[i])`.
+- Advancing a mutable borrow is a request to borrow the new address.
+- The result of a `~`-decorated operation may be assigned to an immutable (`#T`) pointer, because the receiver is more restrictive.
+
+> [!question] Open
+> The full list of decorated operators, the spelling of prefix increment, the rule that parentheses open a value context inside an address context, and `addrcontext()` come from the September 2025 design and have not been reconciled with the rules above. See item 6 of [cesiumlang/cesium#15](https://github.com/cesiumlang/cesium/issues/15). Whether the result of a `#`-decorated operation may go into a `~T` pointer was assumed to be an error but not confirmed ([cesiumlang/cesium#12](https://github.com/cesiumlang/cesium/issues/12), round 5).
