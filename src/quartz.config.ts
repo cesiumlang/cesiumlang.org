@@ -33,7 +33,7 @@ const config: QuartzConfig = {
     //   provider: "plausible",
     // },
     locale: "en-US",
-    baseUrl: "cesiumlang.dev",
+    baseUrl: "cesiumlang.org",
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "modified",
     theme: {

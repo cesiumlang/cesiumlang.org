@@ -19,10 +19,15 @@ This section contains the comprehensive reference documentation for the Cesium P
 - [[error-handling|Error Handling]] - Error types and propagation
 - [[modules-imports|Modules and Imports]] - Module system and external libraries
 - [[builtin-functions|Built-in Functions]] - Standard library and intrinsics
-- [[inline-assembly|Inline Assembly]] - Assembly blocks and hardware access
-- [[grammar-reference|Grammar Reference]] - Formal language grammar
+- [[assembly|Inline Assembly]] - Assembly blocks and hardware access
+- [[grammar|Grammar Reference]] - Formal language grammar
 - [[compilation|Compilation Model]] - Build process and optimization
 - [[performance|Performance Considerations]] - Optimization and memory layout
+
+## Related Sections
+
+- [[spec/index|Language Specification (draft)]] - The formal definition that the reference pages feed into
+- [[compiler/index|Compiler and Toolchain]] - Architecture, bootstrap chain, middle IR and the S0 subset
 
 ## Quick Navigation
 
