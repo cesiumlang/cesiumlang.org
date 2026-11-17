@@ -4,6 +4,9 @@
 /src/quartz/
 /.cache/
 
+# machine-specific editor settings (absolute paths)
+/.vscode/settings.json
+
 /cesium-src/build/
 /cesium-src/buildtools/bin/
 /cesium-src/buildtools/downloads/

@@ -1,36 +1,39 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
     "files.associations": {
-      "*.cs": "cesium",
-      "*.czm": "cesium"
+      // Cesium source and module interface files (cesiumlang/cesium#14)
+      "*.csm": "cesium",
+      "*.csi": "cesium",
+      ".local-gitignore": "gitignore",
     },
     "files.watcherExclude": {
-			"cesium-src/buildtools/clang+llvm-*/": true,
-			"cesium-src/buildtools/llvm-*/": true,
-			"cesium-src/buildtools/bin/cmake-*-windows-x86_64/**": true,
-			"cesium-src/buildtools/bin/cmake-*/**": true,
-			"cesium-src/build/CMakeFiles/**": true,
+      "cesium-src/buildtools/opt/**": true,
+      "cesium-src/build/**": true,
+      "cesium-src/doc/**": true,
+      "cesium-src/tmp/**": true,
+      "cesium-src/.cesium-doc/**": true,
       "**/node_modules/**": true,
+      "**/.cache/**": true,
+      "**/.dep-cache/**": true,
+      "**/.zig-cache/**": true,
+      "**/.git/**": true,
       "build/**": true,
       "src/quartz/**": true,
-      "**/.cache/**": true,
-		},
+    },
     "files.exclude": {
-      // "_site/**": true,
       "quartz_repo/.github/workflows/**": true,
       "**/node_modules/**": true,
       "src/quartz/**": true,
       "**/.cache/**": true,
-      "build/**": true
+      "build/**": true,
     },
-		"editor.wrappingIndent": "indent",
-    // "markdown.styles": ["custom-tag-style.css"]
-		"[markdown]": {
+    "editor.wrappingIndent": "indent",
+    "[markdown]": {
       "editor.quickSuggestions": {
         "other": true,
         "comments": false,
@@ -38,10 +41,12 @@
       }
     },
     "files.insertFinalNewline": true,
+    "ltex.additionalRules.motherTongue": "en-US",
     "foam.openDailyNote.onStartup": false,
     "foam.edit.linkReferenceDefinitions": "off",
-    "foam.files.ignore": [
+    "foam.files.exclude": [
       "readme.md",
+      "build/**/*",
       "quartz/**/*",
       "quartz_repo/**/*",
       // "private/**/*"
@@ -50,7 +55,9 @@
     "foam.completion.useAlias": "whenPathDiffersFromTitle",
     "foam.preview.embedNoteType": "content-inline",
     "cmake.configureOnOpen": false,
-    "svg.preview.background": "dark-transparent"
+    // the only CMakeLists in this workspace belong to submodules
+    "cmake.ignoreCMakeListsMissing": true,
+    "svg.preview.background": "dark-transparent",
   },
   "extensions": {
     // See http://go.microsoft.com/fwlink/?LinkId=827846
@@ -62,11 +69,11 @@
       // Tons of markdown goodies (lists, tables of content, so much more)
       "yzhang.markdown-all-in-one",
 
-      // "mushan.vscode-paste-image"
       "bierner.markdown-yaml-preamble",
+      "davidanson.vscode-markdownlint",
       "streetsidesoftware.code-spell-checker",
       "streetsidesoftware.code-spell-checker-scientific-terms",
-			"streetsidesoftware.code-spell-checker-win32",
+      "streetsidesoftware.code-spell-checker-win32",
       "ltex-plus.vscode-ltex-plus",
     ]
   }
