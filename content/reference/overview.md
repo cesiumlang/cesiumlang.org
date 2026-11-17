@@ -22,14 +22,15 @@ Ultimately, the name is a reference to the atomic element cesium (American Chemi
 ## Basic Program Structure
 
 ```cesium
-// hello.czm (or hello.cs)
+// hello.csm
 void = main() {
-    printf("Hello, Cesium!\n");
+  printf("Hello, Cesium!\n");
 }
 ```
 
 This simple example demonstrates the basic structure of a Cesium program:
 
+- Cesium source files use the `.csm` extension
 - Function definitions use the syntax `return_type = function_name(parameters)`
 - `void` indicates no return value
 - Built-in functions like `printf` are available without imports

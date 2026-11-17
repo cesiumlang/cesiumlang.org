@@ -1,2 +1,2 @@
-*.cs linguist-language=cesium
-*.czm linguist-language=cesium
+*.csm linguist-language=cesium
+*.csi linguist-language=cesium

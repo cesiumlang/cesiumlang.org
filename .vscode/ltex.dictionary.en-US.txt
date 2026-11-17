@@ -46,3 +46,13 @@ Variadic
 variadics
 vmovups
 Zig
+
+yyjson
+nlohmann-style
+init-config
+pkg-config
+tree-sitter-cpp
+libtree-sitter-cpp
+cmake
+dir
+msvc

@@ -4,6 +4,9 @@ tags: ["builtin", "functions", "io", "math", "introspection"]
 sortorder: 12
 ---
 
+> [!question] Open
+> Much of this page was generated with the first draft of the reference and has no recorded decision behind it. Which of these functions and constants exist, which names are reserved and which can be shadowed, and how this page relates to the list in [[lexical-structure|Lexical Structure]] is being decided in [cesiumlang/cesium#20](https://github.com/cesiumlang/cesium/issues/20). Treat everything here except the allocation section as unconfirmed. Specific doubts: `typeof` returning a `str`; the C-style `strlen` / `strcmp` / `strcat` / `strcpy` (when `str` tracks its length and `**` concatenates); `move` as a memory function; and `copy`, `zero`, `compare`, `getenv`, `system`, `exit`, `e`, `sqrt2`, `ln2`, `POINTER_SIZE`, `TARGET_OS` and `TARGET_ARCH`, of which only `copy` was ever discussed.
+
 ## I/O Functions
 
 ### Formatted Output
@@ -63,7 +66,7 @@ str type_name = typeof(variable);       // "i32", "Vector3", etc.
 
 // Usage in generic functions
 generic<T> void = print_type_info(T value) {
-    printf("Type: {}, Size: {} bytes\n", typeof(value), sizeof(T));
+  printf("Type: {}, Size: {} bytes\n", typeof(value), sizeof(T));
 }
 ```
 
@@ -74,8 +77,8 @@ generic<T> void = print_type_info(T value) {
 ```cesium
 // Runtime assertions
 void = validate_input(i32 value) {
-    assert(value >= 0);  // program terminates if false
-    assert(value < MAX_VALUE, "Value too large: {}", value);
+  assert(value >= 0);  // program terminates if false
+  assert(value < MAX_VALUE, "Value too large: {}", value);
 }
 ```
 
@@ -84,7 +87,7 @@ void = validate_input(i32 value) {
 ```cesium
 // Compile-time assertions
 comptime {
-    assert(sizeof(i32) == 4);  // verified at compile time
+  assert(sizeof(i32) == 4);  // verified at compile time
 }
 ```
 
@@ -93,13 +96,19 @@ comptime {
 ### Basic Allocation
 
 ```cesium
-// Memory allocation functions
-#void = alloc(uword size);              // allocate memory
-#T = alloc<T>(uword count);             // allocate typed array
-#T = alloc<T>(uword count, T init);     // allocate and initialize
-void = free(#void ptr);                 // deallocate memory
-#void = realloc(#void ptr, uword size); // reallocate memory
+// alloc takes an element count; the element type comes from the pointer being initialized
+~i32 numbers := alloc(100);             // owner of 100 i32s
+~f64 zeros := alloc(50, 0.0);           // allocate and initialize
+
+// free runs the type's destruct, releases the memory and resets the pointer to undefined
+free(numbers);
+free(zeros);
 ```
+
+`alloc` returns ownership, so its result is received with `:=`. Only the owner may `free`; `free` on a `null` or `undefined` pointer is a no-op. See [[memory-management|Memory Management]].
+
+> [!question] Open
+> How `realloc` is typed under the ownership rules, and what `alloc` does on failure, are not decided ([cesiumlang/cesium#17](https://github.com/cesiumlang/cesium/issues/17); open question 12 of [cesiumlang/cesium#11](https://github.com/cesiumlang/cesium/issues/11)).
 
 ### Memory Operations
 
