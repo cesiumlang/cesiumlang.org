@@ -5,7 +5,7 @@ sortorder: 3
 ---
 
 > [!warning] Draft
-> Chapter 3 of the [[spec/index|language specification draft]]. This is a first transcription of the S0 design into a grammar. It has not yet been run through a parser generator or checked against the stage 0 implementation; both are on the checklist in [cesiumlang/cesiumlang.org#13](https://github.com/cesiumlang/cesiumlang.org/issues/13). Where this chapter and [cesiumlang/cesium#9](https://github.com/cesiumlang/cesium/issues/9) disagree, the issue wins.
+> Chapter 3 of the [[spec/index|language specification draft]]. This is a first transcription of the S0 design into a grammar. It has not yet been run through a parser generator, which is on the checklist in [cesiumlang/cesiumlang.org#13](https://github.com/cesiumlang/cesiumlang.org/issues/13). Where this chapter and [cesiumlang/cesium#9](https://github.com/cesiumlang/cesium/issues/9) disagree, the issue wins. Section 3.10 compares it with the first stage 0 implementation.
 
 S0 is the subset of Cesium that stage 0 compiles. It is described in prose in [[compiler/s0-subset|The S0 Subset]]. This chapter gives its grammar in EBNF and traces each production to its source. See the [[spec/index|introduction]] for the notation and the citation format.
 
@@ -240,3 +240,29 @@ Each S0 construct maps onto core MIR as given in `[S0-map]`, reproduced in [[com
 ## 3.9 Not in S0
 
 Everything else in the language. `[S0]` names these explicitly: `for`, ranges, `switch` / `case`, `enum`, unions and `typeof`, `slice` / `list` / `dict` / `str`, multiple return values, `defer`, `error` types and `catch` / `throw`, modules and `import` of Cesium code, floating point, `free` / `realloc`, methods and `this`, generics, traits, inheritance, operator overloading, the math operators (`^`, `::`, `@`, context-aware `*`, postfix `~`), SIMD, `comptime`, string interpolation, `with`, inline `asm`, `volatile` / `atomic`.
+
+## 3.10 Comparison with the Stage 0 Implementation
+
+The first implementation of stage 0 ([cesiumlang/cesium#60](https://github.com/cesiumlang/cesium/pull/60), under review) was written against this chapter. Its parser follows the productions above, including the precedence levels of 3.6 and the provisional placement of `!` and `as`. It differs in the places below. None of these is a decision; each is recorded in that pull request for review.
+
+**Accepted by stage 0 but not in this grammar**
+
+| Form | Treated as | Reason given |
+| --- | --- | --- |
+| `~=` as an `assign_op` and an `initializer` | `#=` | `[own r2]`; "stage 0 still parses the ownership forms without enforcing them" ([cesiumlang/cesium#11](https://github.com/cesiumlang/cesium/issues/11)) |
+| Prefix `~x` | `#x` | `[own r20]`, same sentence |
+| `:` before the sigils of a parameter, field or return type (`:#T`, `:~T`) | the plain pointer type | `[own r22]` to `[own r25]`, same sentence |
+| A `lib_name` written as a double-quoted string | the same | none; `import('c')` is the form in `[S0]` |
+
+**In this grammar but rejected by stage 0**
+
+| Form | What stage 0 requires |
+| --- | --- |
+| Any `expr` as an `expr_stmt` | The expression is a call |
+| A call on any `postfix` expression | The callee is a name |
+| Any `expr` initializing a `const_decl` | An integer literal, a character literal, or the name of another constant |
+| Any `expr` initializing a `global_decl` | A literal or constant for a number; a string literal for a `#u8` |
+
+**Constraints stage 0 checks beyond 3.7**
+
+Stage 0 rejects a literal whose type no context determines, a local that reuses a name in scope, a name that is a keyword of full Cesium, and the assignment of a struct or array as a whole. Each corresponds to an open question; [[compiler/s0-subset|The S0 Subset]] lists them with their issues.

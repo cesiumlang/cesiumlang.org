@@ -155,6 +155,47 @@ i32 = main(i32 argc, ##u8 argv) {
 > [!warning] Provisional — not decided (cesiumlang/cesium#9)
 > If S0 source is to pass the full compiler's borrow checker later, the pointers this sample writes through would be declared `~T` instead of `#T` (`~Token t := alloc(1);`, `~u8 buf := alloc(32);`, and the `buf` parameter of `fmt_u64` as `~u8`). Stage 0 treats the two sigils the same, so this costs nothing now and avoids rewriting frozen stage 1 source. This is a recommendation, not part of the design record.
 
+## Stage 0 as Implemented
+
+> [!info] Source
+> The first implementation of stage 0, [cesiumlang/cesium#60](https://github.com/cesiumlang/cesium/pull/60) (under review). Its `bootstrap/README.md` is the reference for what follows. This section describes what the compiler `cesium0` does; it decides nothing about the language.
+
+`cesium0` compiles the sample above, with the pointers it writes through declared `~T`, and its `cstr_len` lowers to exactly the core MIR shown on the [[compiler/mir|MIR]] page.
+
+Stage 0 checks only what keeps S0 source meaningful:
+
+- There are no implicit conversions. Both operands of a binary operator have one type; `as` converts.
+- An integer literal takes the type its context gives it: the declared type, a parameter type, or the type of the other operand.
+- A pointer is used as a pointer only where one is expected: an argument for a pointer parameter, the right side of `:=`, `#=` or `~=`, a returned pointer, or the operand of a cast to a pointer type. Everywhere else it is read through.
+- `:=`, `#=` and `~=` are accepted only with a pointer on the left; a pointer declaration with plain `=` is an error.
+- `alloc(count)` appears only on the right of `:=`.
+
+It does not check ownership or borrowing, and it does not check that writes go through `~T`.
+
+### What Stage 0 Rejects Because the Design Is Open
+
+S0 source is frozen once stage 1 works, and every later compiler must accept it with the same meaning. Where the design has no recorded answer, `cesium0` rejects the program instead of choosing one:
+
+| Rejected | Open in |
+| --- | --- |
+| A literal whose type no context gives, such as `if (1)` or `1 == 1` | [cesiumlang/cesium#9](https://github.com/cesiumlang/cesium/issues/9), open question 2 |
+| Unary minus (write `0 - x`) | [cesiumlang/cesium#15](https://github.com/cesiumlang/cesium/issues/15) |
+| Literal forms other than decimal | [cesiumlang/cesium#56](https://github.com/cesiumlang/cesium/issues/56) |
+| A local that reuses a name already in scope | not recorded in any issue |
+| `null`. S0 has no way to test or compare a pointer: `p == q` compares what the pointers point at | [cesiumlang/cesium#26](https://github.com/cesiumlang/cesium/issues/26), [cesiumlang/cesium#43](https://github.com/cesiumlang/cesium/issues/43) |
+| A name that is a keyword of full Cesium | [cesiumlang/cesium#50](https://github.com/cesiumlang/cesium/issues/50) |
+| Assigning a struct or array as a whole | [cesiumlang/cesium#22](https://github.com/cesiumlang/cesium/issues/22) |
+
+> [!warning] Provisional — not decided
+> To be writable at all, `cesium0` had to settle a few points that no issue decides. They are implementation choices listed for review in [cesiumlang/cesium#60](https://github.com/cesiumlang/cesium/pull/60), not rules of S0:
+>
+> - `~=`, prefix `~x` and the owned forms `:#T` / `:~T` are accepted and treated as `#=`, `#x` and the plain pointer type.
+> - `!` is a prefix operator and `as` binds more tightly than every binary operator ([cesiumlang/cesium#15](https://github.com/cesiumlang/cesium/issues/15)).
+> - The escapes `\n`, `\t`, `\r`, `\0`, `\\`, `\'` and `\"` are accepted ([cesiumlang/cesium#39](https://github.com/cesiumlang/cesium/issues/39)).
+> - Functions of an `extern` block are called by their bare name ([cesiumlang/cesium#19](https://github.com/cesiumlang/cesium/issues/19)).
+> - Array lengths are integer literals; constants are integers; a global is initialized by a literal, a constant, or a string for a `#u8`.
+> - Division by zero and signed `MIN / -1` trap, and a local without an initializer starts as zero ([cesiumlang/cesium#8](https://github.com/cesiumlang/cesium/issues/8)).
+
 ## Stage 1 Goals (S1)
 
 Stage 1 is written in S0 and compiles S1. Each S1 feature is defined as a rewrite into core MIR. These are **candidates, to be confirmed** when stage 1 is designed:
