@@ -1,8 +1,16 @@
 {
   "ignores": [
-    "private/chatgpt/**/*",
-    "private/claude/**/*",
+    "private/**",
     "content/chatgpt/**/*",
-    "content/claude/**/*"
+    "content/claude/**/*",
+    "node_modules/**",
+    // build output and the mirrored workspace
+    "build/**",
+    // submodules: each has its own repository and rules
+    "quartz_repo/**",
+    "src/quartz/**",
+    "cesium-src/**",
+    "grammar/**",
+    ".cspell/**"
   ]
 }
