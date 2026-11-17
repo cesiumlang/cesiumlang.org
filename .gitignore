@@ -7,11 +7,17 @@
 # machine-specific editor settings (absolute paths)
 /.vscode/settings.json
 
-/cesium-src/build/
+# Untracked files of the submodules. Git does not need these lines, but
+# build.js reads this file to decide what it mirrors into build/.
+/cesium-src/.devkit/
+/cesium-src/.devkit-downloads/
+/cesium-src/.zig-cache/
+/cesium-src/zig-out/
+/cesium-src/zig-pkg/
+/cesium-src/tmp/
+/cesium-src/.cache/
 /cesium-src/buildtools/bin/
 /cesium-src/buildtools/downloads/
-/cesium-src/buildtools/llvm-*/
-/cesium-src/buildtools/clang+llvm-*-x86_64-pc-windows-msvc/
-/cesium-src/buildtools/build/
+/cesium-src/buildtools/opt/
 
 node_modules/
