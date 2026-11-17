@@ -6,7 +6,7 @@ tags: "compiler"
 This section describes how the Cesium compiler is put together: its backends, how it bootstraps, the middle IR every frontend lowers to, and the small language subset the first compiler stage accepts.
 
 > [!info] Status
-> These pages summarize decision records kept as issues in [cesiumlang/cesium](https://github.com/cesiumlang/cesium/issues?q=is%3Aissue+label%3Adecision). The decisions are accepted as a plan; implementation is only beginning. Where a page and its decision record disagree, the decision record wins.
+> These pages summarize decision records kept as issues in [cesiumlang/cesium](https://github.com/cesiumlang/cesium/issues?q=is%3Aissue+label%3Adecision). Stage 0 (`cesium0`) and `cesium1`, a compiler for S0 written in S0, are implemented and tested in CI on Linux, macOS and Windows with the QBE backend; the rest is a plan. Where a page and its decision record disagree, the decision record wins.
 
 ## Pages
 
@@ -29,5 +29,7 @@ This section describes how the Cesium compiler is put together: its backends, ho
 | [cesiumlang/cesium#9](https://github.com/cesiumlang/cesium/issues/9) | Design: stage 0 and the S0 subset |
 | [cesiumlang/cesium#10](https://github.com/cesiumlang/cesium/issues/10) | Design: stage 0 C dialect |
 | [cesiumlang/cesium#11](https://github.com/cesiumlang/cesium/issues/11) | Design: ownership, borrowing and lifetimes |
+
+Requirements carried over from the removed C++ prototype (documentation generator, command-line interface, logging) are in [cesiumlang/cesium#64](https://github.com/cesiumlang/cesium/issues/64).
 
 See also the [[spec/index|language specification draft]] and the [[reference/index|language reference]].

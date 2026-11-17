@@ -4,34 +4,57 @@
       "path": "."
     }
   ],
+  // This repository is the parent of the other Cesium repositories, which are
+  // its submodules. The settings of their workspace files are repeated here,
+  // with their paths, so that opening this one workspace is enough:
+  //   cesium-src/cesium.code-workspace
+  //   cesium-src/buildtools/cesium-buildtools.code-workspace
+  //   grammar/grammar.code-workspace
   "settings": {
     "files.associations": {
       // Cesium source and module interface files (cesiumlang/cesium#14)
       "*.csm": "cesium",
       "*.csi": "cesium",
+      "VERSION": "plaintext",
       ".local-gitignore": "gitignore",
+      ".github/workflows/exempt.txt": "gitignore",
+      ".clangd": "yaml",
+      "**/.claude/projects/*/memory/*.md": "plaintext",
+    },
+    "files.exclude": {
+      "**/node_modules/**": true,
+      "**/.zig-cache/**": true,
+      "**/zig-pkg/**": true,
+      "**/zig-cache*/**": true,
+      "**/.cache/**": true,
+      "quartz_repo/.github/workflows/**": true,
+      "src/quartz/**": true,
+      "build/**": true,
+      "cesium-src/.devkit-downloads/**": true,
     },
     "files.watcherExclude": {
-      "cesium-src/buildtools/opt/**": true,
-      "cesium-src/build/**": true,
-      "cesium-src/doc/**": true,
-      "cesium-src/tmp/**": true,
-      "cesium-src/.cesium-doc/**": true,
       "**/node_modules/**": true,
-      "**/.cache/**": true,
-      "**/.dep-cache/**": true,
       "**/.zig-cache/**": true,
+      "**/zig-pkg/**": true,
+      "**/zig-cache*/**": true,
+      "**/.cache/**": true,
       "**/.git/**": true,
       "build/**": true,
       "src/quartz/**": true,
+      "cesium-src/zig-out/**": true,
+      "cesium-src/tmp/**": true,
+      "cesium-src/.devkit/**": true,
+      "cesium-src/.devkit-downloads/**": true,
+      "cesium-src/buildtools/bin/**": true,
+      "cesium-src/buildtools/downloads/**": true,
+      "cesium-src/buildtools/opt/**": true,
     },
-    "files.exclude": {
-      "quartz_repo/.github/workflows/**": true,
-      "**/node_modules/**": true,
-      "src/quartz/**": true,
-      "**/.cache/**": true,
+    "search.exclude": {
       "build/**": true,
+      "cesium-src/.devkit/**": true,
+      "cesium-src/buildtools/opt/**": true,
     },
+    "files.insertFinalNewline": true,
     "editor.wrappingIndent": "indent",
     "[markdown]": {
       "editor.quickSuggestions": {
@@ -40,8 +63,20 @@
         "strings": false
       }
     },
-    "files.insertFinalNewline": true,
+    "editor.semanticTokenColorCustomizations": {
+      "rules": {
+        "*.deprecated": {
+          // highlight semantic tokens that are marked as "deprecated"
+          "strikethrough": true
+        },
+      },
+    },
+    "terminal.integrated.automationProfile.windows": {
+      "path": "C:\\windows\\system32\\cmd.exe",
+    },
     "ltex.additionalRules.motherTongue": "en-US",
+    "debug.onTaskErrors": "abort",  // will switch to problems pane otherwise
+
     "foam.openDailyNote.onStartup": false,
     "foam.edit.linkReferenceDefinitions": "off",
     "foam.files.exclude": [
@@ -54,10 +89,28 @@
     "foam.files.newNotePath": "currentDir",
     "foam.completion.useAlias": "whenPathDiffersFromTitle",
     "foam.preview.embedNoteType": "content-inline",
-    "cmake.configureOnOpen": false,
-    // the only CMakeLists in this workspace belong to submodules
-    "cmake.ignoreCMakeListsMissing": true,
     "svg.preview.background": "dark-transparent",
+
+    // cesium-src: the Zig of the Cesium devkit
+    // (cd cesium-src && python tools/fetch-devkit.py)
+    "zig.path": "${workspaceFolder}/cesium-src/.devkit/zig/zig",
+    "zig.zls.enabled": "on",
+    "zig.zls.inlayHintsShowParameterName": false,
+    "zig.zls.inlayHintsExcludeSingleArgument": false,
+    "zig.zls.inlayHintsShowBuiltin": false,
+    "zig.zls.inlayHintsShowStructLiteralFieldType": false,
+    "zig.zls.inlayHintsShowVariableTypeHints": false,
+    "zig.zls.warnStyle": true,
+    "zig.zls.enableArgumentPlaceholders": false,
+
+    // cesium-src: clangd is the language server for the C that `zig cc`
+    // compiles. The clangd extension offers to download clangd when none is
+    // on PATH. The Microsoft C/C++ extension stays for debugging only.
+    "C_Cpp.intelliSenseEngine": "disabled",
+
+    // no CMake project here; C dependencies may carry a CMakeLists.txt
+    "cmake.ignoreCMakeListsMissing": true,
+    "cmake.configureOnOpen": false,
   },
   "extensions": {
     // See http://go.microsoft.com/fwlink/?LinkId=827846
@@ -75,6 +128,99 @@
       "streetsidesoftware.code-spell-checker-scientific-terms",
       "streetsidesoftware.code-spell-checker-win32",
       "ltex-plus.vscode-ltex-plus",
+
+      // cesium-src
+      "ziglang.vscode-zig",
+      "llvm-vs-code-extensions.vscode-clangd",
+      "ms-vscode.cpptools",  // windows debug
+      // "vadimcn.vscode-lldb",  // posix debug
     ]
-  }
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "cesium-src: zig build",
+        "type": "shell",
+        "command": "${config:zig.path}",
+        "args": [
+          "build",
+        ],
+        "options": {
+          "cwd": "${workspaceFolder}/cesium-src"
+        },
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "clear": true,
+          "reveal": "always",
+          "panel": "shared",
+          "focus": true,
+          "revealProblems": "never",
+        },
+      },
+      {
+        "label": "cesium-src: zig build test",
+        "type": "shell",
+        "command": "${config:zig.path}",
+        "args": [
+          "build",
+          "test",
+          "--summary",
+          "all",
+        ],
+        "options": {
+          "cwd": "${workspaceFolder}/cesium-src"
+        },
+        "group": "test",
+        "problemMatcher": [],
+        "presentation": {
+          "clear": true,
+          "reveal": "always",
+          "panel": "shared",
+          "focus": true,
+          "revealProblems": "never",
+        },
+      },
+      {
+        "label": "site: build and serve",
+        "type": "shell",
+        "command": "npm",
+        "args": [
+          "run",
+          "dev",
+        ],
+        "problemMatcher": [],
+        "presentation": {
+          "clear": true,
+          "reveal": "always",
+          "panel": "dedicated",
+        },
+      },
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "cesium-src: cesium0 (cppvsdbg)",
+        "type": "cppvsdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/cesium-src/zig-out/bin/cesium0.exe",
+        "args": [
+          "--emit-mir",
+          "-o",
+          "${workspaceFolder}/cesium-src/tmp/out.mir",
+          "${workspaceFolder}/cesium-src/bootstrap/tests/s0/tokens.csm",
+        ],
+        "cwd": "${workspaceFolder}/cesium-src",
+        "preLaunchTask": "cesium-src: zig build",
+        "console": "integratedTerminal",
+      },
+    ],
+    "compounds": []
+  },
 }

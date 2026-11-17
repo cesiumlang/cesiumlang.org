@@ -116,4 +116,8 @@ Forking Zig and building on its IRs, emitting Zig source, QBE as the *only* back
 
 ## Open Items
 
-Listed in the decision records: the SPIR-V path (LLVM's backend or a direct emitter from MIR), WebAssembly FMA and NaN policy, the form of `libcsllvm` (partial link or shared library), and the future of the existing C++ prototype in the compiler repository ([cesiumlang/cesium#2](https://github.com/cesiumlang/cesium/issues/2)).
+Listed in the decision records: the SPIR-V path (LLVM's backend or a direct emitter from MIR), WebAssembly FMA and NaN policy, and the form of `libcsllvm` (partial link or shared library).
+
+## Earlier Prototype
+
+Until November 2026 the compiler repository held a C++ prototype from September 2025: a documentation generator with a command-line interface, built with CMake. It was removed, since the compiler is written in Cesium. Its behavior is recorded as numbered, testable requirements in [cesiumlang/cesium#64](https://github.com/cesiumlang/cesium/issues/64), so that the documentation generator, the command-line interface and the logging of the toolchain can be rebuilt and tested against them.
