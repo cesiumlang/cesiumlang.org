@@ -19,5 +19,12 @@
 /cesium-src/buildtools/bin/
 /cesium-src/buildtools/downloads/
 /cesium-src/buildtools/opt/
+/cesium-src/devkits/llvm-project/
+/cesium-src/devkits/qbe/
+/cesium-src/devkits/work/
+/cesium-src/devkits/dist/
+/cesium-src/editors/vscode/dist/
+/cesium-src/editors/vscode/out/
+/cesium-src/editors/vscode/.vscode-test/
 
 node_modules/

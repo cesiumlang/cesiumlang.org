@@ -9,6 +9,8 @@
   // with their paths, so that opening this one workspace is enough:
   //   cesium-src/cesium.code-workspace
   //   cesium-src/buildtools/cesium-buildtools.code-workspace
+  //   cesium-src/devkits/devkits.code-workspace
+  //   cesium-src/editors/vscode/vscode-cesium.code-workspace
   //   grammar/grammar.code-workspace
   "settings": {
     "files.associations": {
@@ -20,6 +22,9 @@
       ".github/workflows/exempt.txt": "gitignore",
       ".clangd": "yaml",
       "**/.claude/projects/*/memory/*.md": "plaintext",
+      // cesium-src/devkits
+      "no-ci.txt": "gitignore",
+      "*.ssa": "plaintext",
     },
     "files.exclude": {
       "**/node_modules/**": true,
@@ -31,6 +36,8 @@
       "src/quartz/**": true,
       "build/**": true,
       "cesium-src/.devkit-downloads/**": true,
+      "cesium-src/devkits/work/**": true,
+      "cesium-src/devkits/dist/**": true,
     },
     "files.watcherExclude": {
       "**/node_modules/**": true,
@@ -48,8 +55,16 @@
       "cesium-src/buildtools/bin/**": true,
       "cesium-src/buildtools/downloads/**": true,
       "cesium-src/buildtools/opt/**": true,
+      "cesium-src/devkits/llvm-project/**": true,
+      "cesium-src/devkits/work/**": true,
+      "cesium-src/devkits/dist/**": true,
+      "cesium-src/editors/vscode/dist/**": true,
+      "cesium-src/editors/vscode/out/**": true,
+      "cesium-src/editors/vscode/.vscode-test/**": true,
     },
     "search.exclude": {
+      "cesium-src/devkits/llvm-project/**": true,
+      "cesium-src/devkits/qbe/**": true,
       "build/**": true,
       "cesium-src/.devkit/**": true,
       "cesium-src/buildtools/opt/**": true,

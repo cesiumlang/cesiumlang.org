@@ -6,7 +6,7 @@ The site is built using [Quartz](https://quartz.jzhao.xyz/), a static site gener
 
 ## Repository layout
 
-This repository is also the parent of the other Cesium repositories, which are its submodules. Clone it with `--recurse-submodules` to get all of them.
+This repository is also the parent of the other Cesium repositories, which are its submodules. Clone it with `--recurse-submodules` to get all of them. That does not fetch LLVM: the `llvm-project` submodule of devkits is skipped unless asked for.
 
 | Path | What |
 | --- | --- |
@@ -14,7 +14,7 @@ This repository is also the parent of the other Cesium repositories, which are i
 | `src/` | Customizations of Quartz: configuration, layout, components and overrides, copied over `quartz_repo/` by the build |
 | `build.js` | The build script |
 | `quartz_repo/` | Submodule: [Quartz](https://github.com/jackyzha0/quartz), pinned to one commit that the customizations depend on. Do not move it. |
-| `cesium-src/` | Submodule: [cesiumlang/cesium](https://github.com/cesiumlang/cesium), the compiler |
+| `cesium-src/` | Submodule: [cesiumlang/cesium](https://github.com/cesiumlang/cesium), the compiler. Its own submodules are also Cesium repositories: `buildtools/` ([cesium-buildtools](https://github.com/cesiumlang/cesium-buildtools)), `devkits/` ([devkits](https://github.com/cesiumlang/devkits)) and `editors/vscode/` ([vscode-cesium](https://github.com/cesiumlang/vscode-cesium), the VS Code extension). |
 | `grammar/` | Submodule: [cesiumlang/grammar](https://github.com/cesiumlang/grammar), the TextMate grammar that highlights Cesium code on the site |
 | `.cspell/cesium/` | Submodule: [cesiumlang/cspell-cesium](https://github.com/cesiumlang/cspell-cesium), the spelling dictionary of Cesium terms |
 
