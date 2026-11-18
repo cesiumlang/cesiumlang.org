@@ -6,7 +6,7 @@ The site is built using [Quartz](https://quartz.jzhao.xyz/), a static site gener
 
 ## Repository layout
 
-This repository is also the parent of the other Cesium repositories, which are its submodules. Clone it with `--recurse-submodules` to get all of them. That does not fetch LLVM: the `llvm-project` submodule of devkits is skipped unless asked for.
+Clone it with `--recurse-submodules`. To work on all Cesium repositories together, clone [cesium-workspace](https://github.com/cesiumlang/cesium-workspace) instead, which has this repository, the compiler and the others as submodules side by side.
 
 | Path | What |
 | --- | --- |
@@ -14,17 +14,24 @@ This repository is also the parent of the other Cesium repositories, which are i
 | `src/` | Customizations of Quartz: configuration, layout, components and overrides, copied over `quartz_repo/` by the build |
 | `build.js` | The build script |
 | `quartz_repo/` | Submodule: [Quartz](https://github.com/jackyzha0/quartz), pinned to one commit that the customizations depend on. Do not move it. |
-| `cesium-src/` | Submodule: [cesiumlang/cesium](https://github.com/cesiumlang/cesium), the compiler. Its own submodules are also Cesium repositories: `buildtools/` ([cesium-buildtools](https://github.com/cesiumlang/cesium-buildtools)), `devkits/` ([devkits](https://github.com/cesiumlang/devkits)) and `editors/vscode/` ([vscode-cesium](https://github.com/cesiumlang/vscode-cesium), the VS Code extension). |
 | `grammar/` | Submodule: [cesiumlang/grammar](https://github.com/cesiumlang/grammar), the TextMate grammar that highlights Cesium code on the site |
 | `.cspell/cesium/` | Submodule: [cesiumlang/cspell-cesium](https://github.com/cesiumlang/cspell-cesium), the spelling dictionary of Cesium terms |
 
-`cesiumlang.org.code-workspace` is the VS Code workspace for all of it. It repeats the settings of the submodules' own workspace files, so opening this one workspace is enough.
+`cesiumlang.org.code-workspace` is the VS Code workspace for the site. It repeats the settings of the submodules' own workspace files, so opening this one workspace is enough.
+
+### The compiler source
+
+The site is to include documentation generated from the source of the compiler, [cesiumlang/cesium](https://github.com/cesiumlang/cesium). That generator does not exist yet, so nothing reads the source today; the connection is prepared. The compiler is not a submodule here. `build.js` looks for it in this order and passes the place it finds on to the build in the environment variable `CESIUM_SRC`:
+
+1. `CESIUM_SRC`, if you set it.
+2. `cesium-src/` in this repository: a plain clone, ignored by Git. The deployment workflow makes one.
+3. `../cesium-src/`: the compiler next to this repository, which is where cesium-workspace has it.
 
 ## Setup
 
 The site needs Node.js 22; the version is in `.node-version`.
 
-With [direnv](https://direnv.net) and [fnm](https://github.com/Schniz/fnm) installed, `.envrc` selects that Node.js version when you enter the directory, and puts the tools of `cesium-src` (the Zig and QBE of the Cesium devkit) on `PATH`. Run `direnv allow` once. Without them, install Node.js 22 yourself.
+With [direnv](https://direnv.net) and [fnm](https://github.com/Schniz/fnm) installed, `.envrc` selects that Node.js version when you enter the directory. Run `direnv allow` once. Without them, install Node.js 22 yourself.
 
 ```bash
 npm install
@@ -100,8 +107,8 @@ node build.js --watch
 
 ### What the mirror leaves out
 
-`build.js` does not copy what `.gitignore` lists. That file therefore also names the untracked directories of the submodules, such as the devkit and the Zig cache in `cesium-src/`, so that they are not copied into `build/`.
+`build.js` does not copy what `.gitignore` lists. That file therefore also names `cesium-src/`, so that a clone of the compiler made there is not copied into `build/`.
 
 ## Deployment
 
-A push to `main` that changes the content, the customizations or a submodule builds the site and publishes it to GitHub Pages (`.github/workflows/deploy.yml`). Changes are collected on `dev` through pull requests and released by merging `dev` into `main`.
+A push to `main` that changes the content, the customizations or a submodule builds the site, with the `main` branch of the compiler in `cesium-src/`, and publishes it to GitHub Pages (`.github/workflows/deploy.yml`). Changes are collected on `dev` through pull requests and released by merging `dev` into `main`.
