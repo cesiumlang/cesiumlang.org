@@ -4,5 +4,3 @@
 - don't redirect commands to NUL
 - indent preprocessor directives in the future as appropriate to improve code readability rather than force to col 0.
 - My style is to indent the public and private keywords in class definitions and then indent the definitions below those lines.  Please use this convention for future class definitions
-- always use cmake from buildtools dir
-- always use the msvc preset.  If you can't remember what it's called, ask cmake to list presets and find the one that uses the clang with msvc bindings
