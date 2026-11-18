@@ -181,3 +181,13 @@ yyjson
 Zig
 zig-build
 zig-devkits
+musl
+tblgen
+mingw
+WebAssembly
+SPIRV
+AArch64
+OVSX
+vsix
+VSIX
+zfls

@@ -262,6 +262,8 @@ The first implementation of stage 0 ([cesiumlang/cesium#60](https://github.com/c
 | A call on any `postfix` expression | The callee is a name |
 | Any `expr` initializing a `const_decl` | An integer literal, a character literal, or the name of another constant |
 | Any `expr` initializing a `global_decl` | A literal or constant for a number; a string literal for a `#u8` |
+| Any number of arguments or parameters | At most 64 |
+| Expressions and statements nested to any depth | At most 128 levels ([cesiumlang/cesium#69](https://github.com/cesiumlang/cesium/pull/69)). An operand, the body of an `if` or `while`, each further `else if`, and each further operator of a chain such as `a + b + c` is one level. Stage 0 recurses along the nesting, and deeper source overflowed its stack. |
 
 **Constraints stage 0 checks beyond 3.7**
 
