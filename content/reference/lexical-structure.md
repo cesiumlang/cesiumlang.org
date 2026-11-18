@@ -4,6 +4,15 @@ tags: ["lexical", "comments", "keywords", "identifiers", "strings"]
 sortorder: 2
 ---
 
+## Source Files
+
+| Extension | Used for |
+| --- | --- |
+| `.csm` | Cesium source files |
+| `.csi` | Module interface files (see [[modules-imports\|Modules and Imports]]) |
+
+These are the only two extensions. The earlier `.cs`, `.czm` and `.cesium` spellings, and `.m` for interface files, are no longer used ([cesiumlang/cesium#14](https://github.com/cesiumlang/cesium/issues/14)).
+
 ## Comments
 
 Cesium supports three types of comments:
@@ -21,7 +30,7 @@ Cesium supports three types of comments:
  * @return The computed result
  */
 i32 = documented_function(i32 x) {
-    // implementation
+  // implementation
 }
 ```
 
@@ -31,7 +40,7 @@ Cesium reserves the following keywords:
 
 **Core Types:** `file`, `str`, `list`, `dict`, `slice`, `struct`, `path`, `uword`
 
-**Language Constructs:** `alias`, `catch`, `as`, `return`, `comptime`, `generic`, `sizeof`, `typeof`, `asm`, `void`, `enum`, `error`, `null`, `union`
+**Language Constructs:** `alias`, `catch`, `as`, `return`, `comptime`, `generic`, `sizeof`, `typeof`, `asm`, `void`, `enum`, `error`, `null`, `undefined`, `union`
 
 **Control Flow:** `if`, `while`, `for`, `else`, `do`, `with`, `defer`, `break`, `continue`, `switch`, `case`, `fallthrough`, `throw`
 
@@ -44,6 +53,11 @@ Cesium reserves the following keywords:
 **OOP Constructs:** `trait`, `impl`, `type`, `this`, `super`
 
 **Namespacing:** `std`, `namespace`
+
+`undefined` marks a pointer that owns nothing, or a plain value that is uninitialized; see [[memory-management|Memory Management]].
+
+> [!question] Open
+> The keyword list is under review. `import` is used as a keyword on the modules page but is not listed here, and the list reserves many common identifiers: [cesiumlang/cesium#50](https://github.com/cesiumlang/cesium/issues/50). Which built-in names are reserved and which can be shadowed, and how this list relates to the [[builtin-functions|Built-in Functions]] page, is [cesiumlang/cesium#20](https://github.com/cesiumlang/cesium/issues/20).
 
 ## Built-in Functions and Constants
 

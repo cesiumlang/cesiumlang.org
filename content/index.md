@@ -13,3 +13,5 @@ This is the home of the Cesium programming language!
 
 * Check out the latest status updates: [[news/index|News]]
 * Read the language reference docs: [[reference/index|Docs]]
+* Follow the formal definition as it is written: [[spec/index|Language Specification (draft)]]
+* See how the compiler is being built: [[compiler/index|Compiler and Toolchain]]

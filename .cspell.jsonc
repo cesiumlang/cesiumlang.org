@@ -4,14 +4,20 @@
     ".cspell/cesium/cspell-ext.json"
   ],
   "ignorePaths": [
-    ".cspell.jsonc",
+    ".cspell.json*",
     ".cspell/**",
     ".git/**",
     "*.code-workspace",
+    ".gitignore",
     ".local-gitignore",
+    ".env",
+    "package-lock.json",
+    "node_modules/**",
     "build/**",
     "quartz_repo/**",
     "src/quartz/**",
+    "cesium-src/**",
+    "grammar/**",
   ],
   "dictionaryDefinitions": [
     {
@@ -24,15 +30,15 @@
     "bash",
     "win32",
     "scientific-terms-us",
+    "zig",
     "cesium",
     "project-words",
   ],
+  "allowCompoundWords": true,
   "words": [
     "CMake",
   ],
-  "ignoreWords": [
-
-  ],
+  "ignoreWords": [],
   "ignoreRegExpList": [
     "/-D.*/",
     "/-W.*/",

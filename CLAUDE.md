@@ -1,1 +1,8 @@
 - Do not modify files in src/quartz/ or quartz_repo/ because they are "locked" submodule references.  Notify me if something absolutely must be modified in them and cannot be handled by overriding something in files outside those directories
+- don't redirect output to NUL, as in `2>nul`.  This does not work as expected in windows.  Just let it output things verbosely
+- indentation should always be only two spaces
+- don't redirect commands to NUL
+- indent preprocessor directives in the future as appropriate to improve code readability rather than force to col 0.
+- My style is to indent the public and private keywords in class definitions and then indent the definitions below those lines.  Please use this convention for future class definitions
+- always use cmake from buildtools dir
+- always use the msvc preset.  If you can't remember what it's called, ask cmake to list presets and find the one that uses the clang with msvc bindings

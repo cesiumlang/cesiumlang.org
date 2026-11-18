@@ -4,11 +4,12 @@
 /src/quartz/
 /.cache/
 
-/cesium-src/build/
-/cesium-src/buildtools/bin/
-/cesium-src/buildtools/downloads/
-/cesium-src/buildtools/llvm-*/
-/cesium-src/buildtools/clang+llvm-*-x86_64-pc-windows-msvc/
-/cesium-src/buildtools/build/
+# machine-specific editor settings (absolute paths)
+/.vscode/settings.json
+
+# A clone of cesiumlang/cesium made for the build (CI makes one; see the
+# readme). It is not a submodule. build.js also reads this file to decide
+# what it mirrors into build/.
+/cesium-src/
 
 node_modules/

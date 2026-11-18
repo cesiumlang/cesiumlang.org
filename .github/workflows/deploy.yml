@@ -9,7 +9,6 @@ on:
       - content/**
       - quartz_repo
       - src/**
-      - cesium-src
       - grammar
 
 permissions:
@@ -36,9 +35,17 @@ jobs:
           fetch-depth: 0 # Fetch all history for git info
           submodules: true
 
+      # The compiler, for the documentation that is to be generated from its
+      # source. It is not a submodule: build.js finds it in cesium-src/.
+      - uses: actions/checkout@v4
+        with:
+          repository: cesiumlang/cesium
+          ref: main
+          path: cesium-src
+
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version-file: .node-version
 
       - name: Install Dependencies
         run: |

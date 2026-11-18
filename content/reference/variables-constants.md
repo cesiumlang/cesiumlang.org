@@ -9,9 +9,6 @@ sortorder: 4
 ### Basic Declaration
 
 ```cesium
-// Basic declaration with no initialization
-u8 x;
-
 // Basic declaration with initialization
 i32 count = 0;
 f64 pi = 3.14159;
@@ -25,16 +22,35 @@ const i32 MAX_SIZE = 1000;
 const str VERSION = "1.0.0";
 ```
 
-### Ownership Assignment
+### Pointer Declaration
+
+Ownership and borrowing apply to pointers only. A pointer is given its address with one of three address-context operators, never with plain `=`:
 
 ```cesium
-// Ownership assignment
-Matrix m_owned := create_matrix();  // takes ownership
-Matrix m_copy = owned;              // error - cannot copy owned value
-Matrix m_moved := owned;      // explicit ownership transfer
+i32 count = 0;
+i32 total = 0;
+
+#i32 reader #= #count;              // immutable borrow of a plain value
+~i32 writer ~= ~total;              // mutable borrow of a plain value
+~Matrix m := create_matrix(3, 3);   // owner: takes ownership of what the function returns
+defer free(m);
+
+writer = 5;                         // plain = assigns through the pointer: total is now 5
 ```
 
-The `:=` operator indicates ownership transfer, while `=` is used for copying or borrowing depending on context.
+`:=` is only meaningful with a pointer on the left; `Matrix m := create_matrix(3, 3);` is a compile error. See [[memory-management|Memory Management]] for the full rules.
+
+### Uninitialized Variables
+
+```cesium
+u8 x;                 // declared, not initialized
+~Buffer buf;          // a pointer that owns nothing yet (undefined)
+```
+
+> [!question] Open
+> Whether a pointer that owns nothing may be declared bare, as on the last line, or must be written out with `undefined`, and how `undefined` is written for a plain value, are being discussed in [cesiumlang/cesium#25](https://github.com/cesiumlang/cesium/issues/25).
+
+`undefined` is a keyword. For a plain value it means truly uninitialized. For a pointer it is a defined "owns nothing" state, distinct from `null`, and there is no test for it.
 
 ## Qualifiers
 
@@ -59,7 +75,7 @@ register u64 hot_variable;        // register allocation hint
 ## Qualifier Descriptions
 
 | Qualifier | Description |
-|-----------|-------------|
+| --- | --- |
 | `const` | Value cannot be modified after initialization |
 | `static` | Variable persists between function calls |
 | `private` | Accessible only within the current module |
@@ -69,15 +85,30 @@ register u64 hot_variable;        // register allocation hint
 | `register` | Suggests register allocation |
 | `simd` | Enables SIMD vectorization |
 
-## Ownership Semantics
+## Assignment Operators
 
-- **Owned values** (`:=`) - The variable takes full ownership
-- **Borrowed values** (`#=`) - The variable borrows a reference
-- **Copied values** (`=`) - The variable gets a copy (if type supports copying)
+| Operator | Left side | Meaning |
+| --- | --- | --- |
+| `=` | plain value | copies the value |
+| `=` | pointer | assigns *through* the pointer (the pointer is dereferenced) |
+| `#=` | `#T` pointer | immutable borrow: points the pointer at an address, read-only |
+| `~=` | `~T` pointer | mutable borrow: points the pointer at an address, read-write |
+| `:=` | `#T` or `~T` pointer | takes ownership of the memory at an address |
+
+The sigil in the type and the operator must agree: `~T p #= q;` and `#T p ~= q;` are compile errors.
 
 ```cesium
-Matrix original := create_matrix();
-Matrix moved := original;           // ownership transferred
-#Matrix borrowed #= moved;         // immutable borrow
-~Matrix mut_borrowed #= moved;     // mutable borrow
+~Matrix original := create_matrix(3, 3);
+~Matrix moved := original;          // ownership transferred; original can no longer be used
+~Matrix other := create_matrix(3, 3);
+
+#Matrix borrowed #= moved;          // immutable borrow
+~Matrix mut_borrowed ~= other;      // mutable borrow
+
+// ... and once the borrows are no longer in use:
+free(moved);
+free(other);
 ```
+
+> [!question] Open
+> What `=` does to a plain value that owns memory (a `str`, a `list`, or a struct with owning fields) is not decided: [cesiumlang/cesium#22](https://github.com/cesiumlang/cesium/issues/22).

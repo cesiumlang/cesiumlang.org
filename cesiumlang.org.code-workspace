@@ -1,47 +1,73 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  // The settings of the submodules' workspace files are repeated here, with
+  // their paths, so that opening this one workspace is enough for the site:
+  //   grammar/grammar.code-workspace
+  // The workspace for all Cesium repositories together is the one of
+  // cesiumlang/cesium-workspace, which has this repository as a submodule.
+  "settings": {
     "files.associations": {
-      "*.cs": "cesium",
-      "*.czm": "cesium"
+      // Cesium source and module interface files (cesiumlang/cesium#14)
+      "*.csm": "cesium",
+      "*.csi": "cesium",
+      "VERSION": "plaintext",
+      ".local-gitignore": "gitignore",
+      ".github/workflows/exempt.txt": "gitignore",
+      ".clangd": "yaml",
+      "**/.claude/projects/*/memory/*.md": "plaintext",
+    },
+    "files.exclude": {
+      "**/node_modules/**": true,
+      "**/.cache/**": true,
+      "quartz_repo/.github/workflows/**": true,
+      "src/quartz/**": true,
+      "build/**": true,
     },
     "files.watcherExclude": {
-			"cesium-src/buildtools/clang+llvm-*/": true,
-			"cesium-src/buildtools/llvm-*/": true,
-			"cesium-src/buildtools/bin/cmake-*-windows-x86_64/**": true,
-			"cesium-src/buildtools/bin/cmake-*/**": true,
-			"cesium-src/build/CMakeFiles/**": true,
       "**/node_modules/**": true,
+      "**/.cache/**": true,
+      "**/.git/**": true,
       "build/**": true,
       "src/quartz/**": true,
-      "**/.cache/**": true,
-		},
-    "files.exclude": {
-      // "_site/**": true,
-      "quartz_repo/.github/workflows/**": true,
-      "**/node_modules/**": true,
-      "src/quartz/**": true,
-      "**/.cache/**": true,
-      "build/**": true
+      // a clone of the compiler made for the build, see the readme
+      "cesium-src/**": true,
     },
-		"editor.wrappingIndent": "indent",
-    // "markdown.styles": ["custom-tag-style.css"]
-		"[markdown]": {
+    "search.exclude": {
+      "build/**": true,
+      "cesium-src/**": true,
+    },
+    "files.insertFinalNewline": true,
+    "editor.wrappingIndent": "indent",
+    "[markdown]": {
       "editor.quickSuggestions": {
         "other": true,
         "comments": false,
         "strings": false
       }
     },
-    "files.insertFinalNewline": true,
+    "editor.semanticTokenColorCustomizations": {
+      "rules": {
+        "*.deprecated": {
+          // highlight semantic tokens that are marked as "deprecated"
+          "strikethrough": true
+        },
+      },
+    },
+    "terminal.integrated.automationProfile.windows": {
+      "path": "C:\\windows\\system32\\cmd.exe",
+    },
+    "ltex.additionalRules.motherTongue": "en-US",
+    "debug.onTaskErrors": "abort",  // will switch to problems pane otherwise
+
     "foam.openDailyNote.onStartup": false,
     "foam.edit.linkReferenceDefinitions": "off",
-    "foam.files.ignore": [
+    "foam.files.exclude": [
       "readme.md",
+      "build/**/*",
       "quartz/**/*",
       "quartz_repo/**/*",
       // "private/**/*"
@@ -49,8 +75,7 @@
     "foam.files.newNotePath": "currentDir",
     "foam.completion.useAlias": "whenPathDiffersFromTitle",
     "foam.preview.embedNoteType": "content-inline",
-    "cmake.configureOnOpen": false,
-    "svg.preview.background": "dark-transparent"
+    "svg.preview.background": "dark-transparent",
   },
   "extensions": {
     // See http://go.microsoft.com/fwlink/?LinkId=827846
@@ -62,12 +87,32 @@
       // Tons of markdown goodies (lists, tables of content, so much more)
       "yzhang.markdown-all-in-one",
 
-      // "mushan.vscode-paste-image"
       "bierner.markdown-yaml-preamble",
+      "davidanson.vscode-markdownlint",
       "streetsidesoftware.code-spell-checker",
       "streetsidesoftware.code-spell-checker-scientific-terms",
-			"streetsidesoftware.code-spell-checker-win32",
+      "streetsidesoftware.code-spell-checker-win32",
       "ltex-plus.vscode-ltex-plus",
     ]
-  }
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "site: build and serve",
+        "type": "shell",
+        "command": "npm",
+        "args": [
+          "run",
+          "dev",
+        ],
+        "problemMatcher": [],
+        "presentation": {
+          "clear": true,
+          "reveal": "always",
+          "panel": "dedicated",
+        },
+      },
+    ]
+  },
 }
