@@ -4,9 +4,6 @@
 [submodule "grammar"]
 	path = grammar
 	url = https://github.com/cesiumlang/grammar.git
-[submodule "src"]
-	path = cesium-src
-	url = https://github.com/cesiumlang/cesium.git
 [submodule ".cspell/cesium"]
 	path = .cspell/cesium
 	url = https://github.com/cesiumlang/cspell-cesium.git

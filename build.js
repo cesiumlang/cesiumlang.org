@@ -19,6 +19,40 @@ const verbose = args.includes('--verbose')
 
 const BUILD_DIR = 'build'
 
+// Where the source of the compiler (cesiumlang/cesium) may be, in the order
+// tried. The site is to include documentation generated from that source
+// (cesiumlang/cesium#64). Nothing reads it yet; the build only finds it and
+// passes its place on in CESIUM_SRC.
+//   $CESIUM_SRC     set by hand
+//   cesium-src      a clone inside this repository, as CI makes
+//   ../cesium-src   the sibling submodule in cesiumlang/cesium-workspace
+const COMPILER_SOURCE_CANDIDATES = [
+  process.env.CESIUM_SRC,
+  'cesium-src',
+  path.join('..', 'cesium-src'),
+]
+
+// Finds the compiler source and sets CESIUM_SRC to its absolute path, which
+// the processes started below inherit. Returns the path, or null.
+async function findCompilerSource() {
+  for (const candidate of COMPILER_SOURCE_CANDIDATES) {
+    if (!candidate) continue
+    const dir = path.resolve(candidate)
+    try {
+      await fs.access(path.join(dir, 'build.zig'))
+      await fs.access(path.join(dir, 'bootstrap'))
+    } catch {
+      continue
+    }
+    process.env.CESIUM_SRC = dir
+    console.log(`Compiler source: ${dir}`)
+    return dir
+  }
+  delete process.env.CESIUM_SRC
+  console.log('Compiler source: not found (not needed yet; see the readme)')
+  return null
+}
+
 // Create gitignore filter
 async function createGitignoreFilter() {
   const ig = ignore()
@@ -329,6 +363,8 @@ async function setupWatcher() {
 
 async function main() {
   try {
+    await findCompilerSource()
+
     if (!noBuildDir) {
       await mirrorWorkspace()
     }
