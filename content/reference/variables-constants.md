@@ -38,7 +38,7 @@ defer free(m);
 writer = 5;                         // plain = assigns through the pointer: total is now 5
 ```
 
-`:=` is only meaningful with a pointer on the left; `Matrix m := create_matrix(3, 3);` is a compile error. See [[memory-management|Memory Management]] for the full rules.
+`:=` is only meaningful with a pointer on the left; `Matrix m := create_matrix(3, 3);` is a compile error. See [Memory Management](memory-management.md) for the full rules.
 
 ### Uninitialized Variables
 

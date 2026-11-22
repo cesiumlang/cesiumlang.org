@@ -5,7 +5,7 @@ sortorder: 12
 ---
 
 > [!question] Open
-> Much of this page was generated with the first draft of the reference and has no recorded decision behind it. Which of these functions and constants exist, which names are reserved and which can be shadowed, and how this page relates to the list in [[lexical-structure|Lexical Structure]] is being decided in [cesiumlang/cesium#20](https://github.com/cesiumlang/cesium/issues/20). Treat everything here except the allocation section as unconfirmed. Specific doubts: `typeof` returning a `str`; the C-style `strlen` / `strcmp` / `strcat` / `strcpy` (when `str` tracks its length and `**` concatenates); `move` as a memory function; and `copy`, `zero`, `compare`, `getenv`, `system`, `exit`, `e`, `sqrt2`, `ln2`, `POINTER_SIZE`, `TARGET_OS` and `TARGET_ARCH`, of which only `copy` was ever discussed.
+> Much of this page was generated with the first draft of the reference and has no recorded decision behind it. Which of these functions and constants exist, which names are reserved and which can be shadowed, and how this page relates to the list in [Lexical Structure](lexical-structure.md) is being decided in [cesiumlang/cesium#20](https://github.com/cesiumlang/cesium/issues/20). Treat everything here except the allocation section as unconfirmed. Specific doubts: `typeof` returning a `str`; the C-style `strlen` / `strcmp` / `strcat` / `strcpy` (when `str` tracks its length and `**` concatenates); `move` as a memory function; and `copy`, `zero`, `compare`, `getenv`, `system`, `exit`, `e`, `sqrt2`, `ln2`, `POINTER_SIZE`, `TARGET_OS` and `TARGET_ARCH`, of which only `copy` was ever discussed.
 
 ## I/O Functions
 
@@ -105,7 +105,7 @@ free(numbers);
 free(zeros);
 ```
 
-`alloc` returns ownership, so its result is received with `:=`. Only the owner may `free`; `free` on a `null` or `undefined` pointer is a no-op. See [[memory-management|Memory Management]].
+`alloc` returns ownership, so its result is received with `:=`. Only the owner may `free`; `free` on a `null` or `undefined` pointer is a no-op. See [Memory Management](memory-management.md).
 
 > [!question] Open
 > How `realloc` is typed under the ownership rules, and what `alloc` does on failure, are not decided ([cesiumlang/cesium#17](https://github.com/cesiumlang/cesium/issues/17); open question 12 of [cesiumlang/cesium#11](https://github.com/cesiumlang/cesium/issues/11)).

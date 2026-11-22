@@ -242,6 +242,91 @@
         meta.appendChild(a);
       });
     }
+
+    // the pages that link to this one
+    var box = document.getElementById("backlinks");
+    var from = pages.filter(function (p) { return p.slug !== current && p.links.indexOf(current) >= 0; });
+    if (box && from.length) {
+      box.appendChild(el("h2", {}, "Backlinks"));
+      var list = el("ul");
+      from.forEach(function (p) {
+        var li = el("li");
+        li.appendChild(el("a", { href: url(p.slug) }, p.title));
+        list.appendChild(li);
+      });
+      box.appendChild(list);
+      box.hidden = false;
+    }
+  }
+
+  // ---- previews ------------------------------------------------------
+
+  // Hovering a link to another page of the site shows the start of that page
+  // (or the section the link names), as the page itself has it.
+  function setupPopovers() {
+    if (!window.matchMedia("(hover: hover)").matches) return;
+    var cache = {};
+    var popover = null;
+    var timer = null;
+
+    function hide() {
+      clearTimeout(timer);
+      if (popover) popover.remove();
+      popover = null;
+    }
+
+    function load(path) {
+      if (!cache[path]) {
+        cache[path] = fetch(path)
+          .then(function (response) { return response.ok ? response.text() : ""; })
+          .then(function (html) { return new DOMParser().parseFromString(html, "text/html"); });
+      }
+      return cache[path];
+    }
+
+    function preview(doc, hash) {
+      var box = el("div", { class: "popover" });
+      var section = hash && doc.getElementById(decodeURIComponent(hash.slice(1)));
+      if (section) {
+        box.appendChild(document.importNode(section, true));
+        return box;
+      }
+      var title = doc.querySelector("article h1");
+      var body = doc.querySelector("article .content");
+      if (!body) return null;
+      if (title) box.appendChild(document.importNode(title, true));
+      Array.prototype.slice.call(body.children, 0, 12).forEach(function (node) {
+        box.appendChild(document.importNode(node, true));
+      });
+      return box;
+    }
+
+    function place(box, link) {
+      var rect = link.getBoundingClientRect();
+      var width = Math.min(448, window.innerWidth - 16);
+      var left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8));
+      box.style.left = left + "px";
+      document.body.appendChild(box);
+      var height = box.getBoundingClientRect().height;
+      var below = rect.bottom + 6;
+      box.style.top = (below + height > window.innerHeight && rect.top - height - 6 > 56 ? rect.top - height - 6 : below) + "px";
+    }
+
+    document.addEventListener("mouseover", function (event) {
+      var link = event.target.closest ? event.target.closest(".content a[href], #backlinks a[href]") : null;
+      if (!link || link.origin !== location.origin || link.pathname === location.pathname) return;
+      hide();
+      timer = setTimeout(function () {
+        load(link.pathname).then(function (doc) {
+          var box = preview(doc, link.hash);
+          if (box && link.matches(":hover")) { popover = box; place(box, link); }
+        });
+      }, 300);
+    });
+    document.addEventListener("mouseout", function (event) {
+      if (event.target.closest && event.target.closest("a[href]")) hide();
+    });
+    window.addEventListener("scroll", hide, { passive: true });
   }
 
   function setupToggles() {
@@ -286,6 +371,7 @@
   }
 
   setupToggles();
+  setupPopovers();
   fetch(indexLink.href)
     .then(function (response) { return response.json(); })
     .then(function (pages) {

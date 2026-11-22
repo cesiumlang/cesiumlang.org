@@ -11,7 +11,7 @@ sortorder: 10
 > - The rules proposed in September 2025 for `throw` and `catch` are not yet confirmed: `throw` pushes onto a last-in, first-out error stack and `catch` loops over every error on it; `catch { ... }` with no `case` is an implied `else`; `catch (name) { ... }` binds the error to `name`; `catch` is a special case of `switch`; `error` types share struct syntax and semantics; abstract methods return a `NoImpl` error.
 > - Whether allocation failure is an error value or `null` is open.
 >
-> What *is* decided is how cleanup interacts with errors: `defer` is block-scoped and `free` runs `destruct`. See [[memory-management|Memory Management]].
+> What *is* decided is how cleanup interacts with errors: `defer` is block-scoped and `free` runs `destruct`. See [Memory Management](memory-management.md).
 
 ## Error Type Definition
 

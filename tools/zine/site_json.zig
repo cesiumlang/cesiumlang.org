@@ -11,6 +11,8 @@ const Page = ai.content.Page;
 pub const Entry = struct {
     page: Page,
     headings: []const smd.Heading,
+    /// The site paths of the pages this one links to.
+    links: []const []const u8,
 };
 
 /// How much of a page's text the search can see.
@@ -46,6 +48,11 @@ pub fn render(arena: std.mem.Allocator, entries: []const Entry) error{OutOfMemor
             try put(w, ",\"id\":");
             try string(w, heading.id);
             try put(w, "}");
+        }
+        try put(w, "],\"links\":[");
+        for (entry.links, 0..) |target, l| {
+            if (l > 0) try put(w, ",");
+            try string(w, target);
         }
         try put(w, "],\"text\":");
         try string(w, try excerpt(arena, page));

@@ -32,8 +32,8 @@ pub const Page = struct {
 
 pub const LoadError = error{ OutOfMemory, ContentUnreadable };
 
-/// Reads every `.md` file under `content_dir`, except those of the
-/// directories Quartz ignores and the drafts. Sorted by `sortorder`, then by
+/// Reads every `.md` file under `content_dir`, except those in
+/// `private/`, `templates/` and `.obsidian/`, and the drafts. Sorted by `sortorder`, then by
 /// path. Everything is allocated from `arena`.
 pub fn load(arena: std.mem.Allocator, io: std.Io, content_dir: []const u8) LoadError![]Page {
     var dir = std.Io.Dir.cwd().openDir(io, content_dir, .{ .iterate = true }) catch return error.ContentUnreadable;

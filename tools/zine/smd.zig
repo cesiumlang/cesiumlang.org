@@ -78,7 +78,7 @@ pub fn render(
             try headings.append(arena, .{ .depth = @intCast(level), .text = words, .id = id });
             try put(w, line[0..level]);
             try put(w, " [");
-            try ai.portable.writeInline(w, pages, page, text, .zine, report);
+            try ai.portable.writeInline(w, pages, page, text, true, report);
             try put(w, "]($section.id('");
             try put(w, id);
             try put(w, "'))\n");
@@ -100,7 +100,7 @@ pub fn render(
             try put(w, "'))\n");
             continue;
         }
-        try ai.portable.writeInline(w, pages, page, line, .zine, report);
+        try ai.portable.writeInline(w, pages, page, line, true, report);
         try put(w, "\n");
     }
     return .{ .text = out.written(), .headings = headings.items };

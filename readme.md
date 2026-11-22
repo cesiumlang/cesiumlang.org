@@ -10,7 +10,7 @@ Clone it with `--recurse-submodules`. To work on all Cesium repositories togethe
 
 | Path | What |
 | --- | --- |
-| `content/` | The pages of the site as Markdown: language reference, compiler documentation, draft specification, news. Links between pages are wiki links (`[[spec/index\|the specification]]`); callouts are `> [!warning] Title` |
+| `content/` | The pages of the site as Markdown: language reference, compiler documentation, draft specification, news. Links between pages are relative Markdown links to `.md` files (`[the specification](../spec/index.md)`); callouts are `> [!warning] Title` |
 | `site/` | What Zine needs besides the pages: `zine.ziggy`, the layouts, and the style sheets and scripts in `assets/` |
 | `tools/zine/` | `cesium-site-gen`: writes the input of Zine from `content/` into `site/content/` and `site/assets/`, with the code blocks highlighted and `site-index.json` for the explorer and the search |
 | `tools/ai/` | `cesium-site-ai`: writes `llms.txt`, a Markdown version of every page and the Cesium skill for AI models ([cesiumlang/cesiumlang.org#25](https://github.com/cesiumlang/cesiumlang.org/issues/25)); also the units the other tool shares (pages, links, rules) |
@@ -50,7 +50,7 @@ zig-out/bin/cesium-site-ai --out zig-out/public --host cesiumlang.org
 
 `site/content/`, `site/assets/site-index.json` and `site/assets/img/` are written by `cesium-site-gen` and are not committed; edit `content/` instead.
 
-The compiler source is looked for in `cesium-src/` or `../cesium-src/`. The site is to include documentation generated from it ([cesiumlang/cesium#64](https://github.com/cesiumlang/cesium/issues/64)); nothing reads it yet.
+The site is to include documentation generated from the compiler's source ([cesiumlang/cesium#64](https://github.com/cesiumlang/cesium/issues/64)); nothing reads the source yet. Each documented symbol is to be a page of its own, which the explorer, search and backlinks pick up from `site-index.json` like any other page.
 
 ## Writing pages
 

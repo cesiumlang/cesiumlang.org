@@ -11,7 +11,7 @@ This is the home of the Cesium programming language!
 [![CI Status](https://github.com/cesiumlang/cesium/actions/workflows/ci.yml/badge.svg)](https://github.com/cesiumlang/cesium/actions)
 [![last-commit](https://img.shields.io/github/last-commit/cesiumlang/cesium)](https://github.com/cesiumlang/cesium/commits/main)
 
-* Check out the latest status updates: [[news/index|News]]
-* Read the language reference docs: [[reference/index|Docs]]
-* Follow the formal definition as it is written: [[spec/index|Language Specification (draft)]]
-* See how the compiler is being built: [[compiler/index|Compiler and Toolchain]]
+* Check out the latest status updates: [News](news/index.md)
+* Read the language reference docs: [Docs](reference/index.md)
+* Follow the formal definition as it is written: [Language Specification (draft)](spec/index.md)
+* See how the compiler is being built: [Compiler and Toolchain](compiler/index.md)

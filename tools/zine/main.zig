@@ -52,7 +52,11 @@ pub fn main(init: std.process.Init) !void {
         const date = try gitDate(arena, io, content_dir, page);
         const rendered = try smd.render(arena, pages, page, date, &highlighter, &report);
         try write(io, arena, generated, try std.fmt.allocPrint(arena, "{s}.smd", .{page.slug}), rendered.text);
-        try entries.append(arena, .{ .page = page, .headings = rendered.headings });
+        try entries.append(arena, .{
+            .page = page,
+            .headings = rendered.headings,
+            .links = try ai.portable.linkTargets(arena, pages, page),
+        });
     }
     for (try tags.render(arena, pages, fallback_date)) |tag_page| {
         try write(io, arena, generated, try std.fmt.allocPrint(arena, "{s}.smd", .{tag_page.slug}), tag_page.text);

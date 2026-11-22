@@ -1,7 +1,5 @@
 /.claude/
 /private/
-/build/
-/src/quartz/
 /.cache/
 
 # machine-specific editor settings (absolute paths)

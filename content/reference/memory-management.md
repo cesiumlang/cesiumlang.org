@@ -230,7 +230,7 @@ A type's `destruct` function runs in two situations:
 - when an owned pointer to the type is released with `free`, before the memory is released;
 - when a plain (non-pointer) value of the type goes out of scope.
 
-See [[object-oriented|Object-Oriented Programming]] for how a destructor is declared.
+See [Object-Oriented Programming](object-oriented.md) for how a destructor is declared.
 
 ## Memory Safety Rules
 

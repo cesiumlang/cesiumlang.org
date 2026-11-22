@@ -5,9 +5,9 @@ sortorder: 3
 ---
 
 > [!warning] Draft
-> Chapter 3 of the [[spec/index|language specification draft]]. This is a first transcription of the S0 design into a grammar. It has not yet been run through a parser generator, which is on the checklist in [cesiumlang/cesiumlang.org#13](https://github.com/cesiumlang/cesiumlang.org/issues/13). Where this chapter and [cesiumlang/cesium#9](https://github.com/cesiumlang/cesium/issues/9) disagree, the issue wins. Section 3.10 compares it with the first stage 0 implementation.
+> Chapter 3 of the [language specification draft](index.md). This is a first transcription of the S0 design into a grammar. It has not yet been run through a parser generator, which is on the checklist in [cesiumlang/cesiumlang.org#13](https://github.com/cesiumlang/cesiumlang.org/issues/13). Where this chapter and [cesiumlang/cesium#9](https://github.com/cesiumlang/cesium/issues/9) disagree, the issue wins. Section 3.10 compares it with the first stage 0 implementation.
 
-S0 is the subset of Cesium that stage 0 compiles. It is described in prose in [[compiler/s0-subset|The S0 Subset]]. This chapter gives its grammar in EBNF and traces each production to its source. See the [[spec/index|introduction]] for the notation and the citation format.
+S0 is the subset of Cesium that stage 0 compiles. It is described in prose in [The S0 Subset](../compiler/s0-subset.md). This chapter gives its grammar in EBNF and traces each production to its source. See the [introduction](index.md) for the notation and the citation format.
 
 Sources used in this chapter:
 
@@ -18,11 +18,11 @@ Sources used in this chapter:
 | `[S0-sample]` | The sample program of the same issue |
 | `[S0-amend]` | The amendment comment on the same issue (2026-11-16) |
 | `[own rN]` | Rule N of the ownership design, [cesiumlang/cesium#11](https://github.com/cesiumlang/cesium/issues/11) |
-| `[ref: page]` | A page of the [[reference/index\|language reference]] |
+| `[ref: page]` | A page of the [language reference](../reference/index.md) |
 
 ## 3.1 Lexical Elements
 
-S0 uses the lexical structure of [[spec/lexical|chapter 2]], restricted as follows.
+S0 uses the lexical structure of [chapter 2](lexical.md), restricted as follows.
 
 ```text
 ident        = identifier ;                       (* 2.4 *)
@@ -112,7 +112,7 @@ initializer  = "=" expr                          (* plain values only *)
 - **Decided.** The entry point is `i32 = main(i32 argc, ##u8 argv)`. `[S0]`
 - **Decided.** Parameters, return values and `extern` signatures use only scalar and pointer types; a struct is not passed or returned by value. `[cesium#8]`, "v0 restrictions"
 - **Open.** Whether a `const` global may be an array or a pointer, and what expressions may initialize a global, are not stated in `[S0]`.
-- **Open.** How a function declared in an `extern` block is named at the call site. The sample calls `write(...)` without the block's name, while the reference writes `windows.Sleep(ms)` and uses `export` or `as` to make a name global ([[modules-imports|Modules and Imports]]). See [cesiumlang/cesium#19](https://github.com/cesiumlang/cesium/issues/19).
+- **Open.** How a function declared in an `extern` block is named at the call site. The sample calls `write(...)` without the block's name, while the reference writes `windows.Sleep(ms)` and uses `export` or `as` to make a name global ([Modules and Imports](../reference/modules-imports.md)). See [cesiumlang/cesium#19](https://github.com/cesiumlang/cesium/issues/19).
 
 ## 3.5 Statements
 
@@ -235,7 +235,7 @@ These are checked after parsing. Stage 0 does only "minimal type checking" `[ces
 
 ## 3.8 Mapping to Core MIR
 
-Each S0 construct maps onto core MIR as given in `[S0-map]`, reproduced in [[compiler/s0-subset|The S0 Subset]]. The mapping, with the lowering of each production, will become chapter 9 of this specification.
+Each S0 construct maps onto core MIR as given in `[S0-map]`, reproduced in [The S0 Subset](../compiler/s0-subset.md). The mapping, with the lowering of each production, will become chapter 9 of this specification.
 
 ## 3.9 Not in S0
 
@@ -267,4 +267,4 @@ The first implementation of stage 0 ([cesiumlang/cesium#60](https://github.com/c
 
 **Constraints stage 0 checks beyond 3.7**
 
-Stage 0 rejects a literal whose type no context determines, a local that reuses a name in scope, a name that is a keyword of full Cesium, and the assignment of a struct or array as a whole. Each corresponds to an open question; [[compiler/s0-subset|The S0 Subset]] lists them with their issues.
+Stage 0 rejects a literal whose type no context determines, a local that reuses a name in scope, a name that is a keyword of full Cesium, and the assignment of a struct or array as a whole. Each corresponds to an open question; [The S0 Subset](../compiler/s0-subset.md) lists them with their issues.

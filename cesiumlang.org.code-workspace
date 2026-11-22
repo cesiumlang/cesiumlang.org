@@ -23,18 +23,18 @@
     "files.exclude": {
       "**/node_modules/**": true,
       "**/.cache/**": true,
-      "build/**": true,
+      "zig-out/**": true,
     },
     "files.watcherExclude": {
       "**/node_modules/**": true,
       "**/.cache/**": true,
       "**/.git/**": true,
-      "build/**": true,
+      "zig-out/**": true,
       // a clone of the compiler made for the build, see the readme
       "cesium-src/**": true,
     },
     "search.exclude": {
-      "build/**": true,
+      "zig-out/**": true,
       "cesium-src/**": true,
     },
     "files.insertFinalNewline": true,
@@ -64,7 +64,8 @@
     "foam.edit.linkReferenceDefinitions": "off",
     "foam.files.exclude": [
       "readme.md",
-      "build/**/*",
+      "zig-out/**/*",
+      "site/content/**/*",
       // "private/**/*"
     ],
     "foam.files.newNotePath": "currentDir",

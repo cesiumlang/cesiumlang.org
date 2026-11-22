@@ -7,41 +7,83 @@ fn page(slug: []const u8, title: []const u8, body: []const u8) Page {
     return .{ .slug = slug, .title = title, .description = null, .sortorder = 0, .body = body };
 }
 
-test "wiki links in the same and another directory, and a callout" {
+const site = [_]Page{
+    page("spec/index", "Specification", ""),
+    page("spec/lexical", "Lexical", ""),
+    page("reference/memory-management", "Memory Management", ""),
+};
+
+test "a callout becomes a bold label; links to pages are left as they are" {
     var arena: std.heap.ArenaAllocator = .init(std.testing.allocator);
     defer arena.deinit();
-    const pages = [_]Page{
-        page("spec/index", "Specification", ""),
-        page("reference/memory-management", "Memory Management", ""),
-    };
     var report: ai.portable.Report = .{};
-    const lexical = page(
+    const from = page(
         "spec/lexical",
         "Lexical",
-        "See [[spec/index|the introduction]] and [[memory-management#Open Questions]].\n> [!warning] Draft\n> text\n",
+        "See [the introduction](index.md) and [memory](../reference/memory-management.md#open-questions).\n> [!warning] Draft\n> text\n",
     );
-    const text = try ai.portable.render(arena.allocator(), &pages, lexical, &report);
+    const text = try ai.portable.render(arena.allocator(), &site, from, &report);
     try std.testing.expectEqualStrings(
-        "# Lexical\n\nSee [the introduction](index.md) and " ++
-            "[Memory Management](../reference/memory-management.md#open-questions).\n> **Warning: Draft**\n> text\n\n",
+        "# Lexical\n\nSee [the introduction](index.md) and [memory](../reference/memory-management.md#open-questions).\n" ++
+            "> **Warning: Draft**\n> text\n\n",
         text,
     );
     try std.testing.expectEqual(0, report.unresolved);
+}
+
+test "a link to a file that is no page is counted" {
+    var arena: std.heap.ArenaAllocator = .init(std.testing.allocator);
+    defer arena.deinit();
+    var report: ai.portable.Report = .{};
+    const from = page("spec/lexical", "Lexical", "[gone](missing.md) and [web](https://x.y/a.md) and [here](#top)\n");
+    _ = try ai.portable.render(arena.allocator(), &site, from, &report);
+    try std.testing.expectEqual(1, report.unresolved);
 }
 
 test "code is left alone" {
     var arena: std.heap.ArenaAllocator = .init(std.testing.allocator);
     defer arena.deinit();
     var report: ai.portable.Report = .{};
-    const p = page("a", "A", "```cesium\nx = [[1]];\n```\nand `[[code]]`\n");
+    const p = page("a", "A", "```cesium\nx = [a](b.md);\n```\nand `[c](d.md)`\n");
     const text = try ai.portable.render(arena.allocator(), &.{p}, p, &report);
-    try std.testing.expectEqualStrings("# A\n\n```cesium\nx = [[1]];\n```\nand `[[code]]`\n\n", text);
+    try std.testing.expectEqualStrings("# A\n\n```cesium\nx = [a](b.md);\n```\nand `[c](d.md)`\n\n", text);
+    try std.testing.expectEqual(0, report.unresolved);
+}
+
+test "links as Zine writes them" {
+    var arena: std.heap.ArenaAllocator = .init(std.testing.allocator);
+    defer arena.deinit();
+    var out: std.Io.Writer.Allocating = .init(arena.allocator());
+    var report: ai.portable.Report = .{};
+    const from = site[1];
+    try ai.portable.writeInline(
+        &out.writer,
+        &site,
+        from,
+        "[intro](index.md), [memory](../reference/memory-management.md#open-questions), [web](https://a.b/c)",
+        true,
+        &report,
+    );
+    try std.testing.expectEqualStrings(
+        "[intro]($link.page('spec')), [memory]($link.page('reference/memory-management').id('open-questions')), [web](https://a.b/c)",
+        out.written(),
+    );
+}
+
+test "the pages a page links to, once each" {
+    var arena: std.heap.ArenaAllocator = .init(std.testing.allocator);
+    defer arena.deinit();
+    const from = page("spec/lexical", "Lexical", "[a](index.md) [b](index.md#x) [c](../reference/memory-management.md)\n```\n[d](index.md)\n```\n");
+    const targets = try ai.portable.linkTargets(arena.allocator(), &site, from);
+    try std.testing.expectEqual(2, targets.len);
+    try std.testing.expectEqualStrings("spec", targets[0]);
+    try std.testing.expectEqualStrings("reference/memory-management", targets[1]);
 }
 
 test "links, emphasis and line ends become plain text" {
     var arena: std.heap.ArenaAllocator = .init(std.testing.allocator);
     defer arena.deinit();
-    const got = try ai.plain.text(arena.allocator(), "**Decided.** See [the issue](https://x.y/1) and [[spec/index|the\nintroduction]], `a [b](c)`.");
+    const got = try ai.plain.text(arena.allocator(), "**Decided.** See [the issue](https://x.y/1) and [the\nintroduction](index.md), `a [b](c)`.");
     try std.testing.expectEqualStrings("Decided. See the issue and the introduction, `a [b](c)`.", got);
 }
 

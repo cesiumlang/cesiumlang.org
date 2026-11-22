@@ -1,4 +1,4 @@
-/* The Cesium site. Colors are the theme of the Quartz site it replaces. */
+/* The Cesium site: its colors, in light and dark. */
 :root {
   --light: #faf8f8;
   --lightgray: #e5e5e5;
@@ -548,4 +548,58 @@ footer {
 
 :root[data-reader="on"] .page {
   grid-template-columns: minmax(0, 46rem);
+}
+
+/* backlinks, under the page */
+.backlinks {
+  margin-top: 2.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--lightgray);
+}
+
+.backlinks h2 {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+.backlinks ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+/* a preview of the page a link goes to */
+.popover {
+  position: fixed;
+  z-index: 8;
+  width: min(28rem, calc(100vw - 1rem));
+  max-height: 22rem;
+  overflow: hidden;
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+.popover::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2.5rem;
+  background: linear-gradient(transparent, var(--light));
+}
+
+.popover h1,
+.popover h2,
+.popover h3 {
+  margin: 0.2rem 0 0.4rem;
+  font-size: 1.1rem;
+}
+
+.popover pre {
+  font-size: 0.8rem;
 }

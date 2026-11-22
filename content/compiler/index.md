@@ -10,12 +10,12 @@ This section describes how the Cesium compiler is put together: its backends, ho
 
 ## Pages
 
-- [[compiler/architecture|Architecture]] - Two backends behind a middle IR, the toolchain, the runtime model and the target platforms
-- [[compiler/bootstrap|Bootstrap Chain]] - Stage 0 in portable C, `cesium1` in S0, then the real compiler; what CI builds and what contributors download
-- [[compiler/mir|Middle IR (MIR)]] - The core level of the IR that every frontend lowers to
-- [[compiler/s0-subset|The S0 Subset]] - The tiny subset of Cesium that stage 0 compiles
-- [[compiler/stage0-c-dialect|Stage 0 C Dialect]] - The portable C subset stage 0 is written in
-- [[compiler/freestanding|Freestanding Targets]] - What bare-metal targets require of the language, library and compiler
+- [Architecture](architecture.md) - Two backends behind a middle IR, the toolchain, the runtime model and the target platforms
+- [Bootstrap Chain](bootstrap.md) - Stage 0 in portable C, `cesium1` in S0, then the real compiler; what CI builds and what contributors download
+- [Middle IR (MIR)](mir.md) - The core level of the IR that every frontend lowers to
+- [The S0 Subset](s0-subset.md) - The tiny subset of Cesium that stage 0 compiles
+- [Stage 0 C Dialect](stage0-c-dialect.md) - The portable C subset stage 0 is written in
+- [Freestanding Targets](freestanding.md) - What bare-metal targets require of the language, library and compiler
 
 ## Decision Records
 
@@ -32,4 +32,4 @@ This section describes how the Cesium compiler is put together: its backends, ho
 
 Requirements carried over from the removed C++ prototype (documentation generator, command-line interface, logging) are in [cesiumlang/cesium#64](https://github.com/cesiumlang/cesium/issues/64).
 
-See also the [[spec/index|language specification draft]] and the [[reference/index|language reference]].
+See also the [language specification draft](../spec/index.md) and the [language reference](../reference/index.md).

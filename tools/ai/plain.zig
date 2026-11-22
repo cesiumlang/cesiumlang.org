@@ -3,7 +3,7 @@
 
 const std = @import("std");
 
-/// `[words](url)` and `[[target|words]]` become `words`; `**` and `__` are
+/// `[words](url)` becomes `words`; `**` and `__` are
 /// dropped; line ends and runs of spaces become one space. Code spans keep
 /// their backticks. Allocated from `arena`.
 pub fn text(arena: std.mem.Allocator, markdown: []const u8) error{OutOfMemory}![]const u8 {
@@ -14,16 +14,6 @@ pub fn text(arena: std.mem.Allocator, markdown: []const u8) error{OutOfMemory}![
         const c = markdown[i];
         if (c == '`') in_code = !in_code;
         if (!in_code) {
-            if (std.mem.startsWith(u8, markdown[i..], "[[")) {
-                if (std.mem.find(u8, markdown[i + 2 ..], "]]")) |len| {
-                    const inner = markdown[i + 2 .. i + 2 + len];
-                    const bar = std.mem.findScalar(u8, inner, '|');
-                    const words = if (bar) |b| std.mem.trim(u8, inner[b + 1 ..], " ") else inner;
-                    try out.appendSlice(arena, try text(arena, words));
-                    i += len + 4;
-                    continue;
-                }
-            }
             if (c == '[') {
                 if (linkEnd(markdown[i..])) |link| {
                     try out.appendSlice(arena, try text(arena, markdown[i + 1 .. i + link.words_end]));
