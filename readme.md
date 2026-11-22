@@ -22,14 +22,13 @@ Clone it with `--recurse-submodules`. To work on all Cesium repositories togethe
 
 ## Setup
 
-The site needs the Zig of the Cesium devkit (0.17.1), which is in the compiler's repository:
+The site needs Zig 0.17.1. CI installs that version, set by hand as `ZIG_VERSION` in `.github/workflows/deploy.yml` (and in the workflow of cesiumlang/cesiumlang.dev). Locally, use the Zig of the Cesium devkit, which is that version, from the compiler's repository:
 
 ```bash
-git clone https://github.com/cesiumlang/cesium cesium-src   # or use ../cesium-src from cesium-workspace
-bash cesium-src/tools/fetch-devkit.sh
+bash ../cesium-src/tools/fetch-devkit.sh   # in cesium-workspace; or clone cesiumlang/cesium anywhere
 ```
 
-With [direnv](https://direnv.net), `.envrc` puts the devkit's Zig on the `PATH` when you enter the directory. Run `direnv allow` once. Without it, call `cesium-src/.devkit/zig/zig` yourself.
+With [direnv](https://direnv.net), `.envrc` puts `../cesium-src/.devkit/zig` on the `PATH` when you enter the directory. Run `direnv allow` once. Without it, call that `zig` yourself.
 
 The first build compiles Zine and takes some minutes; later builds are quick.
 
