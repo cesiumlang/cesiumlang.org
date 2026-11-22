@@ -103,7 +103,7 @@ Matrix v;                          // plain value
 #Matrix borrowed_v #= #v;          // borrowing a plain value: take its address
 ```
 
-Owned pointers that cross a boundary are written with a leading `:` — `:#T` or `:~T` — in return types, parameters and struct fields. See [[memory-management|Memory Management]].
+Owned pointers that cross a boundary are written with a leading `:` — `:#T` or `:~T` — in return types, parameters and struct fields. See [Memory Management](memory-management.md).
 
 > [!question] Open
 > Ownership rules for multi-level pointers (`##T`, `~#T`) are not settled (open question 11 of [cesiumlang/cesium#11](https://github.com/cesiumlang/cesium/issues/11)), and neither is how dereference-by-default resolves where the expected type is not fixed ([cesiumlang/cesium#26](https://github.com/cesiumlang/cesium/issues/26)).

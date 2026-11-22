@@ -138,7 +138,7 @@ x = 42;                             // assign a value (through the pointer, if x
 ~Matrix owned := create_matrix();   // take ownership: set the address
 ```
 
-`#=`, `~=` and `:=` are the *address-context* assignment operators. They are only meaningful with a pointer on the left. See [[memory-management|Memory Management]].
+`#=`, `~=` and `:=` are the *address-context* assignment operators. They are only meaningful with a pointer on the left. See [Memory Management](memory-management.md).
 
 > [!question] Open
 > This table is incomplete. Unary `-`, `+` and `!`, a bitwise NOT, `++` / `--`, the compound assignments (`+=` and the rest), the ternary `?:`, the comma operator, elementwise multiplication and the meaning of unary `..` are all used somewhere in the reference or were part of the original design, but have no agreed place in the table. They are being settled in [cesiumlang/cesium#15](https://github.com/cesiumlang/cesium/issues/15); the clash between decorated operators and postfix `~` is [cesiumlang/cesium#28](https://github.com/cesiumlang/cesium/issues/28).

@@ -7,27 +7,27 @@ This section contains the comprehensive reference documentation for the Cesium P
 
 ## Reference Sections
 
-- [[overview|Overview]] - Language goals and design philosophy
-- [[lexical-structure|Lexical Structure]] - Comments, keywords, and tokens
-- [[type-system|Type System]] - Primitive types, arrays, pointers, and user-defined types
-- [[variables-constants|Variables and Constants]] - Declaration and qualifiers
-- [[operators-expressions|Operators and Expressions]] - Operator precedence and context-aware operations
-- [[control-flow|Control Flow]] - Conditionals, loops, and pattern matching
-- [[functions|Functions]] - Declaration, generics, and operator overloading
-- [[memory-management|Memory Management]] - Allocation, ownership, and resource management
-- [[object-oriented|Object-Oriented Programming]] - Structs, inheritance, and traits
-- [[error-handling|Error Handling]] - Error types and propagation
-- [[modules-imports|Modules and Imports]] - Module system and external libraries
-- [[builtin-functions|Built-in Functions]] - Standard library and intrinsics
-- [[assembly|Inline Assembly]] - Assembly blocks and hardware access
-- [[grammar|Grammar Reference]] - Formal language grammar
-- [[compilation|Compilation Model]] - Build process and optimization
-- [[performance|Performance Considerations]] - Optimization and memory layout
+- [Overview](overview.md) - Language goals and design philosophy
+- [Lexical Structure](lexical-structure.md) - Comments, keywords, and tokens
+- [Type System](type-system.md) - Primitive types, arrays, pointers, and user-defined types
+- [Variables and Constants](variables-constants.md) - Declaration and qualifiers
+- [Operators and Expressions](operators-expressions.md) - Operator precedence and context-aware operations
+- [Control Flow](control-flow.md) - Conditionals, loops, and pattern matching
+- [Functions](functions.md) - Declaration, generics, and operator overloading
+- [Memory Management](memory-management.md) - Allocation, ownership, and resource management
+- [Object-Oriented Programming](object-oriented.md) - Structs, inheritance, and traits
+- [Error Handling](error-handling.md) - Error types and propagation
+- [Modules and Imports](modules-imports.md) - Module system and external libraries
+- [Built-in Functions](builtin-functions.md) - Standard library and intrinsics
+- [Inline Assembly](assembly.md) - Assembly blocks and hardware access
+- [Grammar Reference](grammar.md) - Formal language grammar
+- [Compilation Model](compilation.md) - Build process and optimization
+- [Performance Considerations](performance.md) - Optimization and memory layout
 
 ## Related Sections
 
-- [[spec/index|Language Specification (draft)]] - The formal definition that the reference pages feed into
-- [[compiler/index|Compiler and Toolchain]] - Architecture, bootstrap chain, middle IR and the S0 subset
+- [Language Specification (draft)](../spec/index.md) - The formal definition that the reference pages feed into
+- [Compiler and Toolchain](../compiler/index.md) - Architecture, bootstrap chain, middle IR and the S0 subset
 
 ## Quick Navigation
 

@@ -1,4 +1,4 @@
-name: Deploy Quartz site to GitHub Pages
+name: Deploy site to GitHub Pages
 
 on:
   push:
@@ -7,8 +7,10 @@ on:
     paths:
       - .github/workflows/deploy.yml
       - content/**
-      - quartz_repo
-      - src/**
+      - site/**
+      - tools/**
+      - build.zig
+      - build.zig.zon
       - grammar
 
 permissions:
@@ -24,38 +26,45 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     env:
-      # the time zone of the dates Quartz writes on the pages
+      # the time zone of the dates on the pages
       TZ: America/Chicago
     steps:
       - uses: actions/checkout@v7
         with:
-          fetch-depth: 0 # Fetch all history for git info
+          fetch-depth: 0 # the page dates come from git history
           submodules: true
 
       # The compiler, for the documentation that is to be generated from its
-      # source. It is not a submodule: build.js finds it in cesium-src/.
+      # source, and for the devkit with the Zig that builds the site.
       - uses: actions/checkout@v7
         with:
           repository: cesiumlang/cesium
           ref: main
           path: cesium-src
 
-      - uses: actions/setup-node@v7
+      - name: Fetch the devkit
+        run: bash cesium-src/tools/fetch-devkit.sh
+
+      # Zine is built from source: keep what Zig built
+      - uses: actions/cache@v4
         with:
-          node-version-file: .node-version
+          path: |
+            ~/.cache/zig
+            .zig-cache
+          key: zig-${{ runner.os }}-${{ hashFiles('build.zig.zon', 'grammar/build.zig.zon') }}
 
-      - name: Install Dependencies
-        run: |
-          npm install
-          npm run install-deps
+      - name: Build the site
+        run: cesium-src/.devkit/zig/zig build
 
-      - name: Build Quartz
-        run: npm run build:ci
+      # llms.txt, a Markdown version of each page and the Cesium skill
+      # (cesiumlang/cesiumlang.org#25), written beside the pages
+      - name: Files for AI models
+        run: zig-out/bin/cesium-site-ai --out zig-out/public --host cesiumlang.org
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: quartz_repo/public
+          path: zig-out/public
 
   deploy:
     needs: build

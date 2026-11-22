@@ -7,7 +7,7 @@ sortorder: 3
 > [!info] Source
 > [Design: Cesium middle IR](https://github.com/cesiumlang/cesium/issues/8). Status: draft sketch. The text syntax shown here is illustrative and open to change.
 
-Every Cesium frontend lowers to MIR, and MIR lowers to a backend: QBE or LLVM (see [[compiler/architecture|Architecture]]). Language features are defined by how they lower:
+Every Cesium frontend lowers to MIR, and MIR lowers to a backend: QBE or LLVM (see [Architecture](architecture.md)). Language features are defined by how they lower:
 
 - **Core features** map directly onto core MIR constructs.
 - **Composite features** are rewrites into the core: `for` becomes `while`, `switch` becomes `if` chains or jump tables, `defer` becomes cleanup blocks, error unions become tagged structs, methods become functions taking `this`.
@@ -69,7 +69,7 @@ func @cstr_len(%s: ptr<u8>) -> uword { ... }
 ```
 
 - `func` is module-internal; `export func` is externally visible with the C ABI; `extern func` declares an external C ABI function.
-- Function attributes are reserved for [[compiler/freestanding|freestanding targets]] (`callconv(...)`, `section(...)`, `align(...)`, `target_features(...)`, `noredzone`, `naked`, `probe_stack(...)`). Version 0 implements `callconv(c)` only.
+- Function attributes are reserved for [freestanding targets](freestanding.md) (`callconv(...)`, `section(...)`, `align(...)`, `target_features(...)`, `noredzone`, `naked`, `probe_stack(...)`). Version 0 implements `callconv(c)` only.
 - A global name used as an expression yields its address.
 
 ### Statements

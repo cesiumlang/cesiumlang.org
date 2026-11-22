@@ -1,0 +1,46 @@
+# Publishes the development site at cesiumlang.dev. A repository has one
+# Pages domain and this one has cesiumlang.org, so the development site is the
+# Pages site of cesiumlang/cesiumlang.dev, which builds this repository at the
+# commit named in its source.txt. This workflow writes that commit there, with
+# a deploy key that can write to that repository and nothing else (the secret
+# MIRROR_DEPLOY_KEY). cesiumlang.org is deployed by deploy.yml, from main.
+#
+# Runs on every push to dev and to the web/ branches, and by hand (Actions >
+# Dev site > Run workflow; choose the branch there).
+name: Dev site
+
+on:
+  push:
+    branches: [dev, 'web/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dev-site
+  cancel-in-progress: true
+
+jobs:
+  mirror:
+    name: Start the build of cesiumlang.dev
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          repository: cesiumlang/cesiumlang.dev
+          ssh-key: ${{ secrets.MIRROR_DEPLOY_KEY }}
+
+      - name: Record the commit to build
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          printf '%s\n' "$GITHUB_SHA" > source.txt
+          git add source.txt
+          if git diff --cached --quiet; then
+            echo "The development site already has this commit."
+            exit 0
+          fi
+          git commit -q -m "Build cesiumlang.org@${GITHUB_SHA::7}"
+          git push -q

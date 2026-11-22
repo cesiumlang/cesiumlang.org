@@ -22,8 +22,8 @@ Cesium source (.csm)
  quick ports)
 ```
 
-- **The compiler is written in Cesium.** A small stage 0 compiler written in portable C exists only to start the [[compiler/bootstrap|bootstrap chain]].
-- **The middle IR is the core design asset.** It carries shapes, aliasing facts derived from the ownership rules, fusion and explicit vector operations. Numerical optimization happens there; a backend receives already-structured code. See [[compiler/mir|Middle IR]].
+- **The compiler is written in Cesium.** A small stage 0 compiler written in portable C exists only to start the [bootstrap chain](bootstrap.md).
+- **The middle IR is the core design asset.** It carries shapes, aliasing facts derived from the ownership rules, fusion and explicit vector operations. Numerical optimization happens there; a backend receives already-structured code. See [Middle IR](mir.md).
 - **Two backends consume the same MIR.** Cesium targets QBE first and later adds LLVM.
 
 ## The Two Backends
@@ -59,7 +59,7 @@ Frontends never compute layout. MIR keeps `sizeof(T)`, `alignof(T)`, `index` and
 
 ### Differential Testing
 
-Both backends must give every program the same meaning, so core MIR has no undefined behavior (see [[compiler/mir|Middle IR]]), and consistency is proven by testing:
+Both backends must give every program the same meaning, so core MIR has no undefined behavior (see [Middle IR](mir.md)), and consistency is proven by testing:
 
 1. **Corpus tests:** the test corpora through QBE, LLVM `-O0` and LLVM `-O2`; outputs must match exactly.
 2. **Layout tests:** generated structs, arrays and nested aggregates; each backend prints `sizeof`, `alignof` and every field offset, compared with the equivalent C declaration compiled by `zig cc`.
@@ -81,7 +81,7 @@ The C API is used rather than the C++ API because the C++ API breaks every major
 - **Devkits.** CI produces per-host devkit packages from [cesiumlang/devkits](https://github.com/cesiumlang/devkits). A devkit contains the pinned official Zig, the Cesium LLVM build (LLVM core, the targets listed below and LLD; no Clang and no LLVM tools) and a pinned QBE. Stage 0 builds use the Zig from the devkit. This is the "forked devkit pipeline" of ADR 0001, decision 4.
 - **Zig is the C/C++ toolchain and build orchestrator, in CI only.** The LLVM package must be built with the same Zig version as everything linked with it.
 - **No toolchain dependency for users.** Users get one self-contained compiler binary (LLVM and LLD inside) plus a few small bundled platform stub files: no Zig, no SDK, no system libc.
-- **Contributors**, once `cesium1` exists, download a per-host bootstrap package produced by CI and build with Cesium's own build system. See [[compiler/bootstrap|Bootstrap Chain]].
+- **Contributors**, once `cesium1` exists, download a per-host bootstrap package produced by CI and build with Cesium's own build system. See [Bootstrap Chain](bootstrap.md).
 - The compiler is one executable that is also to contain the language server and the documentation generator ([cesiumlang/cesium#2](https://github.com/cesiumlang/cesium/issues/2)).
 
 ## Runtime Model of Cesium Programs
@@ -93,7 +93,7 @@ The C API is used rather than the C++ API because the C++ API breaks every major
 | Linux | Direct system calls; fully static |
 | Windows | No C runtime; `kernel32` / `ntdll` through import libraries the compiler generates at link time |
 | macOS | Dynamically linked `libSystem` (always present); there is no stable system call ABI |
-| Freestanding, UEFI | The standard library's own platform layer; see [[compiler/freestanding\|Freestanding Targets]] |
+| Freestanding, UEFI | The standard library's own platform layer; see [Freestanding Targets](freestanding.md) |
 
 A Cesium program that links libc-dependent C libraries uses a *hosted link mode*: libc's startup and thread creation, while Cesium code still never calls libc directly. The compiler itself is such a program, because it contains LLVM.
 

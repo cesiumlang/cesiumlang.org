@@ -5,7 +5,7 @@ sortorder: 2
 ---
 
 > [!warning] Draft
-> Chapter 2 of the [[spec/index|language specification draft]]. It states only what is decided. Undecided areas are marked "Open" with the issue to follow. See the [[spec/index|introduction]] for the status markers, the citation format and the grammar notation.
+> Chapter 2 of the [language specification draft](index.md). It states only what is decided. Undecided areas are marked "Open" with the issue to follow. See the [introduction](index.md) for the status markers, the citation format and the grammar notation.
 
 ## 2.1 Source Files
 
@@ -43,7 +43,7 @@ No decision record states how source text is divided into tokens.
    digit      = "0" ... "9" ;
    ```
 
-2. **Decided.** A keyword (2.5) is not an identifier.
+2. **Decided.** A keyword (2.5) is not an identifier. `[ref: lexical-structure]`
 3. **Open.** Whether there is a limit on identifier length, and whether identifiers that begin with an underscore are reserved, is not stated.
 
 ## 2.5 Keywords

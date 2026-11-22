@@ -23,21 +23,18 @@
     "files.exclude": {
       "**/node_modules/**": true,
       "**/.cache/**": true,
-      "quartz_repo/.github/workflows/**": true,
-      "src/quartz/**": true,
-      "build/**": true,
+      "zig-out/**": true,
     },
     "files.watcherExclude": {
       "**/node_modules/**": true,
       "**/.cache/**": true,
       "**/.git/**": true,
-      "build/**": true,
-      "src/quartz/**": true,
+      "zig-out/**": true,
       // a clone of the compiler made for the build, see the readme
       "cesium-src/**": true,
     },
     "search.exclude": {
-      "build/**": true,
+      "zig-out/**": true,
       "cesium-src/**": true,
     },
     "files.insertFinalNewline": true,
@@ -67,9 +64,8 @@
     "foam.edit.linkReferenceDefinitions": "off",
     "foam.files.exclude": [
       "readme.md",
-      "build/**/*",
-      "quartz/**/*",
-      "quartz_repo/**/*",
+      "zig-out/**/*",
+      "site/content/**/*",
       // "private/**/*"
     ],
     "foam.files.newNotePath": "currentDir",
@@ -101,10 +97,10 @@
       {
         "label": "site: build and serve",
         "type": "shell",
-        "command": "npm",
+        "command": "zig",
         "args": [
-          "run",
-          "dev",
+          "build",
+          "serve",
         ],
         "problemMatcher": [],
         "presentation": {
