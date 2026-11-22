@@ -501,10 +501,12 @@ footer {
   .sidebar.left {
     position: fixed;
     top: var(--topbar-h);
-    bottom: 0;
     left: 0;
     z-index: 4;
     width: min(20rem, 85vw);
+    /* a fixed box with align-self: start fits its content; give it the height of the screen */
+    height: calc(100vh - var(--topbar-h));
+    height: calc(100dvh - var(--topbar-h));
     max-height: none;
     padding: 1rem;
     background: var(--light);
