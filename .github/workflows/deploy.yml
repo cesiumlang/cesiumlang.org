@@ -9,6 +9,9 @@ on:
       - content/**
       - quartz_repo
       - src/**
+      - tools/**
+      - build.zig
+      - build.zig.zon
       - grammar
 
 permissions:
@@ -51,6 +54,14 @@ jobs:
 
       - name: Build Quartz
         run: npm run build:ci
+
+      # llms.txt, a Markdown version of each page and the Cesium skill
+      # (cesiumlang/cesiumlang.org#25), written beside the pages
+      - name: Files for AI models
+        run: |
+          bash cesium-src/tools/fetch-devkit.sh
+          cesium-src/.devkit/zig/zig build
+          zig-out/bin/cesium-site-ai --out quartz_repo/public --host cesiumlang.org
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
