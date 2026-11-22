@@ -1,6 +1,3 @@
-[submodule "docs/quartz_repo"]
-	path = quartz_repo
-	url = https://github.com/jackyzha0/quartz
 [submodule "grammar"]
 	path = grammar
 	url = https://github.com/cesiumlang/grammar.git

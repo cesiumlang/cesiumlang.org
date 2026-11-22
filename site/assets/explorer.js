@@ -191,15 +191,43 @@
 
   function setupToggles() {
     var root = document.documentElement;
+    var reader = document.getElementById("reader-toggle");
+    var menu = document.getElementById("menu-toggle");
+
     document.getElementById("theme-toggle").addEventListener("click", function () {
       root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
       store("theme", root.dataset.theme);
     });
-    document.getElementById("reader-toggle").addEventListener("click", function () {
+
+    reader.setAttribute("aria-pressed", root.dataset.reader === "on" ? "true" : "false");
+    reader.addEventListener("click", function () {
       if (root.dataset.reader === "on") delete root.dataset.reader;
       else root.dataset.reader = "on";
+      delete root.dataset.menu;
+      reader.setAttribute("aria-pressed", root.dataset.reader === "on" ? "true" : "false");
       store("reader", root.dataset.reader || "off");
     });
+
+    // the explorer is a menu on narrow screens
+    function setMenu(open) {
+      if (open) root.dataset.menu = "open";
+      else delete root.dataset.menu;
+      menu.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+    menu.addEventListener("click", function () {
+      setMenu(root.dataset.menu !== "open");
+    });
+    document.getElementById("menu-backdrop").addEventListener("click", function () {
+      setMenu(false);
+    });
+
+    // the name next to the icon goes when the page is scrolled
+    function scrolled() {
+      if (window.scrollY > 0) root.dataset.scrolled = "";
+      else delete root.dataset.scrolled;
+    }
+    window.addEventListener("scroll", scrolled, { passive: true });
+    scrolled();
   }
 
   setupToggles();

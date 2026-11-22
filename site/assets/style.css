@@ -70,58 +70,163 @@ h1 {
 
 .sidebar {
   position: sticky;
-  top: 1rem;
+  top: calc(var(--topbar-h) + 1rem);
   align-self: start;
-  max-height: calc(100vh - 2rem);
+  max-height: calc(100vh - var(--topbar-h) - 2rem);
   overflow-y: auto;
 }
 
-.site-title {
+/* the floating header: it stays on screen and the page scrolls under it */
+:root {
+  --topbar-h: 3.5rem;
+}
+
+#topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: var(--topbar-h);
+  padding: 0 1rem;
+  background: color-mix(in srgb, var(--light) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--lightgray);
+}
+
+#topbar .spacer {
+  flex: 1;
+}
+
+#topbar button {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 6px;
+  color: var(--darkgray);
+  cursor: pointer;
+}
+
+#topbar button:hover {
+  background: var(--highlight);
+}
+
+#topbar button:focus-visible {
+  outline: 2px solid var(--secondary);
+}
+
+#topbar svg {
+  width: 20px;
+  height: 20px;
+  fill: var(--darkgray);
+}
+
+#topbar .menuIcon,
+#topbar .readerIcon {
+  fill: none;
+}
+
+#topbar .readerIcon {
+  fill: currentColor;
+}
+
+#menu-toggle {
+  display: none !important;
+}
+
+#topbar .dayIcon {
+  display: inline;
+}
+
+#topbar .nightIcon {
+  display: none;
+}
+
+:root[data-theme="dark"] #topbar .dayIcon {
+  display: none;
+}
+
+:root[data-theme="dark"] #topbar .nightIcon {
+  display: inline;
+}
+
+#reader-toggle[aria-pressed="true"] {
+  background: var(--highlight);
+}
+
+.brand {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   color: var(--dark);
   font-family: var(--font-header);
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 600;
 }
 
-.site-title img {
-  height: 3.5rem;
+.brand img {
+  height: 2.5rem;
   width: auto;
   margin: 0;
 }
 
-.tools {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin: 0.8rem 0;
+/* the title goes once the page has been scrolled */
+.brand-text {
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 10rem;
+  transition: max-width 0.2s, opacity 0.2s;
 }
 
-.tools button, #search-input {
+:root[data-scrolled] .brand-text {
+  max-width: 0;
+  opacity: 0;
+}
+
+#search-button {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.8rem;
+  font: inherit;
+  text-align: left;
+  color: var(--gray);
+  background: transparent;
+  border: 1px solid var(--lightgray);
+  border-radius: 4px;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+}
+
+#search-button:hover {
+  border-color: var(--secondary);
+}
+
+#search-input {
   font: inherit;
   color: var(--darkgray);
   background: transparent;
   border: 1px solid var(--lightgray);
   border-radius: 4px;
   padding: 0.2rem 0.7rem;
-  cursor: pointer;
 }
 
-.tools button:hover {
-  border-color: var(--secondary);
-}
-
-/* explorer */
+/* explorer: a folder is an arrow and a title; what is inside is indented under
+   the title, with a line to show the level */
 #explorer ul {
   list-style: none;
   margin: 0;
-  padding-left: 0.9rem;
+  padding: 0;
 }
 
-#explorer > ul {
-  padding-left: 0;
+#explorer ul ul {
+  margin-left: 0.5rem;
+  padding-left: 0.75rem;
+  border-left: 1px solid var(--lightgray);
 }
 
 #explorer li {
@@ -134,10 +239,17 @@ h1 {
   gap: 0.25rem;
 }
 
+/* a page lines up with the titles of the folders beside it */
+#explorer li:not(.folder) > a,
+#explorer li:not(.folder) > span {
+  margin-left: 1.25rem;
+}
+
 #explorer button.fold {
   all: unset;
   cursor: pointer;
   width: 1rem;
+  text-align: center;
   color: var(--gray);
   transition: transform 0.15s;
 }
@@ -345,26 +457,58 @@ footer {
   color: var(--gray);
 }
 
-/* narrow screens: one column, the explorer above the page */
+/* narrow screens: one column; the explorer is a menu under the header */
 @media (max-width: 1000px) {
   .page {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .sidebar {
-    position: static;
-    max-height: none;
+  #menu-toggle {
+    display: flex !important;
   }
 
   .sidebar.right {
     display: none;
   }
+
+  .sidebar.left {
+    position: fixed;
+    top: var(--topbar-h);
+    bottom: 0;
+    left: 0;
+    z-index: 4;
+    width: min(20rem, 85vw);
+    max-height: none;
+    padding: 1rem;
+    background: var(--light);
+    border-right: 1px solid var(--lightgray);
+    transform: translateX(-100%);
+    transition: transform 0.2s;
+  }
+
+  :root[data-menu="open"] .sidebar.left {
+    transform: none;
+  }
+
+  #menu-backdrop {
+    display: none;
+    position: fixed;
+    inset: var(--topbar-h) 0 0 0;
+    z-index: 3;
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  :root[data-menu="open"] #menu-backdrop {
+    display: block;
+  }
 }
 
-/* reader mode: only the page */
+/* reader mode: only the page, and the header to leave it */
 :root[data-reader="on"] .sidebar,
-:root[data-reader="on"] #breadcrumbs {
-  display: none;
+:root[data-reader="on"] #breadcrumbs,
+:root[data-reader="on"] #menu-toggle,
+:root[data-reader="on"] #menu-backdrop {
+  display: none !important;
 }
 
 :root[data-reader="on"] .page {
