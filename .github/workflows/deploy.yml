@@ -18,6 +18,12 @@ permissions:
   pages: write
   id-token: write
 
+# The Zig that builds the site, set by hand. When the Zig of the Cesium devkit
+# changes, change it here, in build.zig.zon and in the workflow of
+# cesiumlang/cesiumlang.dev (see CLAUDE.md of cesium-workspace).
+env:
+  ZIG_VERSION: 0.17.1
+
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -34,16 +40,9 @@ jobs:
           fetch-depth: 0 # the page dates come from git history
           submodules: true
 
-      # The compiler, for the documentation that is to be generated from its
-      # source, and for the devkit with the Zig that builds the site.
-      - uses: actions/checkout@v7
+      - uses: randyos-org/setup-zig@node24 # v2.2.1 on Node.js 24, until upstream releases it
         with:
-          repository: cesiumlang/cesium
-          ref: main
-          path: cesium-src
-
-      - name: Fetch the devkit
-        run: bash cesium-src/tools/fetch-devkit.sh
+          version: ${{ env.ZIG_VERSION }}
 
       # Zine is built from source: keep what Zig built
       - uses: actions/cache@v4
@@ -54,7 +53,7 @@ jobs:
           key: zig-${{ runner.os }}-${{ hashFiles('build.zig.zon', 'grammar/build.zig.zon') }}
 
       - name: Build the site
-        run: cesium-src/.devkit/zig/zig build
+        run: zig build
 
       # llms.txt, a Markdown version of each page and the Cesium skill
       # (cesiumlang/cesiumlang.org#25), written beside the pages

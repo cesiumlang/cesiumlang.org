@@ -5,11 +5,6 @@
 # machine-specific editor settings (absolute paths)
 /.vscode/settings.json
 
-# A clone of cesiumlang/cesium made for the build (CI makes one; see the
-# readme). It is not a submodule. build.js also reads this file to decide
-# what it mirrors into build/.
-/cesium-src/
-
 node_modules/
 
 .zig-cache/

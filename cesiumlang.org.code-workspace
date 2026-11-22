@@ -30,12 +30,9 @@
       "**/.cache/**": true,
       "**/.git/**": true,
       "zig-out/**": true,
-      // a clone of the compiler made for the build, see the readme
-      "cesium-src/**": true,
     },
     "search.exclude": {
       "zig-out/**": true,
-      "cesium-src/**": true,
     },
     "files.insertFinalNewline": true,
     "editor.wrappingIndent": "indent",

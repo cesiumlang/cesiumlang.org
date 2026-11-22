@@ -10,7 +10,6 @@
     "zig-pkg/**",
     "site/content/**",
     // submodules: each has its own repository and rules
-    "cesium-src/**",
     "grammar/**",
     ".cspell/**"
   ]
