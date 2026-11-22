@@ -169,34 +169,17 @@
   // ---- search --------------------------------------------------------
 
   function setupSearch(pages) {
-    var box = document.getElementById("search");
     var input = document.getElementById("search-input");
     var results = document.getElementById("search-results");
 
-    function open() {
-      box.hidden = false;
-      input.value = "";
-      results.textContent = "";
-      input.focus();
-    }
-    function close() {
-      box.hidden = true;
+    function hide() {
+      results.hidden = true;
     }
 
-    document.getElementById("search-button").addEventListener("click", open);
-    box.addEventListener("click", function (event) {
-      if (event.target === box) close();
-    });
-    document.addEventListener("keydown", function (event) {
-      var typing = /^(INPUT|TEXTAREA)$/.test((event.target.tagName || ""));
-      if (event.key === "Escape") close();
-      else if (event.key === "/" && !typing) { event.preventDefault(); open(); }
-    });
-
-    input.addEventListener("input", function () {
-      var terms = input.value.toLowerCase().split(/\s+/).filter(Boolean);
+    function show() {
+      var terms = input.value.toLowerCase().split(/s+/).filter(Boolean);
       results.textContent = "";
-      if (!terms.length) return;
+      if (!terms.length) { hide(); return; }
       var hits = [];
       pages.forEach(function (page) {
         var score = 0;
@@ -214,6 +197,7 @@
         if (score) hits.push({ page: page, score: score, text: text });
       });
       hits.sort(function (a, b) { return b.score - a.score; });
+      if (!hits.length) results.appendChild(el("p", {}, "Nothing found"));
       hits.slice(0, 20).forEach(function (hit) {
         var a = el("a", { href: url(hit.page.slug) });
         a.appendChild(el("strong", {}, hit.page.title));
@@ -221,6 +205,18 @@
         a.appendChild(el("small", {}, hit.page.text.slice(at, at + 140)));
         results.appendChild(a);
       });
+      results.hidden = false;
+    }
+
+    input.addEventListener("input", show);
+    input.addEventListener("focus", show);
+    document.addEventListener("click", function (event) {
+      if (!document.getElementById("search").contains(event.target)) hide();
+    });
+    document.addEventListener("keydown", function (event) {
+      var typing = /^(INPUT|TEXTAREA)$/.test((event.target.tagName || ""));
+      if (event.key === "Escape") { input.value = ""; hide(); input.blur(); }
+      else if (event.key === "/" && !typing) { event.preventDefault(); input.focus(); }
     });
   }
 

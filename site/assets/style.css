@@ -189,37 +189,83 @@ h1 {
 }
 
 
-/* the search field of the header: the room between the title and the buttons */
-#topbar #search-button {
+/* the search field of the header: the room between the title and the buttons;
+   what it finds is listed under it */
+#search {
+  position: relative;
+  display: flex;
+  align-items: center;
   flex: 1 1 auto;
   min-width: 0;
   max-width: 36rem;
-  width: auto;
-  justify-content: flex-start;
-  gap: 0.5rem;
-  padding: 0 0.75rem;
   color: var(--gray);
-  border: 1px solid var(--lightgray);
 }
 
-#topbar #search-button svg {
-  flex: none;
-  fill: none;
+#search > svg {
+  position: absolute;
+  left: 0.7rem;
   width: 16px;
   height: 16px;
-}
-
-#topbar #search-button:hover {
-  border-color: var(--secondary);
+  pointer-events: none;
 }
 
 #search-input {
+  width: 100%;
+  min-width: 0;
+  height: 2.25rem;
+  padding: 0 0.75rem 0 2.1rem;
   font: inherit;
   color: var(--darkgray);
   background: transparent;
   border: 1px solid var(--lightgray);
-  border-radius: 4px;
-  padding: 0.2rem 0.7rem;
+  border-radius: 6px;
+}
+
+#search-input:focus {
+  outline: none;
+  border-color: var(--secondary);
+}
+
+#search-results {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  width: max(100%, min(36rem, 92vw));
+  max-height: 70vh;
+  overflow-y: auto;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+}
+
+#search-results[hidden] {
+  display: none;
+}
+
+#search-results a {
+  display: block;
+  padding: 0.5rem 0.8rem;
+  border-bottom: 1px solid var(--lightgray);
+  color: var(--darkgray);
+}
+
+#search-results a:hover {
+  background: var(--highlight);
+}
+
+#search-results strong {
+  color: var(--dark);
+}
+
+#search-results small {
+  display: block;
+  color: var(--gray);
+}
+
+#search-results p {
+  margin: 0;
+  padding: 0.6rem 0.8rem;
 }
 
 /* explorer: a folder is an arrow and a title; what is inside is indented under
@@ -412,58 +458,6 @@ footer {
   font-size: 0.9rem;
 }
 
-/* search */
-#search[hidden] {
-  display: none;
-}
-
-#search {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  padding-top: 10vh;
-  z-index: 10;
-}
-
-.search-box {
-  width: min(40rem, 92vw);
-  max-height: 70vh;
-  overflow-y: auto;
-  background: var(--light);
-  border: 1px solid var(--lightgray);
-  border-radius: 6px;
-  padding: 1rem;
-  align-self: flex-start;
-}
-
-#search-input {
-  width: 100%;
-  font-size: 1.1rem;
-  padding: 0.5rem 0.8rem;
-}
-
-#search-results a {
-  display: block;
-  padding: 0.5rem 0.2rem;
-  border-bottom: 1px solid var(--lightgray);
-  color: var(--darkgray);
-}
-
-#search-results a:hover {
-  background: var(--highlight);
-}
-
-#search-results strong {
-  color: var(--dark);
-}
-
-#search-results small {
-  display: block;
-  color: var(--gray);
-}
-
 /* narrow screens: one column; the explorer is a menu under the header */
 @media (max-width: 1000px) {
   :root[data-scrolled] .brand-text {
@@ -471,8 +465,17 @@ footer {
     opacity: 0;
   }
 
-  #topbar #search-button {
+  #search {
     max-width: none;
+  }
+
+  /* the results use the width of the screen, not of the field */
+  #search-results {
+    position: fixed;
+    top: calc(var(--topbar-h) + 0.3rem);
+    left: 0.5rem;
+    right: 0.5rem;
+    width: auto;
   }
 
   #topbar .spacer {

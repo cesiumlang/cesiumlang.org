@@ -77,7 +77,9 @@ fn excerpt(arena: std.mem.Allocator, page: Page) error{OutOfMemory}![]const u8 {
         try prose.appendSlice(arena, line);
         try prose.append(arena, '\n');
     }
-    const words = try ai.plain.text(arena, prose.items);
+    // the search shows a snippet as text: no code marks
+    const marked = try ai.plain.text(arena, prose.items);
+    const words = try std.mem.replaceOwned(u8, arena, marked, "`", "");
     var end = @min(words.len, excerpt_bytes);
     while (end > 0 and end < words.len and words[end] & 0xC0 == 0x80) end -= 1;
     return words[0..end];
