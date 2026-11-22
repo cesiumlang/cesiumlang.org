@@ -74,6 +74,8 @@ h1 {
   align-self: start;
   max-height: calc(100vh - var(--topbar-h) - 2rem);
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--lightgray) transparent;
 }
 
 /* the floating header: it stays on screen and the page scrolls under it */
@@ -183,26 +185,28 @@ h1 {
   transition: max-width 0.2s, opacity 0.2s;
 }
 
-:root[data-scrolled] .brand-text {
-  max-width: 0;
-  opacity: 0;
-}
 
-#search-button {
-  display: block;
-  width: 100%;
-  margin-bottom: 0.8rem;
-  font: inherit;
-  text-align: left;
+/* the search field of the header: the room between the title and the buttons */
+#topbar #search-button {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 36rem;
+  width: auto;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  padding: 0 0.75rem;
   color: var(--gray);
-  background: transparent;
   border: 1px solid var(--lightgray);
-  border-radius: 4px;
-  padding: 0.3rem 0.7rem;
-  cursor: pointer;
 }
 
-#search-button:hover {
+#topbar #search-button svg {
+  flex: none;
+  fill: none;
+  width: 16px;
+  height: 16px;
+}
+
+#topbar #search-button:hover {
   border-color: var(--secondary);
 }
 
@@ -459,6 +463,29 @@ footer {
 
 /* narrow screens: one column; the explorer is a menu under the header */
 @media (max-width: 1000px) {
+  :root[data-scrolled] .brand-text {
+    max-width: 0;
+    opacity: 0;
+  }
+
+  #topbar #search-button {
+    max-width: none;
+  }
+
+  #topbar .spacer {
+    display: none;
+  }
+
+  :root[data-menu="open"],
+  :root[data-menu="open"] body {
+    overflow: hidden;
+  }
+
+  .sidebar.left {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
   .page {
     grid-template-columns: minmax(0, 1fr);
   }

@@ -93,7 +93,66 @@
         li.appendChild(row);
         li.appendChild(renderNode(folder, depth + 1));
       } else {
-        li.appendChild(link(item.page, item.page.title));
+        pageItem(li, item.page);
+      }
+      list.appendChild(li);
+    });
+    return list;
+  }
+
+  // a page with headings is a fold: the headings are what it has inside
+  function pageItem(li, page) {
+    var tree = headingTree(page.headings);
+    if (!tree.length) {
+      li.appendChild(link(page, page.title));
+      return;
+    }
+    var key = "explorer:" + page.slug;
+    var open = page.slug === current || stored(key) === "open";
+    li.className = "folder" + (open ? " open" : "");
+    var row = el("div", { class: "row" });
+    row.appendChild(foldButton(li, key));
+    row.appendChild(link(page, page.title));
+    li.appendChild(row);
+    li.appendChild(headingList(page, tree));
+  }
+
+  function foldButton(li, key) {
+    var fold = el("button", { class: "fold", type: "button", "aria-label": "Expand or collapse" }, "▸");
+    fold.addEventListener("click", function () {
+      li.classList.toggle("open");
+      if (key) store(key, li.classList.contains("open") ? "open" : "closed");
+    });
+    return fold;
+  }
+
+  // the headings by depth: a heading is inside the nearest one above it that is less deep
+  function headingTree(headings) {
+    var root = { depth: 0, children: [] };
+    var stack = [root];
+    headings.forEach(function (h) {
+      while (stack.length > 1 && stack[stack.length - 1].depth >= h.depth) stack.pop();
+      var node = { heading: h, depth: h.depth, children: [] };
+      stack[stack.length - 1].children.push(node);
+      stack.push(node);
+    });
+    return root.children;
+  }
+
+  function headingList(page, nodes) {
+    var list = el("ul");
+    nodes.forEach(function (node) {
+      var li = el("li");
+      var a = el("a", { href: url(page.slug) + "#" + node.heading.id }, node.heading.text);
+      if (node.children.length) {
+        li.className = "folder";
+        var row = el("div", { class: "row" });
+        row.appendChild(foldButton(li, null));
+        row.appendChild(a);
+        li.appendChild(row);
+        li.appendChild(headingList(page, node.children));
+      } else {
+        li.appendChild(a);
       }
       list.appendChild(li);
     });
