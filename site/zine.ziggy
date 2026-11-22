@@ -1,0 +1,11 @@
+.zine_version = "0.14.1-dev",
+.site = .simple(.{
+    .title = "Cesium",
+    .host_url = "https://cesiumlang.org",
+    .content_dir_path = "content",
+    .layouts_dir_path = "layouts",
+    .assets_dir_path = "assets",
+    .static_assets = [
+        "img",
+    ],
+}),

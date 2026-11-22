@@ -17,7 +17,7 @@ The Cesium compiler is written in Cesium. Something else has to compile it the f
 | Stage 1 (`cesium1`) | S0 | S1 | Frontend only: parses S1, emits core MIR text, hands it to `libcsmir`. Verbose by design; frozen once the next layer works |
 | Real compiler | S1 | Full Cesium | Reimplements MIR (both levels) and both lowerings in Cesium; borrow checking, generics, math operators, freestanding support; starts on QBE and adds LLVM |
 
-- **S0** is a deliberately tiny subset of Cesium; see [[compiler/s0-subset|The S0 Subset]].
+- **S0** is a deliberately tiny subset of Cesium; see [The S0 Subset](s0-subset.md).
 - **S1** is a comfortable language for writing the real compiler. Its feature list is a set of candidates to be confirmed when stage 1 is designed.
 - Convenience features (`for`, `switch`, tagged unions, strings, modules, floats) are implemented in stage 1, written in S0, not in stage 0. They are defined as rewrites into core MIR.
 - More layers are added only if a later compiler genuinely needs features its predecessor cannot compile.
@@ -31,7 +31,7 @@ The Cesium compiler is written in Cesium. Something else has to compile it the f
 
 ## Stage 0
 
-Stage 0 is written in portable C: the intersection of C99 and C11 that every mainstream compiler implements, with no extensions, only the ISO C standard library and a list of banned functions. See [[compiler/stage0-c-dialect|Stage 0 C Dialect]].
+Stage 0 is written in portable C: the intersection of C99 and C11 that every mainstream compiler implements, with no extensions, only the ISO C standard library and a list of banned functions. See [Stage 0 C Dialect](stage0-c-dialect.md).
 
 It consists of:
 

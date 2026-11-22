@@ -2,7 +2,7 @@
 
 This repo defines the files used to generate the official [Cesium website](https://cesiumlang.org).
 
-The site is built using [Quartz](https://quartz.jzhao.xyz/), a static site generator for building knowledge gardens. While Quartz is not natively setup to support generating API documentation, it is our goal to repurpose it for that given its other advantages and features as a generator plus the simplicity of its code.
+The site is built with [Zine](https://zine-ssg.io), a static site generator written in Zig, from plain Markdown pages. The pages do not depend on the generator: a Zig program, `tools/zine`, turns them into what Zine reads, so another generator (or the one that is to be written in Cesium, [cesiumlang/cesiumlang.org#23](https://github.com/cesiumlang/cesiumlang.org/issues/23)) can take their place. The rebuild is tracked in [cesiumlang/cesiumlang.org#28](https://github.com/cesiumlang/cesiumlang.org/issues/28).
 
 ## Repository layout
 
@@ -10,105 +10,61 @@ Clone it with `--recurse-submodules`. To work on all Cesium repositories togethe
 
 | Path | What |
 | --- | --- |
-| `content/` | The pages of the site: language reference, compiler documentation, draft specification, news |
-| `src/` | Customizations of Quartz: configuration, layout, components and overrides, copied over `quartz_repo/` by the build |
-| `build.js` | The build script |
-| `quartz_repo/` | Submodule: [Quartz](https://github.com/jackyzha0/quartz), pinned to one commit that the customizations depend on. Do not move it. |
-| `grammar/` | Submodule: [cesiumlang/grammar](https://github.com/cesiumlang/grammar), the TextMate grammar that highlights Cesium code on the site |
+| `content/` | The pages of the site as Markdown: language reference, compiler documentation, draft specification, news. Links between pages are relative Markdown links to `.md` files (`[the specification](../spec/index.md)`); callouts are `> [!warning] Title` |
+| `site/` | What Zine needs besides the pages: `zine.ziggy`, the layouts, and the style sheets and scripts in `assets/` |
+| `tools/zine/` | `cesium-site-gen`: writes the input of Zine from `content/` into `site/content/` and `site/assets/`, with the code blocks highlighted and `site-index.json` for the explorer and the search |
+| `tools/ai/` | `cesium-site-ai`: writes `llms.txt`, a Markdown version of every page and the Cesium skill for AI models ([cesiumlang/cesiumlang.org#25](https://github.com/cesiumlang/cesiumlang.org/issues/25)); also the units the other tool shares (pages, links, rules) |
+| `build.zig` | Builds the tools and the site |
+| `grammar/` | Submodule: [cesiumlang/grammar](https://github.com/cesiumlang/grammar), the Tree-sitter grammar and highlighter that color Cesium code on the site |
 | `.cspell/cesium/` | Submodule: [cesiumlang/cspell-cesium](https://github.com/cesiumlang/cspell-cesium), the spelling dictionary of Cesium terms |
 
 `cesiumlang.org.code-workspace` is the VS Code workspace for the site. It repeats the settings of the submodules' own workspace files, so opening this one workspace is enough.
 
-### The compiler source
-
-The site is to include documentation generated from the source of the compiler, [cesiumlang/cesium](https://github.com/cesiumlang/cesium). That generator does not exist yet, so nothing reads the source today; the connection is prepared. The compiler is not a submodule here. `build.js` looks for it in this order and passes the place it finds on to the build in the environment variable `CESIUM_SRC`:
-
-1. `CESIUM_SRC`, if you set it.
-2. `cesium-src/` in this repository: a plain clone, ignored by Git. The deployment workflow makes one.
-3. `../cesium-src/`: the compiler next to this repository, which is where cesium-workspace has it.
-
 ## Setup
 
-The site needs Node.js 22; the version is in `.node-version`.
-
-With [direnv](https://direnv.net) and [fnm](https://github.com/Schniz/fnm) installed, `.envrc` selects that Node.js version when you enter the directory. Run `direnv allow` once. Without them, install Node.js 22 yourself.
+The site needs Zig 0.17.1. CI installs that version, set by hand as `ZIG_VERSION` in `.github/workflows/deploy.yml` (and in the workflow of cesiumlang/cesiumlang.dev). Locally, use the Zig of the Cesium devkit, which is that version, from the compiler's repository:
 
 ```bash
-npm install
-npm run install-deps
+bash ../cesium-src/tools/fetch-devkit.sh   # in cesium-workspace; or clone cesiumlang/cesium anywhere
 ```
 
-`npm run install-deps` installs the dependencies of Quartz in `quartz_repo/`.
+With [direnv](https://direnv.net), `.envrc` puts `../cesium-src/.devkit/zig` on the `PATH` when you enter the directory. Run `direnv allow` once. Without it, call that `zig` yourself.
 
-## Build
+The first build compiles Zine and takes some minutes; later builds are quick.
 
-The project uses a custom Node.js build script (`build.js`) that handles workspace mirroring and customization copying for clean isolated builds.
-
-### Usage
+## Building
 
 ```bash
-# Just build (with build isolation)
-npm run build
-
-# Build for CI/CD (no build directory)
-npm run build:ci
-
-# Build and serve locally
-npm run serve
-
-# Build and serve with hot reload
-npm run dev
-
-# Just build with watch mode
-npm run watch
+zig build            # the site, in zig-out/public
+zig build serve      # the dev server, at http://localhost:1990
+zig build gen        # only the input of Zine: site/content and site/assets
+zig build test       # the tests of the tools
 ```
 
-Or directly:
+After `zig build`, add the files for AI models to the output:
 
 ```bash
-# Just build (with build isolation)
-node build.js
-
-# Build without isolation (CI/CD mode)
-node build.js --no-build-dir
-
-# Build and serve locally
-node build.js --serve
-
-# Build and serve with hot reload
-node build.js --serve --watch
-
-# Just build with watch mode
-node build.js --watch
+zig-out/bin/cesium-site-ai --out zig-out/public --host cesiumlang.org
 ```
 
-### How it works
+`site/content/`, `site/assets/site-index.json` and `site/assets/img/` are written by `cesium-site-gen` and are not committed; edit `content/` instead.
 
-#### Default mode (with build isolation)
+The site is to include documentation generated from the compiler's source ([cesiumlang/cesium#64](https://github.com/cesiumlang/cesium/issues/64)); nothing reads the source yet. Each documented symbol is to be a page of its own, which the explorer, search and backlinks pick up from `site-index.json` like any other page.
 
-1. **Mirrors workspace** to `build/` directory (excluding files/directories specified in `.gitignore`)
-2. **Copies customizations** from `build/src/` to `build/quartz_repo/`
-3. **Handles overrides** by copying `build/src/quartz_overrides/` contents into `build/quartz_repo/quartz/`
-4. **Runs Quartz build** in the `build/quartz_repo/` directory
-5. **File watching** (in serve/watch modes) syncs workspace changes to build directory
+## Writing pages
 
-#### CI/CD mode (`--no-build-dir`)
+A page is a Markdown file in `content/` with a short front matter:
 
-1. **Copies customizations** directly from `src/` to `quartz_repo/`
-2. **Handles overrides** by copying `src/quartz_overrides/` contents into `quartz_repo/quartz/`
-3. **Runs Quartz build** in the `quartz_repo/` directory
-4. **No file watching** (not needed in CI/CD environments)
+```markdown
+---
+title: "Error Handling"
+tags: ["errors", "catch"]
+sortorder: 11
+---
+```
 
-### Output
+`sortorder` orders the pages of a directory in the explorer. A directory is a section when it has an `index.md`. Code blocks without a language, and those marked `cesium`, are highlighted as Cesium.
 
-- **Default mode**: `build/public/` (generated by Quartz)
-- **CI/CD mode**: `public/` (generated by Quartz)
-- **Isolated build**: All build operations happen in `build/` keeping workspace clean (default mode only)
+## The development site
 
-### What the mirror leaves out
-
-`build.js` does not copy what `.gitignore` lists. That file therefore also names `cesium-src/`, so that a clone of the compiler made there is not copied into `build/`.
-
-## Deployment
-
-A push to `main` that changes the content, the customizations or a submodule builds the site, with the `main` branch of the compiler in `cesium-src/`, and publishes it to GitHub Pages (`.github/workflows/deploy.yml`). Changes are collected on `dev` through pull requests and released by merging `dev` into `main`.
+Every push to `dev` and to a branch named `web/...` is built at <https://cesiumlang.dev>, by the repository [cesiumlang/cesiumlang.dev](https://github.com/cesiumlang/cesiumlang.dev) (a repository has one Pages domain), through the workflow `dev-site.yml`. cesiumlang.org is built from `main` by `deploy.yml`.

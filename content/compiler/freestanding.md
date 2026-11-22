@@ -33,7 +33,7 @@ A backend emits calls to helper functions when the target lacks an instruction, 
 
 ## Controls for Kernel Code
 
-Most of these map onto LLVM IR attributes and target features, so the [[compiler/mir|middle IR]] must carry them through:
+Most of these map onto LLVM IR attributes and target features, so the [middle IR](mir.md) must carry them through:
 
 | Need | Mechanism |
 | --- | --- |

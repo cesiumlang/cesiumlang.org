@@ -5,11 +5,11 @@
     "content/claude/**/*",
     "node_modules/**",
     // build output and the mirrored workspace
-    "build/**",
+    "zig-out/**",
+    ".zig-cache/**",
+    "zig-pkg/**",
+    "site/content/**",
     // submodules: each has its own repository and rules
-    "quartz_repo/**",
-    "src/quartz/**",
-    "cesium-src/**",
     "grammar/**",
     ".cspell/**"
   ]

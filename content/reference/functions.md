@@ -66,7 +66,7 @@ scale_inplace(~v, 2.0);
 // determinant(v);               // error: a plain value is not passed implicitly
 ```
 
-Owned return values are marked one by one, so mixed returns work: `:~Matrix, u8 = try_invert(#Matrix m) { ... }`. See [[memory-management|Memory Management]] for the full rules.
+Owned return values are marked one by one, so mixed returns work: `:~Matrix, u8 = try_invert(#Matrix m) { ... }`. See [Memory Management](memory-management.md) for the full rules.
 
 ### Read-Only Methods
 

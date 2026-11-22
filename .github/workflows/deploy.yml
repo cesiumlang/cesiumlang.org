@@ -1,4 +1,4 @@
-name: Deploy Quartz site to GitHub Pages
+name: Deploy site to GitHub Pages
 
 on:
   push:
@@ -7,14 +7,22 @@ on:
     paths:
       - .github/workflows/deploy.yml
       - content/**
-      - quartz_repo
-      - src/**
+      - site/**
+      - tools/**
+      - build.zig
+      - build.zig.zon
       - grammar
 
 permissions:
   contents: read
   pages: write
   id-token: write
+
+# The Zig that builds the site, set by hand. When the Zig of the Cesium devkit
+# changes, change it here, in build.zig.zon and in the workflow of
+# cesiumlang/cesiumlang.dev (see CLAUDE.md of cesium-workspace).
+env:
+  ZIG_VERSION: 0.17.1
 
 concurrency:
   group: "pages"
@@ -24,38 +32,38 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     env:
-      # the time zone of the dates Quartz writes on the pages
+      # the time zone of the dates on the pages
       TZ: America/Chicago
     steps:
       - uses: actions/checkout@v7
         with:
-          fetch-depth: 0 # Fetch all history for git info
+          fetch-depth: 0 # the page dates come from git history
           submodules: true
 
-      # The compiler, for the documentation that is to be generated from its
-      # source. It is not a submodule: build.js finds it in cesium-src/.
-      - uses: actions/checkout@v7
+      - uses: randyos-org/setup-zig@node24 # v2.2.1 on Node.js 24, until upstream releases it
         with:
-          repository: cesiumlang/cesium
-          ref: main
-          path: cesium-src
+          version: ${{ env.ZIG_VERSION }}
 
-      - uses: actions/setup-node@v7
+      # Zine is built from source: keep what Zig built
+      - uses: actions/cache@v4
         with:
-          node-version-file: .node-version
+          path: |
+            ~/.cache/zig
+            .zig-cache
+          key: zig-${{ runner.os }}-${{ hashFiles('build.zig.zon', 'grammar/build.zig.zon') }}
 
-      - name: Install Dependencies
-        run: |
-          npm install
-          npm run install-deps
+      - name: Build the site
+        run: zig build
 
-      - name: Build Quartz
-        run: npm run build:ci
+      # llms.txt, a Markdown version of each page and the Cesium skill
+      # (cesiumlang/cesiumlang.org#25), written beside the pages
+      - name: Files for AI models
+        run: zig-out/bin/cesium-site-ai --out zig-out/public --host cesiumlang.org
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: quartz_repo/public
+          path: zig-out/public
 
   deploy:
     needs: build

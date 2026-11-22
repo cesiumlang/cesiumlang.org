@@ -1,4 +1,4 @@
-- Do not modify files in src/quartz/ or quartz_repo/ because they are "locked" submodule references.  Notify me if something absolutely must be modified in them and cannot be handled by overriding something in files outside those directories
+- The site is built with Zine from the Markdown in `content/`: `tools/zine` writes its input, and `site/` has the layouts, styles and scripts (cesiumlang.org#28).
 - don't redirect output to NUL, as in `2>nul`.  This does not work as expected in windows.  Just let it output things verbosely
 - indentation should always be only two spaces
 - don't redirect commands to NUL

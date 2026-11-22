@@ -1,0 +1,46 @@
+/* Cesium code: the classes written by cesium-highlight from the captures of
+   grammar/queries/highlights.scm ("keyword.control" is class="keyword control").
+   Colors follow the VS Code Light+ and Dark+ themes. */
+:root {
+  --hl-comment: #008000;
+  --hl-string: #a31515;
+  --hl-escape: #ee0000;
+  --hl-number: #098658;
+  --hl-constant: #0000ff;
+  --hl-keyword: #0000ff;
+  --hl-control: #af00db;
+  --hl-type: #267f99;
+  --hl-function: #795e26;
+  --hl-variable: #001080;
+  --hl-operator: #000000;
+}
+
+:root[data-theme="dark"] {
+  --hl-comment: #6a9955;
+  --hl-string: #ce9178;
+  --hl-escape: #d7ba7d;
+  --hl-number: #b5cea8;
+  --hl-constant: #569cd6;
+  --hl-keyword: #569cd6;
+  --hl-control: #c586c0;
+  --hl-type: #4ec9b0;
+  --hl-function: #dcdcaa;
+  --hl-variable: #9cdcfe;
+  --hl-operator: #d4d4d4;
+}
+
+pre.highlight .comment { color: var(--hl-comment); font-style: italic; }
+pre.highlight .string { color: var(--hl-string); }
+pre.highlight .string.escape { color: var(--hl-escape); }
+pre.highlight .number { color: var(--hl-number); }
+pre.highlight .constant { color: var(--hl-constant); }
+pre.highlight .keyword { color: var(--hl-keyword); }
+pre.highlight .keyword.control { color: var(--hl-control); }
+pre.highlight .type { color: var(--hl-type); }
+pre.highlight .function { color: var(--hl-function); }
+pre.highlight .constructor { color: var(--hl-type); }
+pre.highlight .property,
+pre.highlight .variable { color: var(--hl-variable); }
+pre.highlight .variable.builtin { color: var(--hl-constant); }
+pre.highlight .operator { color: var(--hl-operator); }
+pre.highlight .namespace { color: var(--hl-type); }

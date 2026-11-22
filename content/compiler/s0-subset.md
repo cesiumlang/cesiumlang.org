@@ -5,11 +5,11 @@ sortorder: 4
 ---
 
 > [!info] Source
-> [Design: stage 0 and the S0 subset](https://github.com/cesiumlang/cesium/issues/9), including its amendment comment of 2026-11-16, which applies the [file-extension decision](https://github.com/cesiumlang/cesium/issues/14) and the [ownership design](https://github.com/cesiumlang/cesium/issues/11). Status: draft. The formal grammar is in the specification: [[spec/s0-grammar|S0 Grammar]].
+> [Design: stage 0 and the S0 subset](https://github.com/cesiumlang/cesium/issues/9), including its amendment comment of 2026-11-16, which applies the [file-extension decision](https://github.com/cesiumlang/cesium/issues/14) and the [ownership design](https://github.com/cesiumlang/cesium/issues/11). Status: draft. The formal grammar is in the specification: [S0 Grammar](../spec/s0-grammar.md).
 
-S0 is the deliberately tiny subset of Cesium that stage 0 compiles. Stage 0 has one job, which is to compile stage 1 (`cesium1`), and stage 1 is written in S0. See [[compiler/bootstrap|Bootstrap Chain]].
+S0 is the deliberately tiny subset of Cesium that stage 0 compiles. Stage 0 has one job, which is to compile stage 1 (`cesium1`), and stage 1 is written in S0. See [Bootstrap Chain](bootstrap.md).
 
-S0 is designed together with core [[compiler/mir|MIR]] so that it is essentially a readable notation for it: almost every S0 construct maps one-to-one onto a core MIR construct.
+S0 is designed together with core [MIR](mir.md) so that it is essentially a readable notation for it: almost every S0 construct maps one-to-one onto a core MIR construct.
 
 ## Rules
 
@@ -160,7 +160,7 @@ i32 = main(i32 argc, ##u8 argv) {
 > [!info] Source
 > The first implementation of stage 0, [cesiumlang/cesium#60](https://github.com/cesiumlang/cesium/pull/60) (under review). Its `bootstrap/README.md` is the reference for what follows. This section describes what the compiler `cesium0` does; it decides nothing about the language.
 
-`cesium0` compiles the sample above, with the pointers it writes through declared `~T`, and its `cstr_len` lowers to exactly the core MIR shown on the [[compiler/mir|MIR]] page.
+`cesium0` compiles the sample above, with the pointers it writes through declared `~T`, and its `cstr_len` lowers to exactly the core MIR shown on the [MIR](mir.md) page.
 
 Stage 0 checks only what keeps S0 source meaningful:
 
