@@ -32,6 +32,7 @@
 
 body {
   margin: 0;
+  padding-top: var(--topbar-h);
   background: var(--light);
   color: var(--darkgray);
   font-family: var(--font-body);
@@ -84,8 +85,10 @@ h1 {
 }
 
 #topbar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 5;
   display: flex;
   align-items: center;
