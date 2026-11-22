@@ -33,7 +33,8 @@ const config: QuartzConfig = {
     //   provider: "plausible",
     // },
     locale: "en-US",
-    baseUrl: "cesiumlang.org",
+    // the development build (cesiumlang.dev) sets CESIUM_SITE_HOST
+    baseUrl: process.env.CESIUM_SITE_HOST ?? "cesiumlang.org",
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "modified",
     theme: {
