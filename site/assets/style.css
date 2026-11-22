@@ -1,0 +1,372 @@
+/* The Cesium site. Colors are the theme of the Quartz site it replaces. */
+:root {
+  --light: #faf8f8;
+  --lightgray: #e5e5e5;
+  --gray: #b8b8b8;
+  --darkgray: #4e4e4e;
+  --dark: #2b2b2b;
+  --secondary: #284b63;
+  --tertiary: #84a59d;
+  --highlight: rgba(143, 159, 169, 0.15);
+  --code-bg: #f3f1f1;
+  --font-body: "Source Sans Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-header: "Schibsted Grotesk", var(--font-body);
+  --font-code: "IBM Plex Mono", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
+}
+
+:root[data-theme="dark"] {
+  --light: #161618;
+  --lightgray: #393639;
+  --gray: #646464;
+  --darkgray: #d4d4d4;
+  --dark: #ebebec;
+  --secondary: #7b97aa;
+  --tertiary: #84a59d;
+  --highlight: rgba(143, 159, 169, 0.15);
+  --code-bg: #1f1f22;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--light);
+  color: var(--darkgray);
+  font-family: var(--font-body);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--secondary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--tertiary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--dark);
+  font-family: var(--font-header);
+  line-height: 1.2;
+  margin: 1.6em 0 0.5em;
+}
+
+h1 {
+  margin-top: 0;
+}
+
+.page {
+  display: grid;
+  grid-template-columns: minmax(14rem, 20rem) minmax(0, 46rem) minmax(10rem, 16rem);
+  gap: 2rem;
+  justify-content: center;
+  max-width: 100rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.sidebar {
+  position: sticky;
+  top: 1rem;
+  align-self: start;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+
+.site-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--dark);
+  font-family: var(--font-header);
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.site-title img {
+  height: 3.5rem;
+  width: auto;
+  margin: 0;
+}
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.8rem 0;
+}
+
+.tools button, #search-input {
+  font: inherit;
+  color: var(--darkgray);
+  background: transparent;
+  border: 1px solid var(--lightgray);
+  border-radius: 4px;
+  padding: 0.2rem 0.7rem;
+  cursor: pointer;
+}
+
+.tools button:hover {
+  border-color: var(--secondary);
+}
+
+/* explorer */
+#explorer ul {
+  list-style: none;
+  margin: 0;
+  padding-left: 0.9rem;
+}
+
+#explorer > ul {
+  padding-left: 0;
+}
+
+#explorer li {
+  margin: 0.15rem 0;
+}
+
+#explorer .folder > .row {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+#explorer button.fold {
+  all: unset;
+  cursor: pointer;
+  width: 1rem;
+  color: var(--gray);
+  transition: transform 0.15s;
+}
+
+#explorer .folder.open > .row > button.fold {
+  transform: rotate(90deg);
+}
+
+#explorer .folder:not(.open) > ul {
+  display: none;
+}
+
+#explorer a.current {
+  color: var(--tertiary);
+  font-weight: 600;
+}
+
+#explorer a {
+  color: var(--darkgray);
+}
+
+#explorer a:hover {
+  color: var(--secondary);
+}
+
+/* content */
+.content img {
+  max-width: 100%;
+}
+
+.meta {
+  color: var(--gray);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.meta .tag {
+  display: inline-block;
+  margin-right: 0.4rem;
+  padding: 0 0.5rem;
+  border-radius: 1rem;
+  background: var(--highlight);
+}
+
+#breadcrumbs {
+  color: var(--gray);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+#breadcrumbs a::after {
+  content: " \203A ";
+  color: var(--gray);
+}
+
+table {
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+}
+
+th, td {
+  border: 1px solid var(--lightgray);
+  padding: 0.35rem 0.7rem;
+  text-align: left;
+}
+
+th {
+  background: var(--highlight);
+}
+
+code {
+  font-family: var(--font-code);
+  font-size: 0.9em;
+  background: var(--code-bg);
+  border-radius: 4px;
+  padding: 0.1em 0.3em;
+}
+
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--lightgray);
+  border-radius: 5px;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+}
+
+blockquote {
+  margin: 1rem 0;
+  padding: 0.1rem 1rem;
+  border-left: 3px solid var(--lightgray);
+}
+
+/* callouts: Zine blocks with the class callout-KIND */
+.block[class*="callout-"] {
+  border-left: 4px solid var(--secondary);
+  background: var(--highlight);
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+}
+
+.block.callout-warning,
+.block.callout-caution {
+  border-left-color: #e0a030;
+}
+
+.block.callout-danger,
+.block.callout-bug,
+.block.callout-error {
+  border-left-color: #d04050;
+}
+
+.block[class*="callout-"] > h1 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.3rem;
+}
+
+/* table of contents */
+.toc {
+  font-size: 0.9rem;
+}
+
+.toc ul {
+  list-style: none;
+  padding-left: 0.8rem;
+  margin: 0;
+}
+
+.toc > ul {
+  padding-left: 0;
+}
+
+.toc a {
+  color: var(--darkgray);
+}
+
+.toc a:hover {
+  color: var(--secondary);
+}
+
+footer {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--lightgray);
+  color: var(--gray);
+  font-size: 0.9rem;
+}
+
+/* search */
+#search[hidden] {
+  display: none;
+}
+
+#search {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  padding-top: 10vh;
+  z-index: 10;
+}
+
+.search-box {
+  width: min(40rem, 92vw);
+  max-height: 70vh;
+  overflow-y: auto;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  padding: 1rem;
+  align-self: flex-start;
+}
+
+#search-input {
+  width: 100%;
+  font-size: 1.1rem;
+  padding: 0.5rem 0.8rem;
+}
+
+#search-results a {
+  display: block;
+  padding: 0.5rem 0.2rem;
+  border-bottom: 1px solid var(--lightgray);
+  color: var(--darkgray);
+}
+
+#search-results a:hover {
+  background: var(--highlight);
+}
+
+#search-results strong {
+  color: var(--dark);
+}
+
+#search-results small {
+  display: block;
+  color: var(--gray);
+}
+
+/* narrow screens: one column, the explorer above the page */
+@media (max-width: 1000px) {
+  .page {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sidebar {
+    position: static;
+    max-height: none;
+  }
+
+  .sidebar.right {
+    display: none;
+  }
+}
+
+/* reader mode: only the page */
+:root[data-reader="on"] .sidebar,
+:root[data-reader="on"] #breadcrumbs {
+  display: none;
+}
+
+:root[data-reader="on"] .page {
+  grid-template-columns: minmax(0, 46rem);
+}

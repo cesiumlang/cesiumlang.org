@@ -9,6 +9,7 @@ pub const Page = struct {
     title: []const u8,
     description: ?[]const u8,
     sortorder: i64,
+    tags: []const []const u8 = &.{},
     /// The text after the front matter, with LF line ends.
     body: []const u8,
 
@@ -80,6 +81,8 @@ fn parse(arena: std.mem.Allocator, slug: []const u8, text: []const u8) error{Out
                 page.title = try arena.dupe(u8, value);
             } else if (std.mem.eql(u8, key, "description")) {
                 page.description = try arena.dupe(u8, value);
+            } else if (std.mem.eql(u8, key, "tags")) {
+                page.tags = try parseTags(arena, value);
             } else if (std.mem.eql(u8, key, "sortorder")) {
                 page.sortorder = std.fmt.parseInt(i64, value, 10) catch page.sortorder;
             } else if (std.mem.eql(u8, key, "draft") and std.mem.eql(u8, value, "true")) {
@@ -88,6 +91,18 @@ fn parse(arena: std.mem.Allocator, slug: []const u8, text: []const u8) error{Out
         }
     }
     return page;
+}
+
+// `tags: "a"` or `tags: ["a", "b"]`
+fn parseTags(arena: std.mem.Allocator, value: []const u8) error{OutOfMemory}![]const []const u8 {
+    const inner = std.mem.trim(u8, value, "[]");
+    var tags: std.ArrayList([]const u8) = .empty;
+    var parts = std.mem.splitScalar(u8, inner, ',');
+    while (parts.next()) |part| {
+        const tag = unquote(std.mem.trim(u8, part, " "));
+        if (tag.len > 0) try tags.append(arena, try arena.dupe(u8, tag));
+    }
+    return tags.items;
 }
 
 fn unquote(value: []const u8) []const u8 {

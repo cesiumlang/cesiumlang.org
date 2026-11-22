@@ -7,6 +7,14 @@ const content = @import("content.zig");
 
 const Page = content.Page;
 
+/// How a link to another page is written.
+pub const LinkStyle = enum {
+    /// `[words](../dir/page.md#heading)`, for any Markdown reader.
+    relative_markdown,
+    /// `[words]($link.page('dir/page').id('heading'))`, for Zine.
+    zine,
+};
+
 /// What `render` could not resolve.
 pub const Report = struct {
     unresolved: usize = 0,
@@ -30,7 +38,7 @@ pub fn render(arena: std.mem.Allocator, pages: []const Page, page: Page, report:
             try put(w, line);
         } else {
             const text = try calloutAsBold(arena, line);
-            try writeInline(w, pages, page, text, report);
+            try writeInline(w, pages, page, text, .relative_markdown, report);
         }
         try put(w, "\n");
     }
@@ -41,21 +49,29 @@ fn put(w: *std.Io.Writer, text: []const u8) error{OutOfMemory}!void {
     w.writeAll(text) catch return error.OutOfMemory;
 }
 
-// `> [!warning] Draft` becomes `> **Warning: Draft**`; other lines are returned as they are
-fn calloutAsBold(arena: std.mem.Allocator, line: []const u8) error{OutOfMemory}![]const u8 {
+/// A callout opening, `> [!warning]- Draft`: its kind and title (empty if none).
+pub const Callout = struct { kind: []const u8, title: []const u8 };
+
+/// The callout a line opens, or null.
+pub fn parseCallout(line: []const u8) ?Callout {
     const marker = "> [!";
-    if (!std.mem.startsWith(u8, line, marker)) return line;
-    const close = std.mem.findScalar(u8, line, ']') orelse return line;
-    const kind = line[marker.len..close];
-    var rest = std.mem.trimStart(u8, line[close + 1 ..], "+- ");
-    rest = std.mem.trim(u8, rest, " ");
-    var label = try arena.dupe(u8, kind);
-    if (label.len > 0) label[0] = std.ascii.toUpper(label[0]);
-    if (rest.len == 0) return std.fmt.allocPrint(arena, "> **{s}**", .{label});
-    return std.fmt.allocPrint(arena, "> **{s}: {s}**", .{ label, rest });
+    if (!std.mem.startsWith(u8, line, marker)) return null;
+    const close = std.mem.findScalar(u8, line, ']') orelse return null;
+    const rest = std.mem.trimStart(u8, line[close + 1 ..], "+- ");
+    return .{ .kind = line[marker.len..close], .title = std.mem.trim(u8, rest, " ") };
 }
 
-fn writeInline(w: *std.Io.Writer, pages: []const Page, page: Page, text: []const u8, report: *Report) error{OutOfMemory}!void {
+// `> [!warning] Draft` becomes `> **Warning: Draft**`; other lines are returned as they are
+fn calloutAsBold(arena: std.mem.Allocator, line: []const u8) error{OutOfMemory}![]const u8 {
+    const callout = parseCallout(line) orelse return line;
+    var label = try arena.dupe(u8, callout.kind);
+    if (label.len > 0) label[0] = std.ascii.toUpper(label[0]);
+    if (callout.title.len == 0) return std.fmt.allocPrint(arena, "> **{s}**", .{label});
+    return std.fmt.allocPrint(arena, "> **{s}: {s}**", .{ label, callout.title });
+}
+
+/// `text` with its wiki links written as `style` says; code spans are left alone.
+pub fn writeInline(w: *std.Io.Writer, pages: []const Page, page: Page, text: []const u8, style: LinkStyle, report: *Report) error{OutOfMemory}!void {
     var in_code = false;
     var i: usize = 0;
     while (i < text.len) {
@@ -63,7 +79,7 @@ fn writeInline(w: *std.Io.Writer, pages: []const Page, page: Page, text: []const
         if (c == '`') in_code = !in_code;
         if (!in_code and std.mem.startsWith(u8, text[i..], "[[")) {
             if (std.mem.find(u8, text[i + 2 ..], "]]")) |len| {
-                try writeWikiLink(w, pages, page, text[i + 2 .. i + 2 + len], report);
+                try writeWikiLink(w, pages, page, text[i + 2 .. i + 2 + len], style, report);
                 i += len + 4;
                 continue;
             }
@@ -75,7 +91,7 @@ fn writeInline(w: *std.Io.Writer, pages: []const Page, page: Page, text: []const
 
 // `inner` is what stands between the brackets: `target`, `target|words`,
 // `target#heading|words`; a table writes the bar as `\|`.
-fn writeWikiLink(w: *std.Io.Writer, pages: []const Page, page: Page, inner: []const u8, report: *Report) error{OutOfMemory}!void {
+fn writeWikiLink(w: *std.Io.Writer, pages: []const Page, page: Page, inner: []const u8, style: LinkStyle, report: *Report) error{OutOfMemory}!void {
     var target = inner;
     var alias: ?[]const u8 = null;
     if (std.mem.findScalar(u8, inner, '|')) |bar| {
@@ -95,13 +111,40 @@ fn writeWikiLink(w: *std.Io.Writer, pages: []const Page, page: Page, inner: []co
     };
     try put(w, "[");
     try put(w, alias orelse if (heading != null and target.len == 0) heading.? else found.title);
-    try put(w, "](");
-    if (target.len != 0) try writeRelative(w, page, found);
-    if (heading) |h| {
-        try put(w, "#");
-        try writeAnchor(w, h);
+    switch (style) {
+        .relative_markdown => {
+            try put(w, "](");
+            if (target.len != 0) try writeRelative(w, page, found);
+            if (heading) |h| {
+                try put(w, "#");
+                try writeAnchor(w, h);
+            }
+            try put(w, ")");
+        },
+        .zine => {
+            if (target.len == 0) {
+                try put(w, "]($link.ref('");
+                try writeAnchor(w, heading.?);
+                try put(w, "'))");
+                return;
+            }
+            try put(w, "]($link.page('");
+            try put(w, siteSlug(found));
+            try put(w, "')");
+            if (heading) |h| {
+                try put(w, ".id('");
+                try writeAnchor(w, h);
+                try put(w, "')");
+            }
+            try put(w, ")");
+        },
     }
-    try put(w, ")");
+}
+
+/// The path of the page on the site: an index page is its directory.
+pub fn siteSlug(page: Page) []const u8 {
+    if (std.mem.eql(u8, page.basename(), "index")) return page.dir();
+    return page.slug;
 }
 
 /// The page a wiki link names: by its path without the extension, else by
@@ -148,8 +191,8 @@ fn segments(path: []const u8, out: *[16][]const u8) usize {
     return n;
 }
 
-// the id a heading gets on GitHub: lower case, spaces to hyphens, punctuation dropped
-fn writeAnchor(w: *std.Io.Writer, heading: []const u8) error{OutOfMemory}!void {
+/// The id a heading gets on GitHub: lower case, spaces to hyphens, punctuation dropped.
+pub fn writeAnchor(w: *std.Io.Writer, heading: []const u8) error{OutOfMemory}!void {
     for (heading) |c| {
         if (std.ascii.isAlphanumeric(c) or c == '_' or c == '-') {
             w.writeByte(std.ascii.toLower(c)) catch return error.OutOfMemory;

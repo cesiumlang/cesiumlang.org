@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head id="head">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title :text="$page.title"></title>
+    <link rel="icon" href="$site.asset('img/cesium_logo.ico').link()">
+    <link rel="stylesheet" href="$site.asset('style.css').link()">
+    <link rel="stylesheet" href="$site.asset('highlight.css').link()">
+    <link id="site-index" rel="preload" as="fetch" crossorigin href="$site.asset('site-index.json').link()">
+    <script src="$site.asset('theme.js').link()"></script>
+    <super>
+  </head>
+  <body id="body">
+    <div class="page">
+      <aside class="sidebar left">
+        <a class="site-title" href="$site.page('').link()">
+          <img src="$site.asset('img/cesium_logo.png').link()" alt="Cesium logo">
+          <span>Cesium</span>
+        </a>
+        <div class="tools">
+          <button id="search-button" type="button">Search</button>
+          <button id="theme-toggle" type="button" aria-label="Toggle dark mode">Theme</button>
+          <button id="reader-toggle" type="button" aria-label="Toggle reader mode">Reader</button>
+        </div>
+        <nav id="explorer" aria-label="Pages"></nav>
+      </aside>
+      <main class="center" id="main">
+        <nav id="breadcrumbs" aria-label="Breadcrumbs"></nav>
+        <super>
+        <footer>
+          <a href="https://github.com/cesiumlang/cesium">GitHub</a>
+        </footer>
+      </main>
+      <aside class="sidebar right">
+        <div class="toc" :html="$page.toc()"></div>
+      </aside>
+    </div>
+    <div id="search" hidden>
+      <div class="search-box">
+        <input id="search-input" type="search" placeholder="Search" autocomplete="off">
+        <div id="search-results"></div>
+      </div>
+    </div>
+    <script src="$site.asset('explorer.js').link()"></script>
+  </body>
+</html>

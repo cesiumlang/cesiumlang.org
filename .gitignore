@@ -17,3 +17,8 @@ node_modules/
 .zig-cache/
 zig-out/
 zig-pkg/
+
+# written by tools/zine from content/ (cesium-site-gen)
+/site/content/
+/site/assets/site-index.json
+/site/assets/img/

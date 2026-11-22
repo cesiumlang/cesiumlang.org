@@ -3,10 +3,17 @@
     .fingerprint = 0x5a89225ac1a2edf5,
     .version = "0.1.0",
     .minimum_zig_version = "0.17.0",
-    .dependencies = .{},
+    .dependencies = .{
+        .grammar = .{ .path = "grammar" },
+        .zine = .{
+            .url = "git+https://github.com/kristoff-it/zine?ref=v0.14.1#6cacc90b1dfdc414859683e85e05c93602a4afd1",
+            .hash = "zine-0.14.1-ou6nIFeNFwCxFPt29bP6F-PubAggNwx148VrLX4Oo4zN",
+        },
+    },
     .paths = .{
         "build.zig",
         "build.zig.zon",
+        "site",
         "tools",
     },
 }
