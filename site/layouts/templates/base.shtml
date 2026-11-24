@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title :text="$page.title"></title>
     <link rel="icon" href="$site.asset('img/cesium_logo.ico').link()">
+    <ctx :if="$page.custom.has('markdown')"><link rel="alternate" type="text/markdown" href="$page.custom.get('markdown')"></ctx>
     <link rel="stylesheet" href="$site.asset('style.css').link()">
     <link rel="stylesheet" href="$site.asset('highlight.css').link()">
     <link id="site-index" rel="preload" as="fetch" crossorigin href="$site.asset('site-index.json').link()">

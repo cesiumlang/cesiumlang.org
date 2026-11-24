@@ -100,10 +100,48 @@ pub fn render(
             try put(w, "'))\n");
             continue;
         }
-        try ai.portable.writeInline(w, pages, page, line, true, report);
+        try ai.portable.writeInline(w, pages, page, try skeinAnchors(arena, line), true, report);
         try put(w, "\n");
     }
     return .{ .text = out.written(), .headings = headings.items };
+}
+
+/// Skein's labels (`skein render --format markdown`) in SuperMD, which has no
+/// HTML: `<a id="X"></a>**[X](#X)**` becomes `**[X]($text.id('X'))**`, the
+/// ID carrying its anchor; an anchor without that label is dropped.
+fn skeinAnchors(arena: std.mem.Allocator, line: []const u8) Error![]const u8 {
+    const open = "<a id=\"";
+    const close = "\"></a>";
+    if (std.mem.find(u8, line, open) == null) return line;
+    var out: std.ArrayList(u8) = .empty;
+    var i: usize = 0;
+    while (std.mem.findPos(u8, line, i, open)) |at| {
+        const id_start = at + open.len;
+        const id_end = std.mem.findPos(u8, line, id_start, close) orelse break;
+        const id = line[id_start..id_end];
+        try out.appendSlice(arena, line[i..at]);
+        i = id_end + close.len;
+        const bold = std.mem.startsWith(u8, line[i..], "**");
+        const label = try std.fmt.allocPrint(arena, "[{s}](#{s})", .{ id, id });
+        const after = i + @as(usize, if (bold) 2 else 0);
+        if (std.mem.startsWith(u8, line[after..], label)) {
+            try out.appendSlice(arena, line[i..after]);
+            try out.print(arena, "[{s}]($text.id('{s}'))", .{ id, id });
+            i = after + label.len;
+        }
+    }
+    try out.appendSlice(arena, line[i..]);
+    return out.items;
+}
+
+test skeinAnchors {
+    var arena: std.heap.ArenaAllocator = .init(std.testing.allocator);
+    defer arena.deinit();
+    const a = arena.allocator();
+    try std.testing.expectEqualStrings("**[lex.x]($text.id('lex.x'))** *(syntax, draft)* Text.", try skeinAnchors(a, "<a id=\"lex.x\"></a>**[lex.x](#lex.x)** *(syntax, draft)* Text."));
+    try std.testing.expectEqualStrings("- [a.b]($text.id('a.b')) part", try skeinAnchors(a, "- <a id=\"a.b\"></a>[a.b](#a.b) part"));
+    try std.testing.expectEqualStrings("plain [x](#y)", try skeinAnchors(a, "plain [x](#y)"));
+    try std.testing.expectEqualStrings("lone ", try skeinAnchors(a, "lone <a id=\"z\"></a>"));
 }
 
 fn put(w: *std.Io.Writer, text: []const u8) Error!void {
@@ -150,6 +188,18 @@ fn frontMatter(w: *std.Io.Writer, page: Page, date: []const u8) Error!void {
         for (page.tags, 0..) |tag, i| {
             if (i > 0) try put(w, ", ");
             try ziggyString(w, tag);
+        }
+        try put(w, "],\n");
+    }
+    // the page as plain Markdown, which cesium-site-ai writes beside it (cesiumlang.org#25)
+    try put(w, ".custom = { \"markdown\": \"/");
+    try put(w, page.slug);
+    try put(w, ".md\" },\n");
+    if (page.aliases.len > 0) {
+        try put(w, ".aliases = [");
+        for (page.aliases, 0..) |alias, i| {
+            if (i > 0) try put(w, ", ");
+            try ziggyString(w, alias);
         }
         try put(w, "],\n");
     }

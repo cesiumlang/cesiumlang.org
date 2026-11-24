@@ -129,8 +129,9 @@ fn writeZineTarget(w: *std.Io.Writer, target: Page, anchor: ?[]const u8) error{O
     try put(w, "]($link.page('");
     try put(w, siteSlug(target));
     try put(w, "')");
+    // `.ref` deep-links to the anchor; `.id` would name the link itself
     if (anchor) |id| {
-        try put(w, ".id('");
+        try put(w, ".ref('");
         try put(w, id);
         try put(w, "')");
     }

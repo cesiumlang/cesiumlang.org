@@ -18,7 +18,7 @@ const sections = [_]Section{
 
 pub const summary = "Cesium is a compiled, statically typed systems programming language for mathematical " ++
     "computing, with explicit memory management and C ABI compatibility. The language is still being " ++
-    "designed: the specification marks each rule Decided, Provisional or Open, and only Decided rules are settled.";
+    "designed: every rule of the specification is a draft until a proposal accepts it, and says where it comes from: a decision, a direction of the project's owner, use, or a recommendation; what is open has no rule.";
 
 /// The text of `llms.txt`. `host` is the site's host name, as `cesiumlang.org`.
 pub fn render(arena: std.mem.Allocator, pages: []const Page, host: []const u8, skill_name: []const u8) error{OutOfMemory}![]const u8 {

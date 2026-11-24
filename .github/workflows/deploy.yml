@@ -12,6 +12,9 @@ on:
       - build.zig
       - build.zig.zon
       - grammar
+  # a push to main of cesiumlang/cesium starts it, for its specification
+  # (its site.yml; cesiumlang/cesium#106)
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -52,13 +55,24 @@ jobs:
             .zig-cache
           key: zig-${{ runner.os }}-${{ hashFiles('build.zig.zon', 'grammar/build.zig.zon') }}
 
+      # the specification and the proposals: Skein's rendering of cesiumlang/cesium
+      - uses: actions/checkout@v7
+        with:
+          repository: cesiumlang/cesium
+          ref: main
+          path: cesium-src
+
+      - name: The specification, from cesium
+        run: bash tools/take-spec.sh cesium-src
+
       - name: Build the site
         run: zig build
 
       # llms.txt, a Markdown version of each page and the Cesium skill
-      # (cesiumlang/cesiumlang.org#25), written beside the pages
+      # (cesiumlang/cesiumlang.org#25), written beside the pages; strict: a rule
+      # that names no source, or a link to no page, fails the deploy
       - name: Files for AI models
-        run: zig-out/bin/cesium-site-ai --out zig-out/public --host cesiumlang.org
+        run: zig-out/bin/cesium-site-ai --out zig-out/public --host cesiumlang.org --strict
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5

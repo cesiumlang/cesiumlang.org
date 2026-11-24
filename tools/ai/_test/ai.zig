@@ -65,7 +65,7 @@ test "links as Zine writes them" {
         &report,
     );
     try std.testing.expectEqualStrings(
-        "[intro]($link.page('spec')), [memory]($link.page('reference/memory-management').id('open-questions')), [web](https://a.b/c)",
+        "[intro]($link.page('spec')), [memory]($link.page('reference/memory-management').ref('open-questions')), [web](https://a.b/c)",
         out.written(),
     );
 }
@@ -87,20 +87,27 @@ test "links, emphasis and line ends become plain text" {
     try std.testing.expectEqualStrings("Decided. See the issue and the introduction, `a [b](c)`.", got);
 }
 
-test "a decided item with a continuation, and a provisional callout" {
+test "Skein's labels: rules by their source, parts, open points, examples left out" {
     var arena: std.heap.ArenaAllocator = .init(std.testing.allocator);
     defer arena.deinit();
     const p = page(
         "spec/x",
         "X",
-        "1. **Decided.** A file has the extension `.csm`.\n   Nothing else. `[cesium#14]`\n2. **Open.** The encoding.\n\n" ++
-            "> [!warning] Provisional — not decided (cesiumlang/cesium#57)\n> This draft assumes more.\n> 1. **Decided.** not a rule\n",
+        "<a id=\"lex.ext\"></a>**[lex.ext](#lex.ext)** *(syntax, draft)* A file has the extension `.csm`.\nNothing else. Decided in [#14].\n\n" ++
+            "- <a id=\"lex.kw.types\"></a>**[lex.kw.types](#lex.kw.types)** *(syntax, draft)* Types. Direction in [#50], 2026-11-22.\n" ++
+            "<a id=\"lex.ws\"></a>**[lex.ws](#lex.ws)** *(syntax, draft)* White space. Provisional ([#57]).\n\n" ++
+            "<a id=\"lex.ws.ex\"></a>**[lex.ws.ex](#lex.ws.ex)** *(accepts)*\n```cesium\n// <a id=\"no\"></a>\n```\n\n" ++
+            "Open: the encoding ([#39]).\n\n> Open: in a quote, not a point.\n",
     );
     const rules = try ai.rules.extract(arena.allocator(), p);
-    try std.testing.expectEqual(3, rules.len);
+    try std.testing.expectEqual(4, rules.len);
     try std.testing.expectEqual(ai.rules.Kind.decided, rules[0].kind);
+    try std.testing.expectEqualStrings("lex.ext", rules[0].id);
+    try std.testing.expectEqualStrings("syntax, draft", rules[0].label);
     try std.testing.expect(rules[0].cited);
-    try std.testing.expectEqualStrings("A file has the extension `.csm`. Nothing else. `[cesium#14]`", rules[0].text);
-    try std.testing.expectEqual(ai.rules.Kind.open, rules[1].kind);
+    try std.testing.expectEqualStrings("A file has the extension `.csm`. Nothing else. Decided in cesium#14.", rules[0].text);
+    try std.testing.expectEqual(ai.rules.Kind.direction, rules[1].kind);
+    try std.testing.expectEqualStrings("lex.kw.types", rules[1].id);
     try std.testing.expectEqual(ai.rules.Kind.provisional, rules[2].kind);
+    try std.testing.expectEqual(ai.rules.Kind.open, rules[3].kind);
 }

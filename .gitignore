@@ -11,6 +11,12 @@ node_modules/
 zig-out/
 zig-pkg/
 
+# taken from cesiumlang/cesium by tools/take-spec.sh (Skein's rendering)
+/content/spec/
+/content/proposals/
+# where CI checks cesium out for it
+/cesium-src/
+
 # written by tools/zine from content/ (cesium-site-gen)
 /site/content/
 /site/assets/site-index.json
