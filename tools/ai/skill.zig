@@ -32,6 +32,9 @@ pub fn render(arena: std.mem.Allocator, pages: []const Page, host: []const u8) e
         \\---
         \\name: {s}
         \\description: Writing, reading or reviewing Cesium source (.csm, .csi files). The rules of the language in one line each, with where each comes from and what is still open. Generated from the specification at {s}; use before writing Cesium code or answering a question that depends on its syntax or semantics.
+        \\paths:
+        \\  - "**/*.csm"
+        \\  - "**/*.csi"
         \\---
         \\
         \\# Cesium
@@ -90,6 +93,25 @@ pub fn render(arena: std.mem.Allocator, pages: []const Page, host: []const u8) e
         }
     }
 
+    try print(w,
+        \\
+        \\## Examples that compile
+        \\
+        \\In [cesiumlang/cesium](https://github.com/cesiumlang/cesium):
+        \\
+        \\- `bootstrap/tests/s0/*.csm`: S0 programs with their expected output; `bootstrap/tests/s0/errors/` holds programs that must be rejected, with the message.
+        \\- `bootstrap/stage1/*.csm`: `cesium1`, written in S0, the largest Cesium program there is.
+        \\- The examples of the specification (`spec/`, code blocks marked `%example`), each accepted or rejected as it says.
+        \\
+        \\## Checking code
+        \\
+        \\- Build the compilers from a clone of cesiumlang/cesium: `bash tools/fetch-devkit.sh`, then `.devkit/zig/zig build` installs `cesium0` and `cesium1` to `zig-out/bin`.
+        \\- `cesium0 --emit-mir -o out.mir a.csm b.csm` checks S0 and reports every error as `file:line:col: error: message`.
+        \\- `cat a.csm b.csm | cesium1` checks the same unit and stops at the first error; its line numbers count from the start of the joined input.
+        \\- In an editor with the Cesium extension or agent plugin, the language server `zcsls` reports the same errors as diagnostics.
+        \\- A Cesium change is not done until a compiler accepts it, or rejects it with the expected message for an error test.
+        \\
+    , .{});
     try print(w, "\n## Pages\n\nExamples and explanation, not rules; their \"Open\" callouts mark what is undecided.\n\n", .{});
     for (pages) |page| {
         if (!std.mem.startsWith(u8, page.slug, "reference/") and !std.mem.startsWith(u8, page.slug, "spec/")) continue;
