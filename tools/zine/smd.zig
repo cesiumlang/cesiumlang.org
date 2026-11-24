@@ -191,6 +191,10 @@ fn frontMatter(w: *std.Io.Writer, page: Page, date: []const u8) Error!void {
         }
         try put(w, "],\n");
     }
+    // the page as plain Markdown, which cesium-site-ai writes beside it (cesiumlang.org#25)
+    try put(w, ".custom = { \"markdown\": \"/");
+    try put(w, page.slug);
+    try put(w, ".md\" },\n");
     if (page.aliases.len > 0) {
         try put(w, ".aliases = [");
         for (page.aliases, 0..) |alias, i| {

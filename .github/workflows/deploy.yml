@@ -69,9 +69,10 @@ jobs:
         run: zig build
 
       # llms.txt, a Markdown version of each page and the Cesium skill
-      # (cesiumlang/cesiumlang.org#25), written beside the pages
+      # (cesiumlang/cesiumlang.org#25), written beside the pages; strict: a rule
+      # that names no source, or a link to no page, fails the deploy
       - name: Files for AI models
-        run: zig-out/bin/cesium-site-ai --out zig-out/public --host cesiumlang.org
+        run: zig-out/bin/cesium-site-ai --out zig-out/public --host cesiumlang.org --strict
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
