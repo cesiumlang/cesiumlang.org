@@ -10,6 +10,8 @@ pub const Page = struct {
     description: ?[]const u8,
     sortorder: i64,
     tags: []const []const u8 = &.{},
+    /// Further output paths of the page, `/spec/s0-grammar/index.html`: Zine writes it there too.
+    aliases: []const []const u8 = &.{},
     /// The text after the front matter, with LF line ends.
     body: []const u8,
 
@@ -83,6 +85,8 @@ fn parse(arena: std.mem.Allocator, slug: []const u8, text: []const u8) error{Out
                 page.description = try arena.dupe(u8, value);
             } else if (std.mem.eql(u8, key, "tags")) {
                 page.tags = try parseTags(arena, value);
+            } else if (std.mem.eql(u8, key, "aliases")) {
+                page.aliases = try parseTags(arena, value);
             } else if (std.mem.eql(u8, key, "sortorder")) {
                 page.sortorder = std.fmt.parseInt(i64, value, 10) catch page.sortorder;
             } else if (std.mem.eql(u8, key, "draft") and std.mem.eql(u8, value, "true")) {

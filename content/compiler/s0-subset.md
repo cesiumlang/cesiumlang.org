@@ -5,7 +5,7 @@ sortorder: 4
 ---
 
 > [!info] Source
-> [Design: stage 0 and the S0 subset](https://github.com/cesiumlang/cesium/issues/9), including its amendment comment of 2026-11-16, which applies the [file-extension decision](https://github.com/cesiumlang/cesium/issues/14) and the [ownership design](https://github.com/cesiumlang/cesium/issues/11). Status: draft. The formal grammar is in the specification: [S0 Grammar](../spec/s0-grammar.md).
+> [Design: stage 0 and the S0 subset](https://github.com/cesiumlang/cesium/issues/9), including its amendment comment of 2026-11-16, which applies the [file-extension decision](https://github.com/cesiumlang/cesium/issues/14) and the [ownership design](https://github.com/cesiumlang/cesium/issues/11). Status: draft. The formal grammar is in the specification: [The S0 subset](../spec/s0.md).
 
 S0 is the deliberately tiny subset of Cesium that stage 0 compiles. Stage 0 has one job, which is to compile stage 1 (`cesium1`), and stage 1 is written in S0. See [Bootstrap Chain](bootstrap.md).
 
