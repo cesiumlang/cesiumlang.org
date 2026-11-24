@@ -10,10 +10,11 @@ Clone it with `--recurse-submodules`. To work on all Cesium repositories togethe
 
 | Path | What |
 | --- | --- |
-| `content/` | The pages of the site as Markdown: language reference, compiler documentation, draft specification, news. Links between pages are relative Markdown links to `.md` files (`[the specification](../spec/index.md)`); callouts are `> [!warning] Title` |
+| `content/` | The pages of the site as Markdown: language reference, compiler documentation, news; and, generated, the specification (`content/spec/`) and the proposals (`content/proposals/`), from cesiumlang/cesium by `tools/take-spec.sh`. Links between pages are relative Markdown links to `.md` files (`[the specification](../spec/index.md)`); callouts are `> [!warning] Title` |
 | `site/` | What Zine needs besides the pages: `zine.ziggy`, the layouts, and the style sheets and scripts in `assets/` |
 | `tools/zine/` | `cesium-site-gen`: writes the input of Zine from `content/` into `site/content/` and `site/assets/`, with the code blocks highlighted and `site-index.json` for the explorer and the search |
 | `tools/ai/` | `cesium-site-ai`: writes `llms.txt`, a Markdown version of every page and the Cesium skill for AI models ([cesiumlang/cesiumlang.org#25](https://github.com/cesiumlang/cesiumlang.org/issues/25)); also the units the other tool shares (pages, links, rules) |
+| `tools/take-spec.sh` | Renders the specification and the proposals of a cesium checkout with Skein into `content/` (cesiumlang/cesium#106); they are edited in cesium, never here |
 | `build.zig` | Builds the tools and the site |
 | `grammar/` | Submodule: [cesiumlang/grammar](https://github.com/cesiumlang/grammar), the Tree-sitter grammar and highlighter that color Cesium code on the site |
 | `.cspell/cesium/` | Submodule: [cesiumlang/cspell-cesium](https://github.com/cesiumlang/cspell-cesium), the spelling dictionary of Cesium terms |
@@ -34,6 +35,11 @@ The first build compiles Zine and takes some minutes; later builds are quick.
 
 ## Building
 
+The specification and the proposals come from the compiler's repository, rendered by Skein (which `tools/take-spec.sh` gets through cesium's `tools/fetch-skein.sh`). Take them before building, and again when they change there:
+
+```bash
+bash tools/take-spec.sh ../cesium-src   # in cesium-workspace; the default
+```n
 ```bash
 zig build            # the site, in zig-out/public
 zig build serve      # the dev server, at http://localhost:1990

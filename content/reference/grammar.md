@@ -12,7 +12,7 @@ Cesium does not have a complete formal grammar yet. Writing one is tracked in [c
 | --- | --- |
 | [Language Specification (draft)](../spec/index.md) | The formal definition, in progress |
 | [Specification: Lexical Structure](../spec/lexical.md) | Tokens, comments, identifiers, keywords and literals, with the undecided parts marked |
-| [Specification: S0 Grammar](../spec/s0-grammar.md) | An EBNF grammar for the S0 subset, the part of the language the first compiler stage accepts |
+| [Specification: the S0 subset](../spec/s0.md) | The grammar and rules of S0, the part of the language the first compiler stage accepts |
 | [cesiumlang/grammar](https://github.com/cesiumlang/grammar) | The TextMate grammar used for syntax highlighting on this site and in editors. It is regex-based and is not a definition of the language |
 
 ## Known Gaps

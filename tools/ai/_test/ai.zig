@@ -65,7 +65,7 @@ test "links as Zine writes them" {
         &report,
     );
     try std.testing.expectEqualStrings(
-        "[intro]($link.page('spec')), [memory]($link.page('reference/memory-management').id('open-questions')), [web](https://a.b/c)",
+        "[intro]($link.page('spec')), [memory]($link.page('reference/memory-management').ref('open-questions')), [web](https://a.b/c)",
         out.written(),
     );
 }
