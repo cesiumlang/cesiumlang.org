@@ -16,6 +16,7 @@ This section describes how the Cesium compiler is put together: its backends, ho
 - [The S0 Subset](s0-subset.md) - The tiny subset of Cesium that stage 0 compiles
 - [Stage 0 C Dialect](stage0-c-dialect.md) - The portable C subset stage 0 is written in
 - [Freestanding Targets](freestanding.md) - What bare-metal targets require of the language, library and compiler
+- [Diagnostics](diagnostics.md) - The error codes of `cesium0` and `cesium1`, each with what it means and how to fix it
 
 ## Decision Records
 

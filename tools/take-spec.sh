@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Take the specification and the proposals from a checkout of cesiumlang/cesium
 # into content/spec/ and content/proposals/, as Skein renders them
-# (`skein render --format markdown`; cesiumlang/cesium#106). The pages are
-# generated: edit them in cesium, never here.
+# (`skein render --format markdown`; cesiumlang/cesium#106), and the catalog of
+# diagnostics into content/compiler/diagnostics.md. The pages are generated:
+# edit them in cesium, never here.
 #
 # usage: bash tools/take-spec.sh [CESIUM_DIR]   (default: ../cesium-src)
 #
@@ -53,4 +54,7 @@ for f in "$out"/spec/*.md "$out"/proposals/*.md; do
   case $rel in proposals/*) tags=proposal ;; *) tags=spec ;; esac
   take "$f" "$ROOT/content/$rel" "$tags" "" ""
 done
+# the compilers' diagnostic codes, from their catalog (cesiumlang/cesium#82);
+# each code's heading is its anchor (#e0304)
+take "$cesium/bootstrap/diagnostics.md" "$ROOT/content/compiler/diagnostics.md" "compiler, diagnostics" "" ""
 echo "took $(find "$ROOT/content/spec" "$ROOT/content/proposals" -name '*.md' | wc -l | tr -d ' ') pages from $cesium"
