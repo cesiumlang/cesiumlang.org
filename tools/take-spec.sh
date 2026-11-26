@@ -22,6 +22,19 @@ out=$(mktemp -d)
 trap 'rm -rf "$out"' EXIT
 "$skein" render --root "$cesium" --format markdown --out "$out" > /dev/null
 
+# the compiler version the pages are of, which every page's footer shows
+# (cesiumlang/cesiumlang.org#42): a released one by its number, else the
+# development version with its branch and commit
+version=$(sed -nE 's/^\s*\.version = "([^"]+)",/\1/p' "$cesium/build.zig.zon")
+commit=$(git -C "$cesium" rev-parse --short HEAD 2> /dev/null || echo unknown)
+branch=$(git -C "$cesium" rev-parse --abbrev-ref HEAD 2> /dev/null || echo HEAD)
+[ "$branch" = HEAD ] && branch=commit
+if git -C "$cesium" rev-parse -q --verify "refs/tags/v$version" > /dev/null 2>&1; then
+  printf 'Cesium %s\n' "$version" > "$ROOT/content/cesium-version.txt"
+else
+  printf 'Cesium %s, in development (%s at %s)\n' "$version" "$branch" "$commit" > "$ROOT/content/cesium-version.txt"
+fi
+
 # PATH TAGS SORTORDER ALIASES: the pages, in their order; an alias is a URL the
 # page had before it came from Skein
 pages='spec/index.md|spec|1|

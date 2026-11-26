@@ -47,10 +47,18 @@ pub fn main(init: std.process.Init) !void {
     const generated = try std.fmt.allocPrint(arena, "{s}/content", .{site_dir});
     std.Io.Dir.cwd().deleteTree(io, generated) catch {};
 
+    // the compiler version the pages are of, as tools/take-spec.sh wrote it
+    // (cesiumlang.org#42); none for a site built without it
+    const version_path = try std.fmt.allocPrint(arena, "{s}/cesium-version.txt", .{content_dir});
+    const version: ?[]const u8 = if (std.Io.Dir.cwd().readFileAlloc(io, version_path, arena, .limited(1 << 12))) |text|
+        std.mem.trim(u8, text, " \r\n")
+    else |_|
+        null;
+
     var entries: std.ArrayList(site_json.Entry) = .empty;
     for (pages) |page| {
         const date = try gitDate(arena, io, content_dir, page);
-        const rendered = try smd.render(arena, pages, page, date, &highlighter, &report);
+        const rendered = try smd.render(arena, pages, page, date, version, &highlighter, &report);
         try write(io, arena, generated, try std.fmt.allocPrint(arena, "{s}.smd", .{page.slug}), rendered.text);
         try entries.append(arena, .{
             .page = page,

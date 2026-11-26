@@ -27,12 +27,14 @@ pub fn render(
     pages: []const Page,
     page: Page,
     date: []const u8,
+    /// the compiler version the pages are of, for the footer; null when unknown
+    version: ?[]const u8,
     highlighter: *highlight.Highlighter,
     report: *ai.portable.Report,
 ) Error!Rendered {
     var out: std.Io.Writer.Allocating = .init(arena);
     const w = &out.writer;
-    try frontMatter(w, page, date);
+    try frontMatter(w, page, date, version);
 
     var headings: std.ArrayList(Heading) = .empty;
     var ids: std.StringHashMapUnmanaged(void) = .empty;
@@ -171,7 +173,7 @@ fn uniqueId(arena: std.mem.Allocator, ids: *std.StringHashMapUnmanaged(void), wo
     return id;
 }
 
-fn frontMatter(w: *std.Io.Writer, page: Page, date: []const u8) Error!void {
+fn frontMatter(w: *std.Io.Writer, page: Page, date: []const u8, version: ?[]const u8) Error!void {
     try put(w, "---\n.title = ");
     try ziggyString(w, page.title);
     try put(w, ",\n");
@@ -194,7 +196,12 @@ fn frontMatter(w: *std.Io.Writer, page: Page, date: []const u8) Error!void {
     // the page as plain Markdown, which cesium-site-ai writes beside it (cesiumlang.org#25)
     try put(w, ".custom = { \"markdown\": \"/");
     try put(w, page.slug);
-    try put(w, ".md\" },\n");
+    try put(w, ".md\"");
+    if (version) |v| {
+        try put(w, ", \"version\": ");
+        try ziggyString(w, v);
+    }
+    try put(w, " },\n");
     if (page.aliases.len > 0) {
         try put(w, ".aliases = [");
         for (page.aliases, 0..) |alias, i| {
