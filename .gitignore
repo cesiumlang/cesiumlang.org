@@ -14,6 +14,7 @@ zig-pkg/
 # taken from cesiumlang/cesium by tools/take-spec.sh (Skein's rendering)
 /content/spec/
 /content/proposals/
+/content/compiler/diagnostics.md
 # where CI checks cesium out for it
 /cesium-src/
 
