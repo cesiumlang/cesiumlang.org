@@ -106,7 +106,7 @@ pub fn render(arena: std.mem.Allocator, pages: []const Page, host: []const u8) e
         \\## Checking code
         \\
         \\- Build the compilers from a clone of cesiumlang/cesium: `bash tools/fetch-devkit.sh`, then `.devkit/zig/zig build` installs `cesium0` and `cesium1` to `zig-out/bin`.
-        \\- `cesium0 --emit-mir -o out.mir a.csm b.csm` checks S0 and reports every error as `file:line:col: error: message`.
+        \\- `cesium0 --emit-mir -o out.mir a.csm b.csm` checks S0 and reports every error as `file:line:col: error[E0304]: message`; the code is explained in `bootstrap/diagnostics.md`.
         \\- `cat a.csm b.csm | cesium1` checks the same unit and stops at the first error; its line numbers count from the start of the joined input.
         \\- In an editor with the Cesium extension or agent plugin, the language server `zcsls` reports the same errors as diagnostics.
         \\- A Cesium change is not done until a compiler accepts it, or rejects it with the expected message for an error test.
