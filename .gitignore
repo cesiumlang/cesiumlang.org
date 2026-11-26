@@ -22,3 +22,6 @@ zig-pkg/
 /site/content/
 /site/assets/site-index.json
 /site/assets/img/
+
+# the compiler version tools/take-spec.sh writes at each deploy
+/content/cesium-version.txt

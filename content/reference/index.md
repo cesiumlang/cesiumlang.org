@@ -3,7 +3,7 @@ title: "Cesium Language Reference"
 tags: "reference"
 ---
 
-This section contains the comprehensive reference documentation for the Cesium Programming Language v0.1.
+This section contains the comprehensive reference documentation for the Cesium Programming Language; the footer of each page says which version of Cesium it is of.
 
 ## Reference Sections
 

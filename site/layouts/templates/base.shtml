@@ -44,6 +44,7 @@
         <nav id="breadcrumbs" aria-label="Breadcrumbs"></nav>
         <super>
         <footer>
+          <ctx :if="$page.custom.has('version')"><span class="version" :text="$page.custom.get('version')"></span> · </ctx>
           <a href="https://github.com/cesiumlang/cesium">GitHub</a>
         </footer>
       </main>
