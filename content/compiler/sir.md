@@ -1,15 +1,15 @@
 ---
-title: "Middle IR (MIR)"
-tags: ["compiler", "mir", "ir"]
+title: "Semantic IR (SIR)"
+tags: ["compiler", "sir", "ir"]
 sortorder: 3
 ---
 
 > [!info] Source
-> [Design: Cesium middle IR](https://github.com/cesiumlang/cesium/issues/8). Status: draft sketch. The text syntax shown here is illustrative and open to change.
+> [Design: Cesium semantic IR](https://github.com/cesiumlang/cesium/issues/8). Status: draft sketch. The text syntax shown here is illustrative and open to change.
 
-Every Cesium frontend lowers to MIR, and MIR lowers to a backend: QBE or LLVM (see [Architecture](architecture.md)). Language features are defined by how they lower:
+Every Cesium frontend lowers to SIR, and SIR lowers to a backend: QBE or LLVM (see [Architecture](architecture.md)). Language features are defined by how they lower:
 
-- **Core features** map directly onto core MIR constructs.
+- **Core features** map directly onto core SIR constructs.
 - **Composite features** are rewrites into the core: `for` becomes `while`, `switch` becomes `if` chains or jump tables, `defer` becomes cleanup blocks, error unions become tagged structs, methods become functions taking `this`.
 
 ## Two Levels
@@ -23,18 +23,18 @@ Structured control flow at the core level also suits SPIR-V and WebAssembly.
 
 | Component | Language | Lifetime |
 | --- | --- | --- |
-| `libcsmir`: core MIR text parser, verifier, printer; the QBE lowering (first), the LLVM lowering (later); vendored QBE | Portable C, part of stage 0 | Used by stage 0 and linked into `cesium1`; frozen with the bootstrap chain |
-| The real compiler's MIR (both levels) and both lowerings | Cesium | Replaces `libcsmir` in the real compiler |
+| `libcsir`: core SIR text parser, verifier, printer; the QBE lowering (first), the LLVM lowering (later); vendored QBE | Portable C, part of stage 0 | Used by stage 0 and linked into `cesium1`; frozen with the bootstrap chain |
+| The real compiler's SIR (both levels) and both lowerings | Cesium | Replaces `libcsir` in the real compiler |
 
 ## No Undefined Behavior
 
-Both backends must give every core MIR program the same meaning, otherwise differential testing cannot be trusted:
+Both backends must give every core SIR program the same meaning, otherwise differential testing cannot be trusted:
 
 - Integer `add`, `sub`, `mul` and `neg` wrap (two's complement).
 - Shift amounts are reduced modulo the operand width, or follow another single defined rule applied by both lowerings.
 - Division and remainder by zero, and the signed minimum divided by -1, have one defined behavior in both lowerings.
 - Out-of-range float to integer conversions have one defined result.
-- The LLVM lowering must not add flags that produce poison or undefined behavior (`nsw`, `nuw`, `exact`, unproven `inbounds`, fast-math) unless MIR semantics or a verified fact allows it.
+- The LLVM lowering must not add flags that produce poison or undefined behavior (`nsw`, `nuw`, `exact`, unproven `inbounds`, fast-math) unless SIR semantics or a verified fact allows it.
 
 ## Core Level Sketch
 
@@ -42,7 +42,7 @@ Both backends must give every core MIR program the same meaning, otherwise diffe
 
 - `@name` for globals and functions, `%name` for parameters and locals. Bare names are types and operations.
 - Constants carry their type: `0:u8`, `1:uword`, `-5:i64`.
-- `;` starts a comment. A file starts with a version header: `cesium-mir 0`.
+- `;` starts a comment. A file starts with a version header: `cesium-sir 0`.
 
 ### Types
 
@@ -50,12 +50,12 @@ Both backends must give every core MIR program the same meaning, otherwise diffe
 - Floats: `f32 f64`.
 - Pointers: `ptr<T>`. Arrays: `[N x T]`. Structs: `struct Name { field: T, ... }`. `void`.
 
-Layout is owned by the backend. MIR keeps `sizeof(T)`, `alignof(T)`, `index` and `field` symbolic.
+Layout is owned by the backend. SIR keeps `sizeof(T)`, `alignof(T)`, `index` and `field` symbolic.
 
 ### Declarations
 
 ```text
-cesium-mir 0
+cesium-sir 0
 
 struct Token { kind: i64, start: ptr<u8>, len: uword }
 
