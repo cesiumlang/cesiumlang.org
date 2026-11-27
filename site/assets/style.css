@@ -84,6 +84,11 @@ h1 {
   --topbar-h: 3.5rem;
 }
 
+/* a jump to an anchor stops below the floating header, not under it */
+html {
+  scroll-padding-top: calc(var(--topbar-h) + 0.75rem);
+}
+
 #topbar {
   position: fixed;
   top: 0;
