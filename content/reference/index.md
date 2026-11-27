@@ -27,7 +27,7 @@ This section contains the comprehensive reference documentation for the Cesium P
 ## Related Sections
 
 - [Language Specification (draft)](../spec/index.md) - The formal definition that the reference pages feed into
-- [Compiler and Toolchain](../compiler/index.md) - Architecture, bootstrap chain, middle IR and the S0 subset
+- [Compiler and Toolchain](../compiler/index.md) - Architecture, bootstrap chain, semantic IR and the S0 subset
 
 ## Quick Navigation
 

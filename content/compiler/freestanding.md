@@ -33,7 +33,7 @@ A backend emits calls to helper functions when the target lacks an instruction, 
 
 ## Controls for Kernel Code
 
-Most of these map onto LLVM IR attributes and target features, so the [middle IR](mir.md) must carry them through:
+Most of these map onto LLVM IR attributes and target features, so the [semantic IR](sir.md) must carry them through:
 
 | Need | Mechanism |
 | --- | --- |
@@ -62,5 +62,5 @@ These attributes are available only with the LLVM backend. Building a kernel req
 ## Consequences
 
 - The `core` layer and the compiler-runtime builtins must exist before any freestanding target works. They are also what hosted targets build on.
-- The middle IR needs per-function attributes (calling convention, target features, red zone, stack probes, sections) from the start.
+- The semantic IR needs per-function attributes (calling convention, target features, red zone, stack probes, sections) from the start.
 - Stage 0 does not need freestanding support, but the compiler written in Cesium should not assume a hosted target anywhere in its code generation path.

@@ -14,7 +14,7 @@ Cesium source (.csm)
         |
      frontend            parsing, type checking, borrow checking
         |
-   middle IR (MIR)       the contract between frontends and backends
+  semantic IR (SIR)      the contract between frontends and backends
      /         \
    QBE         LLVM
 (development,  (release: optimization, all targets,
@@ -23,8 +23,8 @@ Cesium source (.csm)
 ```
 
 - **The compiler is written in Cesium.** A small stage 0 compiler written in portable C exists only to start the [bootstrap chain](bootstrap.md).
-- **The middle IR is the core design asset.** It carries shapes, aliasing facts derived from the ownership rules, fusion and explicit vector operations. Numerical optimization happens there; a backend receives already-structured code. See [Middle IR](mir.md).
-- **Two backends consume the same MIR.** Cesium targets QBE first and later adds LLVM.
+- **The semantic IR is the core design asset.** It carries shapes, aliasing facts derived from the ownership rules, fusion and explicit vector operations. Numerical optimization happens there; a backend receives already-structured code. See [Semantic IR](sir.md).
+- **Two backends consume the same SIR.** Cesium targets QBE first and later adds LLVM.
 
 ## The Two Backends
 
@@ -45,7 +45,7 @@ Cesium source (.csm)
 | Feature | QBE backend | LLVM backend |
 | --- | --- | --- |
 | Targets | QBE's list (amd64 SysV, Apple and Windows; arm64 Linux and Apple; rv64) | All Cesium targets |
-| SIMD and vector operations | Scalarized by a MIR legalization pass | Native vector types |
+| SIMD and vector operations | Scalarized by a SIR legalization pass | Native vector types |
 | Optimization | QBE's modest optimizations | Full pipeline |
 | Debug info | Line tables only | Full variables and types: DWARF; CodeView/PDB on Windows |
 | Freestanding attributes (interrupt calling conventions, naked functions, sections, no red zone, stack probes) | Not available: building a kernel requires LLVM | Available |
@@ -55,16 +55,16 @@ Code that needs a capability a backend lacks is legalized (for example scalarize
 
 ### Target-Specific Lowering
 
-Frontends never compute layout. MIR keeps `sizeof(T)`, `alignof(T)`, `index` and `field` symbolic, and each backend resolves them for the target: LLVM from its data layout, the QBE wrapper from its own implementation of the C layout rules. When a frontend needs a layout value at compile time it asks the active backend through a layout-query interface.
+Frontends never compute layout. SIR keeps `sizeof(T)`, `alignof(T)`, `index` and `field` symbolic, and each backend resolves them for the target: LLVM from its data layout, the QBE wrapper from its own implementation of the C layout rules. When a frontend needs a layout value at compile time it asks the active backend through a layout-query interface.
 
 ### Differential Testing
 
-Both backends must give every program the same meaning, so core MIR has no undefined behavior (see [Middle IR](mir.md)), and consistency is proven by testing:
+Both backends must give every program the same meaning, so core SIR has no undefined behavior (see [Semantic IR](sir.md)), and consistency is proven by testing:
 
 1. **Corpus tests:** the test corpora through QBE, LLVM `-O0` and LLVM `-O2`; outputs must match exactly.
 2. **Layout tests:** generated structs, arrays and nested aggregates; each backend prints `sizeof`, `alignof` and every field offset, compared with the equivalent C declaration compiled by `zig cc`.
 3. **ABI tests:** generated calls between Cesium (built with each backend) and C in both directions.
-4. **Random programs:** a generator of well-defined MIR programs with a reducer, once MIR stabilizes.
+4. **Random programs:** a generator of well-defined SIR programs with a reducer, once SIR stabilizes.
 5. **Floating point:** exact bit comparison wherever the floating-point policy is strict.
 
 ## The LLVM Boundary
@@ -116,7 +116,7 @@ Forking Zig and building on its IRs, emitting Zig source, QBE as the *only* back
 
 ## Open Items
 
-Listed in the decision records: the SPIR-V path (LLVM's backend or a direct emitter from MIR), WebAssembly FMA and NaN policy, and the form of `libcsllvm` (partial link or shared library).
+Listed in the decision records: the SPIR-V path (LLVM's backend or a direct emitter from SIR), WebAssembly FMA and NaN policy, and the form of `libcsllvm` (partial link or shared library).
 
 ## Earlier Prototype
 

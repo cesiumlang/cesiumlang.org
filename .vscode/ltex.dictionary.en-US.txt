@@ -19,7 +19,7 @@ cmake
 cnel
 comspec
 CPACK
-CSMIR
+CSIR
 cSpell
 cspell-cesium
 csrt
@@ -69,7 +69,7 @@ katex
 LASTEXITCODE
 lexer
 libcesiumexe
-libcsmir
+libcsir
 libcsrt
 libqbe
 libtree
