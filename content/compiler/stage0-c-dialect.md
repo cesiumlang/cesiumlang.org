@@ -5,9 +5,9 @@ sortorder: 5
 ---
 
 > [!info] Source
-> [Design: stage 0 C dialect, the portable C subset](https://github.com/cesiumlang/cesium/issues/10). Status: draft. Applies to stage 0 and `libcsmir` only. It does not constrain Cesium's language design or the real compiler, which is written in Cesium.
+> [Design: stage 0 C dialect, the portable C subset](https://github.com/cesiumlang/cesium/issues/10). Status: draft. Applies to stage 0 and `libcsir` only. It does not constrain Cesium's language design or the real compiler, which is written in Cesium.
 
-Stage 0 and `libcsmir` must compile unchanged with any mainstream C compiler, and should stay small, auditable and hard to misuse. "C11" alone is not enough: C11 made several features optional, and some compilers never implemented parts of earlier standards. The rule is therefore the **intersection that every mainstream compiler implements**, plus a list of banned functions modeled on git's `banned.h` and the Linux kernel's list of deprecated interfaces.
+Stage 0 and `libcsir` must compile unchanged with any mainstream C compiler, and should stay small, auditable and hard to misuse. "C11" alone is not enough: C11 made several features optional, and some compilers never implemented parts of earlier standards. The rule is therefore the **intersection that every mainstream compiler implements**, plus a list of banned functions modeled on git's `banned.h` and the Linux kernel's list of deprecated interfaces.
 
 Reference compilers: Clang (including `zig cc`), GCC, MSVC, and a small independent compiler such as TinyCC or cproc as a canary.
 
@@ -77,7 +77,7 @@ Additional rules in the same spirit:
 
 - **Banned-functions header:** a `cs_banned.h` in the style of git's `banned.h`, included last by a common project header, redefines each banned function as a macro that expands to an undefined identifier, so any use fails to compile.
 - **Source check:** a script fails the build if a banned identifier appears in project sources or if a `.c` file does not include the common header.
-- Build stage 0 and `libcsmir` with `zig cc` and GCC, as both C99 and C11.
+- Build stage 0 and `libcsir` with `zig cc` and GCC, as both C99 and C11.
 - A compile-only check with a small independent compiler as a canary for accidental extensions.
 - An MSVC build on a Windows runner when practical.
 - Run the stage 0 golden tests under UBSan and ASan.

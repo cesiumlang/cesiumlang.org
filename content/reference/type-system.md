@@ -179,7 +179,7 @@ i16 medium = 255;    // 255 becomes i16
 
 ## Arithmetic Semantics
 
-Integer arithmetic has no undefined behavior. Integer `+`, `-`, `*` and negation wrap (two's complement). Shifts by more than the operand width, division and remainder by zero, the signed minimum divided by -1, and out-of-range float-to-integer conversions each have one defined result on every target. This mirrors the compiler's middle IR, where both backends must give every program the same meaning ([cesiumlang/cesium#7](https://github.com/cesiumlang/cesium/issues/7), [cesiumlang/cesium#8](https://github.com/cesiumlang/cesium/issues/8)).
+Integer arithmetic has no undefined behavior. Integer `+`, `-`, `*` and negation wrap (two's complement). Shifts by more than the operand width, division and remainder by zero, the signed minimum divided by -1, and out-of-range float-to-integer conversions each have one defined result on every target. This mirrors the compiler's semantic IR, where both backends must give every program the same meaning ([cesiumlang/cesium#7](https://github.com/cesiumlang/cesium/issues/7), [cesiumlang/cesium#8](https://github.com/cesiumlang/cesium/issues/8)).
 
 > [!question] Open
 > Which defined result applies to division by zero and over-wide shifts (a trap or a value) is open question 3 of [cesiumlang/cesium#8](https://github.com/cesiumlang/cesium/issues/8). Integer division rounding, `%` on negative numbers, `^` and roots on integers, and floating-point policy are [cesiumlang/cesium#35](https://github.com/cesiumlang/cesium/issues/35).

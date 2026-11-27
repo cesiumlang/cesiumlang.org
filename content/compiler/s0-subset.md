@@ -9,13 +9,13 @@ sortorder: 4
 
 S0 is the deliberately tiny subset of Cesium that stage 0 compiles. Stage 0 has one job, which is to compile stage 1 (`cesium1`), and stage 1 is written in S0. See [Bootstrap Chain](bootstrap.md).
 
-S0 is designed together with core [MIR](mir.md) so that it is essentially a readable notation for it: almost every S0 construct maps one-to-one onto a core MIR construct.
+S0 is designed together with core [SIR](sir.md) so that it is essentially a readable notation for it: almost every S0 construct maps one-to-one onto a core SIR construct.
 
 ## Rules
 
 1. **S0 is a strict subset of Cesium.** Every S0 program is a valid Cesium program with the same meaning. Later compilers must still be able to compile the frozen stage 1.
 2. **Features are added to S0 only when stage 1's code genuinely needs them** and implementing them in stage 0 is cheaper than writing around them.
-3. **S0 maps (nearly) one-to-one onto core MIR.** A feature that needs a nontrivial rewrite belongs in S1.
+3. **S0 maps (nearly) one-to-one onto core SIR.** A feature that needs a nontrivial rewrite belongs in S1.
 4. **Stage 0's output may be naive.**
 
 ## Contents
@@ -30,14 +30,14 @@ S0 is designed together with core [MIR](mir.md) so that it is essentially a read
 | Literals | integers, characters (`'A'`), strings as NUL-terminated `#u8` |
 | Memory | `alloc(count)` only: a bump arena that never frees. The element type comes from the declared target |
 | Globals | global variables and `const` globals (constants also stand in for enums) |
-| Outside world | `extern name = import('lib') { ... }` blocks declaring C ABI functions: a few libc functions (`open`, `read`, `write`, `close`, `exit`) and the coarse `libcsmir` API |
+| Outside world | `extern name = import('lib') { ... }` blocks declaring C ABI functions: a few libc functions (`open`, `read`, `write`, `close`, `exit`) and the coarse `libcsir` API |
 | Compilation unit | multiple files compiled as one unit with shared globals; no `import` of Cesium modules |
 | Entry point | hosted `main`: `i32 = main(i32 argc, ##u8 argv)` |
 | Source files | `.csm` |
 
 `i32` and `u32` are required for C ABI correctness: passing an `i64` where C expects an `int` happens to work on x86-64 but breaks on 32-bit targets.
 
-S0's arithmetic follows core MIR's defined semantics (wrapping integers, defined shifts and division by zero), so stage 0's output means the same thing on both backends.
+S0's arithmetic follows core SIR's defined semantics (wrapping integers, defined shifts and division by zero), so stage 0's output means the same thing on both backends.
 
 ## Pointers in S0
 
@@ -57,9 +57,9 @@ Because S0 must be a strict subset of Cesium, S0 source follows the ownership *s
 > [!question] Open
 > The design record does not yet say how the rest of the ownership rules apply to S0 source. S0 has no `free`, while in full Cesium an owner that is never released is a compile error; and the record's sample program writes through `#T` pointers (`t.kind = ...`, `buf[i] = ...`), which the ownership design allows only through `~T`. Rule 1 above (strict subset) means these have to be reconciled before stage 1 is frozen. Track in [cesiumlang/cesium#9](https://github.com/cesiumlang/cesium/issues/9).
 
-## S0 to Core MIR
+## S0 to Core SIR
 
-| S0 | Core MIR |
+| S0 | Core SIR |
 | --- | --- |
 | `T name = e;` (local) | `local %name: T = e` |
 | `x = e;` (local) | `set %x = e` |
@@ -160,7 +160,7 @@ i32 = main(i32 argc, ##u8 argv) {
 > [!info] Source
 > The first implementation of stage 0, [cesiumlang/cesium#60](https://github.com/cesiumlang/cesium/pull/60) (under review). Its `bootstrap/README.md` is the reference for what follows. This section describes what the compiler `cesium0` does; it decides nothing about the language.
 
-`cesium0` compiles the sample above, with the pointers it writes through declared `~T`, and its `cstr_len` lowers to exactly the core MIR shown on the [MIR](mir.md) page.
+`cesium0` compiles the sample above, with the pointers it writes through declared `~T`, and its `cstr_len` lowers to exactly the core SIR shown on the [SIR](sir.md) page.
 
 Stage 0 checks only what keeps S0 source meaningful:
 
@@ -198,7 +198,7 @@ S0 source is frozen once stage 1 works, and every later compiler must accept it 
 
 ## Stage 1 Goals (S1)
 
-Stage 1 is written in S0 and compiles S1. Each S1 feature is defined as a rewrite into core MIR. These are **candidates, to be confirmed** when stage 1 is designed:
+Stage 1 is written in S0 and compiles S1. Each S1 feature is defined as a rewrite into core SIR. These are **candidates, to be confirmed** when stage 1 is designed:
 
 - `for` with ranges and collection iteration; `switch` / `case` with values, ranges and `else`
 - `enum` (including backed enums); type unions with `switch (typeof(x))`
@@ -213,7 +213,7 @@ Stage 1 is written in S0 and compiles S1. Each S1 feature is defined as a rewrit
 ## Testing
 
 - A corpus of S0 programs with expected outputs.
-- Golden MIR tests: S0 source to expected MIR text, and MIR text to expected behavior.
+- Golden SIR tests: S0 source to expected SIR text, and SIR text to expected behavior.
 - Differential testing through QBE, LLVM `-O0` and LLVM `-O2` once the LLVM lowering exists.
 - `cesium1` built by stage 0 must compile the S1 test corpus and the real compiler.
 - Every later compiler must still compile the frozen stage 1.
@@ -223,6 +223,6 @@ Stage 1 is written in S0 and compiles S1. Each S1 feature is defined as a rewrit
 From the design record, after its amendment:
 
 1. ~~File extension.~~ Decided: `.csm` ([cesiumlang/cesium#14](https://github.com/cesiumlang/cesium/issues/14)).
-2. Declaration and pointer syntax. Dereference-by-default and the meaning of `#T` are confirmed. Still open: the result type of comparisons (`u8` in core MIR, since Cesium has no `bool`) and the default type of an integer literal when context does not determine it.
-3. Core MIR text syntax ([cesiumlang/cesium#8](https://github.com/cesiumlang/cesium/issues/8)).
+2. Declaration and pointer syntax. Dereference-by-default and the meaning of `#T` are confirmed. Still open: the result type of comparisons (`u8` in core SIR, since Cesium has no `bool`) and the default type of an integer literal when context does not determine it.
+3. Core SIR text syntax ([cesiumlang/cesium#8](https://github.com/cesiumlang/cesium/issues/8)).
 4. Which QBE version to vendor, and confirming its line-debug support and Windows output.

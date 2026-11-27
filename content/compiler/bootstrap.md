@@ -13,13 +13,13 @@ The Cesium compiler is written in Cesium. Something else has to compile it the f
 
 | Layer | Written in | Compiles | Notes |
 | --- | --- | --- | --- |
-| Stage 0 | Portable C | S0 | A tiny S0 frontend plus `libcsmir` (QBE first); runs only in CI |
-| Stage 1 (`cesium1`) | S0 | S1 | Frontend only: parses S1, emits core MIR text, hands it to `libcsmir`. Verbose by design; frozen once the next layer works |
-| Real compiler | S1 | Full Cesium | Reimplements MIR (both levels) and both lowerings in Cesium; borrow checking, generics, math operators, freestanding support; starts on QBE and adds LLVM |
+| Stage 0 | Portable C | S0 | A tiny S0 frontend plus `libcsir` (QBE first); runs only in CI |
+| Stage 1 (`cesium1`) | S0 | S1 | Frontend only: parses S1, emits core SIR text, hands it to `libcsir`. Verbose by design; frozen once the next layer works |
+| Real compiler | S1 | Full Cesium | Reimplements SIR (both levels) and both lowerings in Cesium; borrow checking, generics, math operators, freestanding support; starts on QBE and adds LLVM |
 
 - **S0** is a deliberately tiny subset of Cesium; see [The S0 Subset](s0-subset.md).
 - **S1** is a comfortable language for writing the real compiler. Its feature list is a set of candidates to be confirmed when stage 1 is designed.
-- Convenience features (`for`, `switch`, tagged unions, strings, modules, floats) are implemented in stage 1, written in S0, not in stage 0. They are defined as rewrites into core MIR.
+- Convenience features (`for`, `switch`, tagged unions, strings, modules, floats) are implemented in stage 1, written in S0, not in stage 0. They are defined as rewrites into core SIR.
 - More layers are added only if a later compiler genuinely needs features its predecessor cannot compile.
 
 ### Rules for the Chain
@@ -27,7 +27,7 @@ The Cesium compiler is written in Cesium. Something else has to compile it the f
 1. **Each subset is a strict subset of Cesium.** Every S0 program is a valid Cesium program with the same meaning.
 2. **Every later compiler must still compile the frozen layers**, so the from-source check in CI can run down the whole chain.
 3. The chain ends with the full compiler rebuilding itself, checked for identical output.
-4. Frozen layers keep their own `libcsmir`, so the real compiler's MIR can evolve freely.
+4. Frozen layers keep their own `libcsir`, so the real compiler's SIR can evolve freely.
 
 ## Stage 0
 
@@ -35,15 +35,15 @@ Stage 0 is written in portable C: the intersection of C99 and C11 that every mai
 
 It consists of:
 
-- the S0 frontend (lexer, recursive-descent and Pratt parser, minimal type checking, the S0 to MIR mapping);
-- `libcsmir`: core MIR data structures, text parser, printer, verifier, the QBE lowering, later the LLVM lowering, and a small arena runtime;
+- the S0 frontend (lexer, recursive-descent and Pratt parser, minimal type checking, the S0 to SIR mapping);
+- `libcsir`: core SIR data structures, text parser, printer, verifier, the QBE lowering, later the LLVM lowering, and a small arena runtime;
 - vendored QBE, with its entry point renamed so it can be called in-process. Stage 0 does not spawn processes; assembling and linking are done by the build system.
 
 **Pipeline (phase 1, QBE only):**
 
 ```text
-S0 source files -> lexer -> parser -> type checking -> core MIR
-  -> libcsmir: verify -> lower to QBE IL -> QBE -> assembly file
+S0 source files -> lexer -> parser -> type checking -> core SIR
+  -> libcsir: verify -> lower to QBE IL -> QBE -> assembly file
   -> build.zig assembles and links with zig cc -> cesium1
 ```
 
@@ -56,16 +56,16 @@ Stage 0's output does not need to be efficient, and stage 0 has no optimization 
 - **Portability of the root.** Stage 0 can be built by Clang, GCC or MSVC, so Cesium can move away from `zig cc` later without touching it.
 - **Zig's churn stays in `build.zig`,** which only orchestrates.
 
-The C dialect's limits apply only to stage 0 and `libcsmir`. They do not affect Cesium's design or the real compiler.
+The C dialect's limits apply only to stage 0 and `libcsir`. They do not affect Cesium's design or the real compiler.
 
 ## `cesium1`
 
-Stage 1 is only a frontend. It emits core MIR text and calls a coarse C ABI exported by `libcsmir` (pointers, `uword` and `i32` only; no by-value structs, callbacks or variadics):
+Stage 1 is only a frontend. It emits core SIR text and calls a coarse C ABI exported by `libcsir` (pointers, `uword` and `i32` only; no by-value structs, callbacks or variadics):
 
 ```cesium
-extern csmir = import('csmir') {
+extern csir = import('csir') {
   i32 = cs_backend_init();
-  i32 = cs_compile_mir(#u8 mir, uword len,
+  i32 = cs_compile_sir(#u8 sir, uword len,
                        i32 backend,              // 0 = QBE (writes assembly), 1 = LLVM (writes an object)
                        #u8 triple, #u8 cpu, #u8 features,
                        i32 opt_level, #u8 out_path);
@@ -78,11 +78,11 @@ It becomes self-contained in two phases: first it writes assembly that `build.zi
 
 ## What CI Builds
 
-`build.zig` runs only in CI pipelines. It orchestrates the LLVM build, stage 0, `libcsmir`, `libcsllvm` and the chain.
+`build.zig` runs only in CI pipelines. It orchestrates the LLVM build, stage 0, `libcsir`, `libcsllvm` and the chain.
 
 1. **Devkits** ([cesiumlang/devkits](https://github.com/cesiumlang/devkits)): per-host packages containing the pinned official Zig, the Cesium LLVM build (core, the Cesium targets and LLD; no Clang) and a pinned QBE. Stage 0 builds use the Zig from the devkit.
 2. Build the LLD shim and `libcsllvm` per host.
-3. Build stage 0 and `libcsmir`, run the portability and banned-function checks, and run the layer chain up to the full compiler; verify that the compiler rebuilds itself identically.
+3. Build stage 0 and `libcsir`, run the portability and banned-function checks, and run the layer chain up to the full compiler; verify that the compiler rebuilds itself identically.
 4. Cross-compile the compiler for every host triple and smoke-test it.
 5. Publish one **bootstrap package** per host, with a manifest (Zig version, LLVM version, target list, chain commits, checksums).
 

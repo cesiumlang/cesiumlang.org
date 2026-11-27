@@ -18,7 +18,7 @@ This page summarizes how Cesium programs are compiled, from the point of view of
 
 - **One self-contained binary.** The compiler needs no separate toolchain: no C compiler, no SDK and no system libc on the user's machine. The linker is built in.
 - **The compiler is written in Cesium** and reaches its first working version through a [bootstrap chain](../compiler/bootstrap.md) that starts from a small compiler written in portable C.
-- **Two backends behind a middle IR.** Every program is lowered to Cesium's [middle IR](../compiler/mir.md), and from there to one of two backends:
+- **Two backends behind a semantic IR.** Every program is lowered to Cesium's [semantic IR](../compiler/sir.md), and from there to one of two backends:
   - **QBE** for development, bootstrapping and quick ports to new architectures;
   - **LLVM** as the release backend, for optimization, vectorization, full debug information and every supported target.
 
