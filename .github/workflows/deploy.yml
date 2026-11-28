@@ -37,6 +37,8 @@ jobs:
     env:
       # the time zone of the dates on the pages
       TZ: America/Chicago
+    outputs:
+      cesium: ${{ steps.cesium.outputs.sha }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -63,6 +65,11 @@ jobs:
           ref: main
           path: cesium-src
           fetch-depth: 0
+
+      # the commit of cesium that is built, which the mirror builds too
+      - name: Note the commit of cesium
+        id: cesium
+        run: echo "sha=$(git -C cesium-src rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       # the root is the latest release (cesiumlang.org#43); main while there is none
       - name: The specification, from the latest release of cesium
@@ -100,3 +107,36 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+
+  # The mirror is another repository's Pages site, under another domain
+  # (cesium.randyeckman.com), which builds this repository itself. A commit
+  # there starts its build and records what it built: this commit, and the
+  # commit of cesium the specification came from. It is made with a deploy key
+  # that can write to that repository and nothing else (the secret
+  # SITE_MIRROR_DEPLOY_KEY; MIRROR_DEPLOY_KEY is the development site's).
+  mirror:
+    name: Start the mirror's build
+    needs: [build, deploy]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          repository: emanspeaks/cesium-site-mirror
+          ssh-key: ${{ secrets.SITE_MIRROR_DEPLOY_KEY }}
+
+      - name: Record the commits to build
+        env:
+          CESIUM_SHA: ${{ needs.build.outputs.cesium }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          printf '%s\n%s\n' "$GITHUB_SHA" "$CESIUM_SHA" > source.txt
+          git add source.txt
+          if git diff --cached --quiet; then
+            echo "The mirror already has these commits."
+            exit 0
+          fi
+          git commit -q -m "Build cesiumlang.org@${GITHUB_SHA::7}, cesium@${CESIUM_SHA::7}"
+          git push -q
