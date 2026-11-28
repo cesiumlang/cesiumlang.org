@@ -58,7 +58,9 @@ pub fn main(init: std.process.Init) !void {
     var entries: std.ArrayList(site_json.Entry) = .empty;
     for (pages) |page| {
         const date = try gitDate(arena, io, content_dir, page);
-        const rendered = try smd.render(arena, pages, page, date, version, &highlighter, &report);
+        // an edition's page is of its own release (cesiumlang.org#43)
+        const page_version = if (page.edition()) |release| try std.fmt.allocPrint(arena, "Cesium {s}", .{release}) else version;
+        const rendered = try smd.render(arena, pages, page, date, page_version, &highlighter, &report);
         try write(io, arena, generated, try std.fmt.allocPrint(arena, "{s}.smd", .{page.slug}), rendered.text);
         try entries.append(arena, .{
             .page = page,
@@ -71,6 +73,12 @@ pub fn main(init: std.process.Init) !void {
     }
     const assets = try std.fmt.allocPrint(arena, "{s}/assets", .{site_dir});
     try write(io, arena, assets, "site-index.json", try site_json.render(arena, entries.items));
+    // the releases for the edition selector, as tools/take-spec.sh wrote them;
+    // none for a site built without them
+    const editions_path = try std.fmt.allocPrint(arena, "{s}/cesium-editions.json", .{content_dir});
+    const editions: []const u8 = std.Io.Dir.cwd().readFileAlloc(io, editions_path, arena, .limited(1 << 16)) catch
+        "{\"development\":true,\"releases\":[]}\n";
+    try write(io, arena, assets, "editions.json", editions);
     try copyImages(io, arena, try std.fmt.allocPrint(arena, "{s}/assets", .{content_dir}), assets);
 
     std.debug.print("{d} pages, {d} unresolved links\n", .{ pages.len, report.unresolved });

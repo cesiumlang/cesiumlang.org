@@ -13,6 +13,15 @@ const site = [_]Page{
     page("reference/memory-management", "Memory Management", ""),
 };
 
+test "a page of an edition knows its release; the site's own pages have none" {
+    try std.testing.expectEqualStrings("0.1.0", page("v0.1.0/spec/lexical", "", "").edition().?);
+    try std.testing.expectEqualStrings("12.3.45", page("v12.3.45/index", "", "").edition().?);
+    try std.testing.expect(page("spec/lexical", "", "").edition() == null);
+    try std.testing.expect(page("v0.1/spec", "", "").edition() == null);
+    try std.testing.expect(page("vision/index", "", "").edition() == null);
+    try std.testing.expect(page("v0.1.x/spec", "", "").edition() == null);
+}
+
 test "a callout becomes a bold label; links to pages are left as they are" {
     var arena: std.heap.ArenaAllocator = .init(std.testing.allocator);
     defer arena.deinit();

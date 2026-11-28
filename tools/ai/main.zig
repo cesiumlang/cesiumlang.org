@@ -49,7 +49,12 @@ pub fn main(init: std.process.Init) !void {
         std.process.exit(2);
     };
 
-    const pages = try content.load(arena, io, content_dir);
+    // the editions of earlier releases repeat the site's pages: not for AI models
+    var site_pages: std.ArrayList(content.Page) = .empty;
+    for (try content.load(arena, io, content_dir)) |page| {
+        if (page.edition() == null) try site_pages.append(arena, page);
+    }
+    const pages = site_pages.items;
     var report: portable.Report = .{};
 
     for (pages) |page| {

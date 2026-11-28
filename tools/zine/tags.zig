@@ -47,7 +47,11 @@ pub fn render(arena: std.mem.Allocator, pages: []const Page, date: []const u8) e
 fn head(w: *std.Io.Writer, title: []const u8, date: []const u8) error{OutOfMemory}!void {
     w.writeAll("---\n.title = ") catch return error.OutOfMemory;
     try smd.ziggyString(w, title);
-    w.print(",\n.date = .date(\"{s}\"),\n.layout = \"page.shtml\",\n---\n\n", .{date}) catch return error.OutOfMemory;
+    w.print(",\n.date = .date(\"{s}\"),\n.layout = \"page.shtml\",\n", .{date}) catch return error.OutOfMemory;
+    // the title of the browser's tab, as smd.zig writes it for the other pages
+    w.writeAll(".custom = { \"head_title\": \"") catch return error.OutOfMemory;
+    try smd.ziggyText(w, title);
+    w.writeAll(" · Cesium\" },\n---\n\n") catch return error.OutOfMemory;
 }
 
 fn contains(haystack: []const []const u8, needle: []const u8) bool {

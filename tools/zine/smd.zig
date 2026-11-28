@@ -201,7 +201,22 @@ fn frontMatter(w: *std.Io.Writer, page: Page, date: []const u8, version: ?[]cons
         try put(w, ", \"version\": ");
         try ziggyString(w, v);
     }
-    try put(w, " },\n");
+    // the title of the browser's tab: the page's, then the site's; the home
+    // page is the site's alone, and an edition's front page names it already
+    try put(w, ", \"head_title\": \"");
+    if (std.mem.eql(u8, page.slug, "index")) {
+        try ziggyText(w, "Cesium");
+    } else {
+        try ziggyText(w, page.title);
+        if (page.edition()) |release| {
+            // an edition's page names its release; its front page does already
+            if (!std.mem.eql(u8, page.basename(), "index")) {
+                try ziggyText(w, " · Cesium ");
+                try ziggyText(w, release);
+            }
+        } else try ziggyText(w, " · Cesium");
+    }
+    try put(w, "\" },\n");
     if (page.aliases.len > 0) {
         try put(w, ".aliases = [");
         for (page.aliases, 0..) |alias, i| {
@@ -215,6 +230,12 @@ fn frontMatter(w: *std.Io.Writer, page: Page, date: []const u8, version: ?[]cons
 
 pub fn ziggyString(w: *std.Io.Writer, text: []const u8) Error!void {
     try put(w, "\"");
+    try ziggyText(w, text);
+    try put(w, "\"");
+}
+
+/// The inside of a Ziggy string: `text` escaped.
+pub fn ziggyText(w: *std.Io.Writer, text: []const u8) Error!void {
     for (text) |c| {
         switch (c) {
             '"' => try put(w, "\\\""),
@@ -223,7 +244,6 @@ pub fn ziggyString(w: *std.Io.Writer, text: []const u8) Error!void {
             else => w.writeByte(c) catch return error.OutOfMemory,
         }
     }
-    try put(w, "\"");
 }
 
 // A block of code as HTML. Cesium, and code with no language, is highlighted.
