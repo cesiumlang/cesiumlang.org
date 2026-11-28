@@ -74,3 +74,7 @@ sortorder: 11
 ## The development site
 
 Every push to `dev` and to a branch named `web/...` is built at <https://cesiumlang.dev>, by the repository [cesiumlang/cesiumlang.dev](https://github.com/cesiumlang/cesiumlang.dev) (a repository has one Pages domain), through the workflow `dev-site.yml`. cesiumlang.org is built from `main` by `deploy.yml`.
+
+## The mirror
+
+The site is also served at <https://cesium.randyeckman.com>, by the repository [emanspeaks/cesium-site-mirror](https://github.com/emanspeaks/cesium-site-mirror), which builds this repository as `deploy.yml` does. After each deploy, `deploy.yml` commits what it built to `source.txt` there (this repository's commit and that of cesiumlang/cesium), with the deploy key in the secret `SITE_MIRROR_DEPLOY_KEY`, and that push starts the mirror's build. A step added to the build in `deploy.yml` is added to the mirror's `pages.yml` too.
