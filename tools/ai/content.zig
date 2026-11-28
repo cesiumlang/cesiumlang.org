@@ -26,6 +26,20 @@ pub const Page = struct {
         return self.slug[slash + 1 ..];
     }
 
+    /// The release whose edition the page belongs to, `0.1.0` for
+    /// `v0.1.0/spec/lexical` (cesiumlang.org#43); null for the site's own pages.
+    pub fn edition(self: Page) ?[]const u8 {
+        const top = self.slug[0 .. std.mem.findScalar(u8, self.slug, '/') orelse self.slug.len];
+        if (top.len < 6 or top[0] != 'v') return null;
+        var parts = std.mem.splitScalar(u8, top[1..], '.');
+        var count: usize = 0;
+        while (parts.next()) |part| : (count += 1) {
+            if (part.len == 0) return null;
+            for (part) |c| if (!std.ascii.isDigit(c)) return null;
+        }
+        return if (count == 3) top[1..] else null;
+    }
+
     fn lessThan(_: void, a: Page, b: Page) bool {
         if (a.sortorder != b.sortorder) return a.sortorder < b.sortorder;
         return std.mem.lessThan(u8, a.slug, b.slug);

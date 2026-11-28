@@ -25,3 +25,8 @@ zig-pkg/
 
 # the compiler version tools/take-spec.sh writes at each deploy
 /content/cesium-version.txt
+# the editions of releases and their list (tools/take-editions.sh,
+# tools/take-spec.sh; cesiumlang.org#43), and the list as tools/zine copies it
+/content/v[0-9]*.[0-9]*.[0-9]*/
+/content/cesium-editions.json
+/site/assets/editions.json

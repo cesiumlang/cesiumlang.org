@@ -185,6 +185,25 @@ html {
   margin: 0;
 }
 
+/* the edition selector: a release, or the development version
+   (cesiumlang.org#43) */
+#edition {
+  flex: 0 0 auto;
+  height: 2.25rem;
+  padding: 0 0.5rem;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--darkgray);
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#edition[hidden] {
+  display: none;
+}
+
 /* the title goes once the page has been scrolled */
 .brand-text {
   overflow: hidden;

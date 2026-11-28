@@ -3,12 +3,13 @@
   <head id="head">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title :text="$page.title"></title>
+    <title :text="$page.custom.get('head_title')"></title>
     <link rel="icon" href="$site.asset('img/cesium_logo.ico').link()">
     <ctx :if="$page.custom.has('markdown')"><link rel="alternate" type="text/markdown" href="$page.custom.get('markdown')"></ctx>
     <link rel="stylesheet" href="$site.asset('style.css').link()">
     <link rel="stylesheet" href="$site.asset('highlight.css').link()">
     <link id="site-index" rel="preload" as="fetch" crossorigin href="$site.asset('site-index.json').link()">
+    <link id="editions" rel="preload" as="fetch" crossorigin href="$site.asset('editions.json').link()">
     <script src="$site.asset('theme.js').link()"></script>
     <super>
   </head>
@@ -21,6 +22,7 @@
         <img src="$site.asset('img/cesium_logo.png').link()" alt="Cesium logo">
         <span class="brand-text">Cesium</span>
       </a>
+      <select id="edition" aria-label="Edition" hidden></select>
       <div id="search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
         <input id="search-input" type="search" placeholder="Search" autocomplete="off" aria-label="Search">
@@ -53,5 +55,6 @@
       </aside>
     </div>
     <script src="$site.asset('explorer.js').link()"></script>
+    <script src="$site.asset('editions.js').link()"></script>
   </body>
 </html>

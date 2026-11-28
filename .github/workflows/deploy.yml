@@ -55,15 +55,26 @@ jobs:
             .zig-cache
           key: zig-${{ runner.os }}-${{ hashFiles('build.zig.zon', 'grammar/build.zig.zon') }}
 
-      # the specification and the proposals: Skein's rendering of cesiumlang/cesium
+      # the specification and the proposals: Skein's rendering of cesiumlang/cesium,
+      # with its tags for the editions of its releases
       - uses: actions/checkout@v7
         with:
           repository: cesiumlang/cesium
           ref: main
           path: cesium-src
+          fetch-depth: 0
 
-      - name: The specification, from cesium
-        run: bash tools/take-spec.sh cesium-src
+      # the root is the latest release (cesiumlang.org#43); main while there is none
+      - name: The specification, from the latest release of cesium
+        run: |
+          latest=$(git -C cesium-src tag --list 'v[0-9]*' --sort=-version:refname | head -1)
+          if [ -n "$latest" ]; then git -C cesium-src checkout -q "$latest"; fi
+          echo "the root is ${latest:-main}"
+          bash tools/take-spec.sh cesium-src
+
+      # an edition of each release, under /vX.Y.Z/
+      - name: The editions of the releases
+        run: bash tools/take-editions.sh cesium-src
 
       - name: Build the site
         run: zig build

@@ -375,8 +375,16 @@
   fetch(indexLink.href)
     .then(function (response) { return response.json(); })
     .then(function (pages) {
-      document.getElementById("explorer").appendChild(renderNode(makeTree(pages), 0));
+      // the editions of releases (cesiumlang.org#43): the menu and the search
+      // keep to the edition of the page, the site's own pages outside one
+      var edition = /^v\d+\.\d+\.\d+(?=\/|$)/;
+      var here = (current.match(edition) || [""])[0];
+      var shown = pages.filter(function (page) {
+        var m = page.slug.match(edition);
+        return here ? m !== null && m[0] === here : m === null;
+      });
+      document.getElementById("explorer").appendChild(renderNode(makeTree(shown), 0));
       setupPage(pages);
-      setupSearch(pages);
+      setupSearch(shown);
     });
 })();
